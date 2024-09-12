@@ -1,20 +1,23 @@
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.*;
+
 
 public class Input implements KeyListener {
 
     private Player player;
     private boolean isWPressed = false;
     private boolean isAPressed = false;
+    private boolean isSPressed = false;
     private boolean isDPressed = false;
     private boolean isSpacePressed = false;
     private boolean isShiftPressed = false;
-    private Panel panel;
+    private JPanel panel;
 
-    public Input(Player player, Panel panelGiven) {
+    public Input(Player player, JPanel panelGiven) {
         this.player = player;
-        this.player.setPanel(panelGiven);
+        this.player.setJPanel(panelGiven);
         panel = panelGiven;
     }
 
@@ -27,11 +30,21 @@ public class Input implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         
-        if (keyCode == KeyEvent.VK_W && !isWPressed) {
+        if (keyCode == KeyEvent.VK_W) {
             isWPressed = true;
-            player.moveUp();
+            if (isShiftPressed) {
+                player.moveUpRun();
+            } else {
+                player.moveUpWalk();
+            }
+        } else if (keyCode == KeyEvent.VK_S) {
+            isWPressed = true;
+            if (isShiftPressed) {
+                player.moveDownRun();
+            } else {
+                player.moveDownWalk();
+            }
         } else if (keyCode == KeyEvent.VK_A) {
-            panel.setDirectionPanel("Left");
             isAPressed = true;
             if (isShiftPressed) {
                 player.moveLeftRun();
@@ -39,7 +52,6 @@ public class Input implements KeyListener {
                 player.moveLeftWalk();
             }
         } else if (keyCode == KeyEvent.VK_D) {
-            panel.setDirectionPanel("Right");
             isDPressed = true;
             if (isShiftPressed) {
                 player.moveRightRun();
@@ -60,6 +72,8 @@ public class Input implements KeyListener {
 
         if (keyCode == KeyEvent.VK_W) {
             isWPressed = false;
+        }  else if (keyCode == KeyEvent.VK_S) {
+            isSPressed = false;
         } else if (keyCode == KeyEvent.VK_A) {
             isAPressed = false;
         } else if (keyCode == KeyEvent.VK_D) {
