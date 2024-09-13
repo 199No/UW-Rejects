@@ -1,10 +1,13 @@
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+
 import javax.swing.*;
 
 
-public class Input implements KeyListener {
+public class Input implements KeyListener, MouseMotionListener {
 
     private Player player;
     private boolean isWPressed = false;
@@ -84,5 +87,13 @@ public class Input implements KeyListener {
         else if (keyCode == KeyEvent.VK_SHIFT){
             isShiftPressed = false;
         }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
     } 
 }
