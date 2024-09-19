@@ -14,13 +14,17 @@ public class Sounds {
 
 
     //When a sound is made take the filePath
-    public Sounds(String soundFilePath){
+    public Sounds(){
 
-        
+        } 
+
+
+
+    public void LevelUp(){
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFile = new File(soundFilePath);
+            File soundFile = new File("Sounds\\LevelUp.wav");
             
             //Get the Audio from the Soundfile
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
@@ -34,8 +38,6 @@ public class Sounds {
             //Play the clip of that sound
             clip.start();
         } 
-
-
         //Cacth for the program
         catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
 
