@@ -12,7 +12,7 @@ import javax.sound.sampled.*;
 public class Sounds {
 
     //Creates a varible called Clip
-    private static Clip clip;
+    private Clip clip;
 
     //When a sound is made take the filePath
     public Sounds(String soundFilePath){
@@ -44,7 +44,7 @@ public class Sounds {
     }
 
     //If method playSound is called
-    public static void playSound(){
+    public void playSound(){
         
         //Play the clip of that sound
         clip.start(); 
@@ -52,7 +52,7 @@ public class Sounds {
     }
 
     //If method stopSound is called
-    public static void stopSound() {
+    public void stopSound() {
 
             //Flush and Close that clip
             clip.flush();
