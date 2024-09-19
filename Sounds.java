@@ -11,8 +11,7 @@ import javax.sound.sampled.*;
 //-------------------------------------------------// 
 public class Sounds {
 
-    //Creates a varible called Clip
-    private Clip clip;
+
 
     //When a sound is made take the filePath
     public Sounds(String soundFilePath){
@@ -27,10 +26,13 @@ public class Sounds {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
-            clip = AudioSystem.getClip();
+            Clip clip = AudioSystem.getClip(); // Create a new Clip for each sound
             
             //Open the Clip
             clip.open(audioInputStream);
+
+            //Play the clip of that sound
+            clip.start();
         } 
 
 
@@ -43,21 +45,4 @@ public class Sounds {
         }
     }
 
-    //If method playSound is called
-    public void playSound(){
-        
-        //Play the clip of that sound
-        clip.start(); 
-
-    }
-
-    //If method stopSound is called
-    public void stopSound() {
-
-            //Flush and Close that clip
-            clip.flush();
-            clip.close(); 
-
-            
-    }
 }

@@ -5,6 +5,8 @@ public class Main{
         new Game();
 
         Sounds Oil = new Sounds("Sounds\\GameboySound.wav");
-        Oil.playSound();
+        Sounds Oil2 = new Sounds("Sounds\\GameboySound.wav");
+        Sounds Oil3 = new Sounds("Sounds\\GameboySound.wav");
+
     }
 }
