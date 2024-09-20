@@ -11,7 +11,7 @@ import javax.sound.sampled.*;
 //-------------------------------------------------// 
 public class Sounds {
 
-
+    Clip clipLevelUp;
 
     //When a sound is made take the filePath
     public Sounds(){
@@ -20,23 +20,23 @@ public class Sounds {
 
 
 
-    public void LevelUp(){
+    public void LevelUpPlay(){
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFile = new File("Sounds\\LevelUp.wav");
+            File soundFileLevelUp = new File("Sounds\\LevelUp.wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
 
             //Make the clip equal to the Audio
-            Clip clip = AudioSystem.getClip(); // Create a new Clip for each sound
+            clipLevelUp = AudioSystem.getClip(); // Create a new Clip for each sound
             
             //Open the Clip
-            clip.open(audioInputStream);
+            clipLevelUp.open(audioInputStream);
 
             //Play the clip of that sound
-            clip.start();
+            clipLevelUp.start();
         } 
         //Cacth for the program
         catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
@@ -46,5 +46,9 @@ public class Sounds {
 
         }
     }
+    public void LevelUpStop() {
+        clipLevelUp.flush();
+        clipLevelUp.close(); 
+}
 
 }
