@@ -5,7 +5,8 @@ public class Main{
         new Game();
 
 
-
+        Sounds bob = new Sounds();
+        bob.LevelUp();
         
     }
 }
