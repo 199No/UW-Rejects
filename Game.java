@@ -12,7 +12,7 @@ public class Game implements ActionListener{
     public Game() throws AWTException{
         
         player = new Player(0, 0);
-        input = new Input(player);
+        input = new Input();
         gui = new Gui(1280, 720, input);
         gameTimer = new Timer(5, this);
         gameTimer.start();
@@ -22,6 +22,21 @@ public class Game implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         
+        if(input.getKey(87)){
+
+        } else if(input.getKey(83)){
+            //playerVel.move(0, 0, -0.05);
+        }
+        if(input.getKey(65)){
+            //playerVel.move(0.05, 0, 0);
+        } else if(input.getKey(68)){
+            //playerVel.move(-0.05, 0, 0);
+        }
+        if(input.getKey(32)){
+            //playerVel.move(0, 0.05, 0);
+        } else if(input.getKey(17)){
+            //playerVel.move(0, -0.05, 0);
+        }
         now = System.currentTimeMillis();
         if(now - lastSecond > 1000){
             lastSecond = now;
