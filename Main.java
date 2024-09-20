@@ -6,8 +6,8 @@ public class Main{
 
 
         Sounds bob = new Sounds();
-        bob.LevelUpPlay();
-        bob.LevelUpStop();
+        bob.CarnivalPlay();
+        
         
     }
 }
