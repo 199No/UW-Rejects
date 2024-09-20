@@ -18,9 +18,8 @@ public class Input implements KeyListener, MouseMotionListener {
     private boolean isShiftPressed = false;
     private JFrame panel;
 
-    public Input(Player player, JFrame panelGiven) {
+    public Input(Player player) {
         this.player = player;
-        panel = panelGiven;
     }
 
     @Override
@@ -39,31 +38,36 @@ public class Input implements KeyListener, MouseMotionListener {
             } else {
                 player.moveUpWalk();
             }
-        } else if (keyCode == KeyEvent.VK_S) {
+        } 
+        if (keyCode == KeyEvent.VK_S) {
             isWPressed = true;
             if (isShiftPressed) {
                 player.moveDownRun();
             } else {
                 player.moveDownWalk();
             }
-        } else if (keyCode == KeyEvent.VK_A) {
+        } 
+        if (keyCode == KeyEvent.VK_A) {
             isAPressed = true;
             if (isShiftPressed) {
                 player.moveLeftRun();
             } else {
                 player.moveLeftWalk();
             }
-        } else if (keyCode == KeyEvent.VK_D) {
+        } 
+        if (keyCode == KeyEvent.VK_D) {
             isDPressed = true;
             if (isShiftPressed) {
                 player.moveRightRun();
             } else {
                 player.moveRightWalk();
             }
-        } else if (keyCode == KeyEvent.VK_SPACE) {
+        }
+        if (keyCode == KeyEvent.VK_SPACE) {
             isSpacePressed = true;
             player.attack();
-        } else if (keyCode == KeyEvent.VK_SHIFT) {
+        } 
+        if (keyCode == KeyEvent.VK_SHIFT) {
             isShiftPressed = true;
         }
     }

@@ -6,10 +6,14 @@ import javax.swing.Timer;
 public class Game implements ActionListener{
     Timer gameTimer;
     Gui gui;
-    
+    Player player;
     double now, lastSecond, frameRate, framesLastSecond;
+    Input input;
     public Game() throws AWTException{
-        gui = new Gui(1280, 720);
+        
+        player = new Player(0, 0);
+        input = new Input(player);
+        gui = new Gui(1280, 720, input);
         gameTimer = new Timer(5, this);
         gameTimer.start();
         now = System.currentTimeMillis();
@@ -26,8 +30,10 @@ public class Game implements ActionListener{
         } else {
             framesLastSecond ++;
         }
+        player.updatePosition();
         gui.background((int)frameRate * 2, (int)frameRate, (int)frameRate * 2);
         gui.displayFPS((int)frameRate);
+        gui.drawPlayer(player);
         gui.repaint();
         now = System.currentTimeMillis();
     }
