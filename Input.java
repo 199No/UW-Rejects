@@ -1,98 +1,121 @@
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.AWTException;
+import java.awt.MouseInfo;
+import java.awt.event.*;
+import java.awt.Robot;
+public class Input implements MouseListener, KeyListener, MouseMotionListener{
+    double lastX, lastY, mouseX, mouseY;
+    boolean automatedMove;
+    double movedX, movedY;
+    boolean mouseLocked;
+    boolean[] keys = new boolean[90];
+    public Input(){
+       lastX = MouseInfo.getPointerInfo().getLocation().getX();
+       lastY = MouseInfo.getPointerInfo().getLocation().getY();
+       mouseX = MouseInfo.getPointerInfo().getLocation().getX();
+       mouseY = MouseInfo.getPointerInfo().getLocation().getY();
+       automatedMove = false;
+       movedX = 0;
+       movedY = 0;
+       mouseLocked = true;
+    }
+    public double mouseX(){
+        return mouseX;
+    }
+    public double mouseY(){
+        return mouseY;
+    }
+    public void updateMouse(){
+        // If the user moves the mouse...
+        if(!automatedMove && mouseLocked){
+            // Update last pos
+            lastX = mouseX;
+            lastY = mouseY;
+            // Get current pos
+            mouseX = MouseInfo.getPointerInfo().getLocation().getX();
+            mouseY = MouseInfo.getPointerInfo().getLocation().getY();
+            // Make sure the mouse is farther than 200 px away from the borders of the screen if the mouse is locked.
+            if(mouseLocked && (mouseX < 200 || mouseX > 1080 || mouseY < 200 || mouseY > 520)){
+                // If so...
+                // Calculate x and y dist from the center
+                movedX = 640 - mouseX;
+                movedY = 360 - mouseY;
+                // Notify the program that this was a robot moving the mouse.
+                automatedMove = true;
+            }
+        } else if(automatedMove && mouseLocked){
+            // Adjust for the shift to the center, so that the camera doesn't "jump" when the mouse gets moved to center.
+            lastX = mouseX + movedX;
+            lastY = mouseY + movedY;
+            // Get new mouseX and Y.
+            mouseX = MouseInfo.getPointerInfo().getLocation().getX();
+            mouseY = MouseInfo.getPointerInfo().getLocation().getY();
+            // Reset automatedMove.
+            automatedMove = false;
+        }
+    }
+    public boolean getKey(int keyCode){
+        return keys[keyCode];
+    }
+    public double dMouseX(){
+        return mouseX - lastX;
+    }
+    public double dMouseY(){
+        return mouseY - lastY;
+    }
+    @Override
+    public void mouseMoved(MouseEvent e){
 
-import javax.swing.*;
+    }
+    @Override
+    public void mouseClicked(MouseEvent e) {
 
-
-public class Input implements KeyListener, MouseMotionListener {
-
-    private Player player;
-    private boolean isWPressed = false;
-    private boolean isAPressed = false;
-    private boolean isSPressed = false;
-    private boolean isDPressed = false;
-    private boolean isSpacePressed = false;
-    private boolean isShiftPressed = false;
-    private JFrame panel;
-
-    public Input(Player player, JFrame panelGiven) {
-        this.player = player;
-        panel = panelGiven;
     }
 
+    @Override
+    public void mousePressed(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        // Empty
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        // Empty
+    }
     @Override
     public void keyTyped(KeyEvent e) {
-        // We won't use this method in this program
-    }
 
+    }
     @Override
     public void keyPressed(KeyEvent e) {
-        int keyCode = e.getKeyCode();
-        
-        if (keyCode == KeyEvent.VK_W) {
-            isWPressed = true;
-            if (isShiftPressed) {
-                player.moveUpRun();
-            } else {
-                player.moveUpWalk();
-            }
-        } else if (keyCode == KeyEvent.VK_S) {
-            isWPressed = true;
-            if (isShiftPressed) {
-                player.moveDownRun();
-            } else {
-                player.moveDownWalk();
-            }
-        } else if (keyCode == KeyEvent.VK_A) {
-            isAPressed = true;
-            if (isShiftPressed) {
-                player.moveLeftRun();
-            } else {
-                player.moveLeftWalk();
-            }
-        } else if (keyCode == KeyEvent.VK_D) {
-            isDPressed = true;
-            if (isShiftPressed) {
-                player.moveRightRun();
-            } else {
-                player.moveRightWalk();
-            }
-        } else if (keyCode == KeyEvent.VK_SPACE) {
-            isSpacePressed = true;
-            player.attack();
-        } else if (keyCode == KeyEvent.VK_SHIFT) {
-            isShiftPressed = true;
+        if(e.getKeyCode() < keys.length){
+            keys[e.getKeyCode()] = true;
         }
     }
-
     @Override
     public void keyReleased(KeyEvent e) {
-        int keyCode = e.getKeyCode();
-
-        if (keyCode == KeyEvent.VK_W) {
-            isWPressed = false;
-        }  else if (keyCode == KeyEvent.VK_S) {
-            isSPressed = false;
-        } else if (keyCode == KeyEvent.VK_A) {
-            isAPressed = false;
-        } else if (keyCode == KeyEvent.VK_D) {
-            isDPressed = false;    }
-        else if (keyCode == KeyEvent.VK_SPACE){
-            isSpacePressed = false;
+        if(e.getKeyCode() == 27){
+            mouseLocked = !mouseLocked;
+            lastX = MouseInfo.getPointerInfo().getLocation().getX();
+            lastY = MouseInfo.getPointerInfo().getLocation().getY();
+            mouseX = lastX;
+            mouseY = lastY;
         }
-        else if (keyCode == KeyEvent.VK_SHIFT){
-            isShiftPressed = false;
+        if(e.getKeyCode() < keys.length){
+            keys[e.getKeyCode()] = false;
         }
     }
-
     @Override
-    public void mouseDragged(MouseEvent e) {
+    public void mouseDragged(MouseEvent e){
+
     }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-    } 
+    
 }
