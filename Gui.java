@@ -7,16 +7,14 @@ public class Gui extends JPanel{
     public static final double FOCAL_LENGTH = -400; 
     int width;
     int height;
-    
+    Input input;
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
     ArrayList<GraphicsRunnable> drawQueue;
     JFrame frame = new JFrame("The Divided Realms ALPHA");
-    public Gui(int width, int height, Input input){
+    public Gui(int width, int height){
         this.width = WIDTH;
         this.height = HEIGHT;
-        
-
         this.setSize(width, height);
         frame.setSize(width, height);
 
@@ -29,7 +27,7 @@ public class Gui extends JPanel{
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(this);
-
+        input = new Input(new Player(), frame);
         drawQueue = new ArrayList<GraphicsRunnable>();
     }
     // Paint renamed

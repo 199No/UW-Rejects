@@ -16,11 +16,10 @@ public class Input implements KeyListener, MouseMotionListener {
     private boolean isDPressed = false;
     private boolean isSpacePressed = false;
     private boolean isShiftPressed = false;
-    private JPanel panel;
+    private JFrame panel;
 
-    public Input(Player player, JPanel panelGiven) {
+    public Input(Player player, JFrame panelGiven) {
         this.player = player;
-        this.player.setJPanel(panelGiven);
         panel = panelGiven;
     }
 
