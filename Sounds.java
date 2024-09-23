@@ -11,29 +11,36 @@ import javax.sound.sampled.*;
 //-------------------------------------------------// 
 public class Sounds {
 
-    Clip clipLevelUp;
+    Clip clipAnvilHit;
+    Clip clipBang;
     Clip clipCarnival;
+    Clip clipDeath;
+    Clip clipGameboySound;
+    Clip clipLevelUp;
+    Clip clipMoneyChing;
+
+
 
     //Dont do anything when a sound is created
     public Sounds(){} 
-/*
-    public void Test3Play(){
+
+    public void AnvilHitPlay(){
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\CARNIVAL(KanyeWest).wav");
+            File soundFileLevelUp = new File("Sounds\\AnvilHit.wav");
             
             //Get the Audio from the Soundfile
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
 
             //Make the clip equal to the Audio
-            clipCarnival = AudioSystem.getClip(); // Create a new Clip for each sound
+            clipAnvilHit = AudioSystem.getClip(); // Create a new Clip for each sound
             
             //Open the Clip
-            clipCarnival.open(audioInputStream);
+            clipAnvilHit.open(audioInputStream);
 
             //Play the clip of that sound
-            clipCarnival.start();
+            clipAnvilHit.start();
         } 
         //Cacth for the program
         catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
@@ -43,13 +50,13 @@ public class Sounds {
 
         }
     }
-    public void Test3Stop() {
-        clipCarnival.flush();
-        clipCarnival.close(); 
+    public void AnvilHitStop() {
+        clipAnvilHit.flush();
+        clipAnvilHit.close(); 
     }
 
-    
-    public void Test3Play(){
+
+    public void BangPlay(){
         try {
             
             //make the SoundFile Var = the SoundFile Given
@@ -59,13 +66,13 @@ public class Sounds {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
 
             //Make the clip equal to the Audio
-            clipCarnival = AudioSystem.getClip(); // Create a new Clip for each sound
+            clipBang = AudioSystem.getClip(); // Create a new Clip for each sound
             
             //Open the Clip
-            clipCarnival.open(audioInputStream);
+            clipBang.open(audioInputStream);
 
             //Play the clip of that sound
-            clipCarnival.start();
+            clipBang.start();
         } 
         //Cacth for the program
         catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
@@ -75,73 +82,9 @@ public class Sounds {
 
         }
     }
-    public void Test3Stop() {
-        clipCarnival.flush();
-        clipCarnival.close(); 
-    }
- */
-
-    public void Test2Play(){
-        try {
-            
-            //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\CARNIVAL(KanyeWest).wav");
-            
-            //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
-
-            //Make the clip equal to the Audio
-            clipCarnival = AudioSystem.getClip(); // Create a new Clip for each sound
-            
-            //Open the Clip
-            clipCarnival.open(audioInputStream);
-
-            //Play the clip of that sound
-            clipCarnival.start();
-        } 
-        //Cacth for the program
-        catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-
-            //If something hapeens print it out
-            e.printStackTrace();
-
-        }
-    }
-    public void Test2Stop() {
-        clipCarnival.flush();
-        clipCarnival.close(); 
-    }
-
-
-    public void Test1Play(){
-        try {
-            
-            //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\CARNIVAL(KanyeWest).wav");
-            
-            //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
-
-            //Make the clip equal to the Audio
-            clipCarnival = AudioSystem.getClip(); // Create a new Clip for each sound
-            
-            //Open the Clip
-            clipCarnival.open(audioInputStream);
-
-            //Play the clip of that sound
-            clipCarnival.start();
-        } 
-        //Cacth for the program
-        catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-
-            //If something hapeens print it out
-            e.printStackTrace();
-
-        }
-    }
-    public void Test1Stop() {
-        clipCarnival.flush();
-        clipCarnival.close(); 
+    public void BangStop() {
+        clipBang.flush();
+        clipBang.close(); 
     }
 
 
@@ -177,6 +120,70 @@ public class Sounds {
     }
 
 
+    public void DeathPlay(){
+        try {
+            
+            //make the SoundFile Var = the SoundFile Given
+            File soundFileLevelUp = new File("Sounds\\CARNIVAL(KanyeWest).wav");
+            
+            //Get the Audio from the Soundfile
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+
+            //Make the clip equal to the Audio
+            clipDeath = AudioSystem.getClip(); // Create a new Clip for each sound
+            
+            //Open the Clip
+            clipDeath.open(audioInputStream);
+
+            //Play the clip of that sound
+            clipDeath.start();
+        } 
+        //Cacth for the program
+        catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+
+            //If something hapeens print it out
+            e.printStackTrace();
+
+        }
+    }
+    public void DeathStop() {
+        clipDeath.flush();
+        clipDeath.close(); 
+    }
+
+
+    public void GameboySoundPlay(){
+        try {
+            
+            //make the SoundFile Var = the SoundFile Given
+            File soundFileLevelUp = new File("Sounds\\CARNIVAL(KanyeWest).wav");
+            
+            //Get the Audio from the Soundfile
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+
+            //Make the clip equal to the Audio
+            clipGameboySound = AudioSystem.getClip(); // Create a new Clip for each sound
+            
+            //Open the Clip
+            clipGameboySound.open(audioInputStream);
+
+            //Play the clip of that sound
+            clipGameboySound.start();
+        } 
+        //Cacth for the program
+        catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+
+            //If something hapeens print it out
+            e.printStackTrace();
+
+        }
+    }
+    public void GameboySoundStop() {
+        clipGameboySound.flush();
+        clipGameboySound.close(); 
+    }
+
+
     public void LevelUpPlay(){
         try {
             
@@ -207,5 +214,38 @@ public class Sounds {
         clipLevelUp.flush();
         clipLevelUp.close(); 
     }
+
+
+    public void MoneyChingPlay(){
+        try {
+            
+            //make the SoundFile Var = the SoundFile Given
+            File soundFileLevelUp = new File("Sounds\\MoneyChing.wav");
+            
+            //Get the Audio from the Soundfile
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+
+            //Make the clip equal to the Audio
+            clipMoneyChing = AudioSystem.getClip(); // Create a new Clip for each sound
+            
+            //Open the Clip
+            clipMoneyChing.open(audioInputStream);
+
+            //Play the clip of that sound
+            clipMoneyChing.start();
+        } 
+        //Cacth for the program
+        catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+
+            //If something hapeens print it out
+            e.printStackTrace();
+
+        }
+    }
+    public void MoneyChingStop() {
+        clipMoneyChing.flush();
+        clipMoneyChing.close(); 
+    }
+
 
 }
