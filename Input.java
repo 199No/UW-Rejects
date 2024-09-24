@@ -9,14 +9,14 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     boolean mouseLocked;
     boolean[] keys = new boolean[90];
     public Input(){
-       lastX = MouseInfo.getPointerInfo().getLocation().getX();
-       lastY = MouseInfo.getPointerInfo().getLocation().getY();
-       mouseX = MouseInfo.getPointerInfo().getLocation().getX();
-       mouseY = MouseInfo.getPointerInfo().getLocation().getY();
-       automatedMove = false;
-       movedX = 0;
-       movedY = 0;
-       mouseLocked = true;
+        lastX = MouseInfo.getPointerInfo().getLocation().getX();
+        lastY = MouseInfo.getPointerInfo().getLocation().getY();
+        mouseX = MouseInfo.getPointerInfo().getLocation().getX();
+        mouseY = MouseInfo.getPointerInfo().getLocation().getY();
+        automatedMove = false;
+        movedX = 0;
+        movedY = 0;
+        mouseLocked = true;
     }
     public double mouseX(){
         return mouseX;
