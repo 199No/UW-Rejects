@@ -23,20 +23,21 @@ public class Game implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         
         if(input.getKey(87)){
-
+            player.moveUp(input.getKey(16));
         } else if(input.getKey(83)){
-            //playerVel.move(0, 0, -0.05);
+            player.moveDown(input.getKey(16));
         }
         if(input.getKey(65)){
-            //playerVel.move(0.05, 0, 0);
+            player.moveLeft(input.getKey(16));
         } else if(input.getKey(68)){
-            //playerVel.move(-0.05, 0, 0);
+            player.moveRight(input.getKey(16));
         }
         if(input.getKey(32)){
             //playerVel.move(0, 0.05, 0);
         } else if(input.getKey(17)){
             //playerVel.move(0, -0.05, 0);
         }
+        player.setRunning(input.getKey(16));
         now = System.currentTimeMillis();
         if(now - lastSecond > 1000){
             lastSecond = now;

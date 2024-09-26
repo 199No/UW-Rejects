@@ -1,8 +1,12 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.File;
 public class Gui extends JPanel{
     public static final double FOCAL_LENGTH = -400; 
     int width;
@@ -11,7 +15,17 @@ public class Gui extends JPanel{
     public static final int HEIGHT = 720;
     ArrayList<GraphicsRunnable> drawQueue;
     JFrame frame = new JFrame("The Divided Realms INDEV");
-    public Gui(int width, int height, Input input){
+    BufferedImage[] playerImages;
+    public Gui(int width, int height, Input input) {
+        playerImages = new BufferedImage[4];
+        try {
+        playerImages[0] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_LL-1.png.png"));
+        playerImages[1] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
+        playerImages[2] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_RL.png-1.png.png"));
+        playerImages[3] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
+
+
+        } catch (Exception e){e.printStackTrace();}
         this.width = WIDTH;
         this.height = HEIGHT;
         this.setSize(width, height);
@@ -57,7 +71,11 @@ public class Gui extends JPanel{
     public void drawPlayer(Player p){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                g2d.drawRect((int)p.x() - 10, (int)p.y() - 10, 20, 20);
+                BufferedImage playerImage = playerImages[((p.yDir == 1)? 0 : 1) + ((p.isRunning)? 2 : 0)];
+                AffineTransform f = AffineTransform.getScaleInstance(-p.xDir(), 1);
+                f.translate((int)(-p.xDir() * p.x() - playerImage.getWidth() / 20), p.y());
+                f.scale(0.1, 0.1);
+                g2d.drawImage(playerImage, f, null);
             }
         });
     }
