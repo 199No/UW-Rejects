@@ -24,6 +24,12 @@ public class Sounds {
     //Dont do anything when a sound is created
     public Sounds(){} 
 
+
+
+//-------------------------------------------------//
+//                    Method                       //
+//-------------------------------------------------// 
+
     public void AnvilHitPlay(){
         try {
             
