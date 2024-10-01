@@ -88,7 +88,7 @@ public class Gui extends JPanel{
     public void drawPlayer(Player p){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                BufferedImage playerImage = playerImages[((p.yDir == 1)? 0 : 1) + ((p.isRunning)? 2 : 0)];
+                BufferedImage playerImage = playerImages[((p.yDir == 1)? 0 : 1) + ((p.isRunning)? 2 : 0)].getSubimage(0, 0, 30, 30);
                 AffineTransform f = AffineTransform.getScaleInstance(-p.xDir(), 1);
                 f.translate((int)(-p.xDir() * p.x() - playerImage.getWidth() / 20), p.y());
                 f.scale(0.1, 0.1);
