@@ -18,6 +18,7 @@ public class Main{
 
 
         Sounds bob = new Sounds();
+        bob.GameboySoundPlay();
         
         
     }
