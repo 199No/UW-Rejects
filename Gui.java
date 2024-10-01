@@ -1,3 +1,6 @@
+//-------------------------------------------------//
+//                    Imports                      //
+//-------------------------------------------------// 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -7,7 +10,13 @@ import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
+//-------------------------------------------------//
+//                      Gui                        //
+//-------------------------------------------------// 
 public class Gui extends JPanel{
+    ///////////////
+    //Properties
+    //////////////
     public static final double FOCAL_LENGTH = -400; 
     int width;
     int height;
@@ -16,6 +25,9 @@ public class Gui extends JPanel{
     ArrayList<GraphicsRunnable> drawQueue;
     JFrame frame = new JFrame("The Divided Realms INDEV");
     BufferedImage[] playerImages;
+    ///////////////
+    //Constuctor
+    //////////////
     public Gui(int width, int height, Input input) {
         playerImages = new BufferedImage[5];
         try {
@@ -43,6 +55,11 @@ public class Gui extends JPanel{
         frame.add(this);
         drawQueue = new ArrayList<GraphicsRunnable>();
     }
+
+//-------------------------------------------------//
+//                    Methods                      //
+//-------------------------------------------------// 
+
     // Paint renamed
     public void paintComponent(Graphics g){
         super.paintComponent(g);

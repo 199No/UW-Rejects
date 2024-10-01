@@ -1,43 +1,42 @@
+//-------------------------------------------------//
+//                    Imports                      //
+//-------------------------------------------------// 
 import java.awt.AWTException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
-
+//-------------------------------------------------//
+//                     Game                        //
+//-------------------------------------------------// 
 public class Game implements ActionListener{
+    ///////////////
+    //Properties
+    ///////////////
     Timer gameTimer;
     Gui gui;
     Player player;
     double now, lastSecond, frameRate, framesLastSecond;
     Input input;
+    ///////////////
+    //Constuctor
+    //////////////
     public Game() throws AWTException{
         
-        player = new Player(0, 0);
-        input = new Input();
+        player = new Player();
+        input = new Input(player);
         gui = new Gui(1280, 720, input);
         gameTimer = new Timer(5, this);
         gameTimer.start();
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
     }
+
+//-------------------------------------------------//
+//                    Methods                      //
+//-------------------------------------------------// 
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        
-        if(input.getKey(87)){
-            player.moveUp(input.getKey(16));
-        } else if(input.getKey(83)){
-            player.moveDown(input.getKey(16));
-        }
-        if(input.getKey(65)){
-            player.moveLeft(input.getKey(16));
-        } else if(input.getKey(68)){
-            player.moveRight(input.getKey(16));
-        }
-        if(input.getKey(32)){
-            //playerVel.move(0, 0.05, 0);
-        } else if(input.getKey(17)){
-            //playerVel.move(0, -0.05, 0);
-        }
-        player.setRunning(input.getKey(16));
         now = System.currentTimeMillis();
         if(now - lastSecond > 1000){
             lastSecond = now;
@@ -46,12 +45,14 @@ public class Game implements ActionListener{
         } else {
             framesLastSecond ++;
         }
-        player.updatePosition();
+        this.player = input.getPlayer(); //updates player with the inputs copy of player
         gui.background((int)frameRate * 2, (int)frameRate, (int)frameRate * 2);
         gui.displayFPS((int)frameRate);
         gui.drawPlayer(player);
         gui.repaint();
         now = System.currentTimeMillis();
     }
+
+
 
 }
