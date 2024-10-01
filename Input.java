@@ -117,11 +117,12 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
         if(e.getKeyCode() < keys.length){
             keys[e.getKeyCode()] = true;
         }
-        movePlayer(e);
+        playerMove(e);
+        playerAttack(e);
     }
 
     //players movements WASD run/walk (with shift): Calls Player methods
-    public void movePlayer(KeyEvent e){
+    public void playerMove(KeyEvent e){
         if(e.getKeyCode() == KeyEvent.VK_W){
             if(getKey(16) == true){
                 player.moveUpRun();
@@ -146,6 +147,12 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
             }else{
                 player.moveRightWalk();
             }
+        }
+    }
+    
+    public void playerAttack(KeyEvent e){
+        if(e.getKeyCode() == KeyEvent.VK_SPACE){
+            player.attack();
         }
     }
 
