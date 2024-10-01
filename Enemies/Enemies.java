@@ -1,5 +1,6 @@
+package Enemies;
 /*
- * DONT DELETE 
+ * DO NOT DELETE 
  * Come up with about 10 Enemies 2-3 each biome + THE BOSS FOR EACH ZONE
  * Make a basic Java class with consutructor for making a emeny 
  * Think of what methods were gonna need 
@@ -32,6 +33,8 @@ public class Enemies {
     protected int speed;
     protected int xPos;
     protected int yPos;
+    protected int width;
+    protected int height;
     ///////////////
     //Constuctor
     //////////////
@@ -46,17 +49,33 @@ public class Enemies {
     public int getHealth() {
         return health;
     }
+
     public int getDamage() {
         return damage;
     }
+
     public int getSpeed() {
         return speed;
     }
+
     public int getxPos() {
         return xPos;
     }
+
     public int getyPos() {
         return yPos;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+    
+    public int[] getLocation() {
+        return new int[]{getxPos(), getyPos()};
     }
 
 }
