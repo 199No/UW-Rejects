@@ -66,7 +66,7 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\CARNIVAL(KanyeWest).wav");
+            File soundFileLevelUp = new File("Sounds\\Bang.wav");
             
             //Get the Audio from the Soundfile
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
@@ -130,7 +130,7 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\CARNIVAL(KanyeWest).wav");
+            File soundFileLevelUp = new File("Sounds\\Death.wav");
             
             //Get the Audio from the Soundfile
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
@@ -162,7 +162,7 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\CARNIVAL(KanyeWest).wav");
+            File soundFileLevelUp = new File("Sounds\\GameboySound.wav");
             
             //Get the Audio from the Soundfile
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
