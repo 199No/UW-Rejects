@@ -17,12 +17,13 @@ public class Gui extends JPanel{
     JFrame frame = new JFrame("The Divided Realms INDEV");
     BufferedImage[] playerImages;
     public Gui(int width, int height, Input input) {
-        playerImages = new BufferedImage[4];
+        playerImages = new BufferedImage[5];
         try {
-        playerImages[0] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_LL-1.png.png"));
-        playerImages[1] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
-        playerImages[2] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_RL.png-1.png.png"));
-        playerImages[3] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
+            playerImages[0] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_LL-1.png.png"));
+            playerImages[1] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
+            playerImages[2] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_RL.png-1.png.png"));
+            playerImages[3] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
+            playerImages[4] = ImageIO.read(new File("Images\\Player\\BluePlayerSheet.png"));
 
 
         } catch (Exception e){e.printStackTrace();}
@@ -71,10 +72,16 @@ public class Gui extends JPanel{
     public void drawPlayer(Player p){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                BufferedImage playerImage = playerImages[((p.yDir == 1)? 0 : 1) + ((p.isRunning)? 2 : 0)].getSubimage(0, 0, 30, 30);
-                AffineTransform f = AffineTransform.getScaleInstance(-p.xDir(), 1);
-                f.translate((int)(-p.xDir() * p.x() - playerImage.getWidth() / 20), p.y());
-                f.scale(0.1, 0.1);
+                int step = 1;
+                BufferedImage playerImage = playerImages[4].getSubimage(step * 19, 0, (step + 1) * 19, 19);
+                AffineTransform f = AffineTransform.getScaleInstance(1, 1);
+                if(p.xDir() > 0){
+                    f.translate((int)(p.x()), p.y());
+                } else {
+                    f.translate((int)(p.x() + playerImage.getWidth() * 2), p.y());
+                }
+                f.scale(p.xDir() * 2, 2);
+                g2d.drawRect((int)p.x(), (int)p.y(), 38, 38);
                 g2d.drawImage(playerImage, f, null);
             }
         });
