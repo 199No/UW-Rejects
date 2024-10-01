@@ -1,14 +1,28 @@
+//-------------------------------------------------//
+//                    Imports                      //
+//-------------------------------------------------// 
 import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.event.*;
 import java.awt.Robot;
+//-------------------------------------------------//
+//                    Input                        //
+//-------------------------------------------------// 
 public class Input implements MouseListener, KeyListener, MouseMotionListener{
+    ///////////////
+    //Properties
+    //////////////
     double lastX, lastY, mouseX, mouseY;
     boolean automatedMove;
     double movedX, movedY;
     boolean mouseLocked;
     boolean[] keys = new boolean[90];
-    public Input(){
+    Player player;
+    ///////////////
+    //Comstuctor
+    //////////////
+    public Input(Player player){
+        this.player = player;
         lastX = MouseInfo.getPointerInfo().getLocation().getX();
         lastY = MouseInfo.getPointerInfo().getLocation().getY();
         mouseX = MouseInfo.getPointerInfo().getLocation().getX();
@@ -53,6 +67,10 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
             automatedMove = false;
         }
     }
+//-------------------------------------------------//
+//                    Methods                      //
+//-------------------------------------------------// 
+
     public boolean getKey(int keyCode){
         return keys[keyCode];
     }
@@ -99,7 +117,42 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
         if(e.getKeyCode() < keys.length){
             keys[e.getKeyCode()] = true;
         }
+        movePlayer(e);
     }
+
+    //players movements WASD run/walk (with shift): Calls Player methods
+    public void movePlayer(KeyEvent e){
+        if(e.getKeyCode() == KeyEvent.VK_W){
+            if(getKey(16) == true){
+                player.moveUpRun();
+            }else{
+                player.moveUpWalk();
+            }
+        }else if(e.getKeyCode() == KeyEvent.VK_A){
+            if(getKey(16) == true){
+                player.moveLeftRun();
+            }else{
+                player.moveLeftWalk();
+            }
+        }else if(e.getKeyCode() == KeyEvent.VK_S){
+            if(getKey(16) == true){
+                player.moveDownRun();
+            }else{
+                player.moveDownWalk();
+            }
+        }else if(e.getKeyCode() == KeyEvent.VK_D){
+            if(getKey(16) == true){
+                player.moveRightRun();
+            }else{
+                player.moveRightWalk();
+            }
+        }
+    }
+
+    public Player getPlayer(){
+        return this.player;
+    }
+
     @Override
     public void keyReleased(KeyEvent e) {
         if(e.getKeyCode() == 27){

@@ -10,7 +10,9 @@ import javax.sound.sampled.*;
 //                    Sounds                       //
 //-------------------------------------------------// 
 public class Sounds {
-
+    ///////////////
+    //Properties
+    //////////////
     Clip clipAnvilHit;
     Clip clipBang;
     Clip clipCarnival;
@@ -19,15 +21,16 @@ public class Sounds {
     Clip clipLevelUp;
     Clip clipMoneyChing;
 
-
-
+    ///////////////
+    //Constuctor
+    //////////////
     //Dont do anything when a sound is created
     public Sounds(){} 
 
 
 
 //-------------------------------------------------//
-//                    Method                       //
+//                    Methods                      //
 //-------------------------------------------------// 
 
     public void AnvilHitPlay(){
