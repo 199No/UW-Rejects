@@ -96,12 +96,12 @@ public class Player {
 
     // shift + W
     public void moveUpRun(){
-        yPos += 10;
+        yPos -= 10;
     }
     
     // shift + S
     public void moveDownRun(){
-        yPos -= 10;
+        yPos += 10;
     }
 
     public void teleport(int x, int y){
