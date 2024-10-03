@@ -17,8 +17,9 @@ public class Main{
         new Game();
 
 
-        Sounds bob = new Sounds();
-        bob.GameboySoundPlay();
+        Sounds DJ_Bob = new Sounds();
+        DJ_Bob.CountrysidePlay();
+        DJ_Bob.WalkingPlay();
         
         
     }
