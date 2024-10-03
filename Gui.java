@@ -123,6 +123,13 @@ public class Gui extends JPanel{
     public void drawEnemies(ArrayList<Enemies> enemies){
         //given an arraylist type enemies
         //draw enemies based on their x and y positon {use getxPos() getyPos()}
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                for(int i = 0; i < enemies.size(); i ++){
+                    g2d.drawRect(enemies.get(i).getxPos(), enemies.get(i).getyPos(), 10, 10);
+                }
+            }
+        });
 
     }
 }
