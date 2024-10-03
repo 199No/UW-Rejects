@@ -86,12 +86,12 @@ public class Player {
 
     // W
     public void moveUpWalk(){
-        yPos += 5;
+        yPos -= 5;
     }
 
     // S
     public void moveDownWalk(){
-        yPos -= 5;
+        yPos += 5;
     }
 
     // shift + W
