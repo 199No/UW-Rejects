@@ -125,8 +125,17 @@ public class Gui extends JPanel{
         //draw enemies based on their x and y positon {use getxPos() getyPos()}
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                for(int i = 0; i < enemies.size(); i ++){
-                    g2d.drawRect(enemies.get(i).getxPos(), enemies.get(i).getyPos(), 10, 10);
+                try {
+                    for(int i = 0; i < enemies.size(); i ++){
+                        BufferedImage slimeImage = ImageIO.read(new File("Images\\Enemys\\Slime.png"));
+                        AffineTransform a = AffineTransform.getScaleInstance(1, 1);
+                        a.translate(enemies.get(i).getxPos(), enemies.get(i).getyPos() - 10);
+                        a.scale(0.1, 0.1);
+                        g2d.drawImage(slimeImage, a, null);
+                    }
+                }
+                catch(Exception e){
+                    System.out.println("This shouldn't happen.");
                 }
             }
         });
