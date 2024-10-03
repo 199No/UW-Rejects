@@ -18,6 +18,7 @@ public class Player {
     private int yPos;
     private final int width = 10;
     private final int height = 10;
+    private boolean[] direction = new boolean[4];
     ///////////////
     //Constuctor
     //////////////
@@ -27,11 +28,37 @@ public class Player {
         damage = 1;
         xPos = 0;
         yPos = 0;
+        this.direction[0] = true;
     }
 
 //-------------------------------------------------//
 //                    Methods                      //
 //-------------------------------------------------// 
+    public int getxPos(){
+        return this.xPos;
+    }
+
+    public int getyPos(){
+        return this.yPos;
+    }
+
+    public int[] getLocation(){
+        return new int[] {this.xPos,this.yPos};
+    }
+
+    public void setDirection(int direction){
+        this.direction = new boolean[4];
+        this.direction[direction] = true; // 1w 2a 3s 4d
+    }
+
+    public int getDirection(){
+        for(int i = 0; i < this.direction.length; i++){
+            if(this.direction[i] = true){
+                return i;
+            }
+        }
+        return -1;
+    }
 
     public void setJPanel(JPanel panel){
         this.JPanel = panel;
@@ -59,12 +86,12 @@ public class Player {
 
     // W
     public void moveUpWalk(){
-        yPos += 5;
+        yPos -= 5;
     }
 
     // S
     public void moveDownWalk(){
-        yPos -= 5;
+        yPos += 5;
     }
 
     // shift + W
