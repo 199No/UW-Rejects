@@ -25,6 +25,7 @@ public class Gui extends JPanel{
     ArrayList<GraphicsRunnable> drawQueue;
     JFrame frame = new JFrame("The Divided Realms INDEV");
     BufferedImage[] playerImages;
+    int lastPlayerXDir = -1;
     ///////////////
     //Constuctor
     //////////////
@@ -89,16 +90,21 @@ public class Gui extends JPanel{
     public void drawPlayer(Player p){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
+                if(p.getDirection() == 2){
+                    lastPlayerXDir = -1;
+                } else if(p.getDirection() == 4){
+                    lastPlayerXDir = 1;
+                }
                 int step = 1;
                 BufferedImage playerImage = playerImages[4].getSubimage(step * 19, 0, (step + 1) * 19, 19);
                 AffineTransform f = AffineTransform.getScaleInstance(1, 1);
-                if(p.xDir() > 0){
-                    f.translate((int)(p.x()), p.y());
+                if(lastPlayerXDir > 0){
+                    f.translate((int)(p.getxPos()), p.getyPos());
                 } else {
-                    f.translate((int)(p.x() + playerImage.getWidth() * 2), p.y());
+                    f.translate((int)(p.getxPos() + playerImage.getWidth() * 2), p.getyPos());
                 }
-                f.scale(p.xDir() * 2, 2);
-                g2d.drawRect((int)p.x(), (int)p.y(), 38, 38);
+                f.scale(lastPlayerXDir * 2, 2);
+                g2d.drawRect((int)p.getxPos(), (int)p.getyPos(), 38, 38);
                 g2d.drawImage(playerImage, f, null);
             }
         });
