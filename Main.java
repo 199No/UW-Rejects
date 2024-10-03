@@ -17,11 +17,9 @@ public class Main{
         new Game();
 
 
-        Sounds DJ_Bob = new Sounds();
-        DJ_Bob.CountrysidePlay();
-        DJ_Bob.WalkingPlay();
-        
-        
+        Sounds SirMixALot = new Sounds();
+        SirMixALot.CountrysidePlay();
+        SirMixALot.WalkingPlay();        
     }
 //-------------------------------------------------//
 //                    Methods                      //
