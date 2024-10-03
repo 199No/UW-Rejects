@@ -3,6 +3,9 @@
 //-------------------------------------------------// 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import Enemies.Enemies;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -109,5 +112,11 @@ public class Gui extends JPanel{
     public double height() { return height; }
     public double getFocalLength(){
         return FOCAL_LENGTH;
+    }
+
+    public void drawEnemies(ArrayList<Enemies> enemies){
+        //given an arraylist type enemies
+        //draw enemies based on their x and y positon {use getxPos() getyPos()}
+
     }
 }

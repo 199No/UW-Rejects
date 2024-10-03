@@ -1,4 +1,4 @@
-
+package Enemies;
 
 public class Slime extends Enemies{
     ///////////////
