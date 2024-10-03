@@ -129,19 +129,19 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
         }else{
             player.moveUpWalk();
         }
-        }else if(getKey(KeyEvent.VK_A) == true){
+        }if(getKey(KeyEvent.VK_A) == true){
             if(getKey(KeyEvent.VK_SHIFT) == true){
                 player.moveLeftRun();
             }else{
                 player.moveLeftWalk();
             }
-        }else if(getKey(KeyEvent.VK_S) == true){
+        }if(getKey(KeyEvent.VK_S) == true){
             if(getKey(KeyEvent.VK_SHIFT) == true){
                 player.moveDownRun();
             }else{
                 player.moveDownWalk();
             }
-        }else if(getKey(KeyEvent.VK_D) == true){
+        }if(getKey(KeyEvent.VK_D) == true){
             if(getKey(KeyEvent.VK_SHIFT) == true){
                 player.moveRightRun();
             }else{
