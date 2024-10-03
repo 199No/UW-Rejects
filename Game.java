@@ -57,12 +57,19 @@ public class Game implements ActionListener{
         input.playerAttack();
         this.player = input.getPlayer(); //updates player with the inputs copy of player
         this.slime.moveTowardsPlayer(this.player.getxPos(), this.player.getyPos()); //slime moves towards player's new positon (after input);
+        checkSlime();
         gui.background((int)frameRate * 2, (int)frameRate, (int)frameRate * 2);
         gui.displayFPS((int)frameRate);
         gui.drawPlayer(player);
         gui.drawEnemies(enemies);
         gui.repaint();
         now = System.currentTimeMillis();
+    }
+
+    public void checkSlime(){
+        if(this.slime.getxPos() == this.player.getxPos() && this.slime.getyPos() == this.player.getxPos()){
+            System.out.println("YOU DIEDEDEDEDEDEDDEDED");
+        }
     }
 
 
