@@ -53,6 +53,8 @@ public class Game implements ActionListener{
         } else {
             framesLastSecond ++;
         }
+        input.playerMove();
+        input.playerAttack();
         this.player = input.getPlayer(); //updates player with the inputs copy of player
         this.slime.moveTowardsPlayer(this.player.getxPos(), this.player.getyPos()); //slime moves towards player's new positon (after input);
         checkSlime();
