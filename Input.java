@@ -117,32 +117,32 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
         if(e.getKeyCode() < keys.length){
             keys[e.getKeyCode()] = true;
         }
-        playerMove(e);
-        playerAttack(e);
     }
 
     //players movements WASD run/walk (with shift): Calls Player methods
-    public void playerMove(KeyEvent e){
-        if(e.getKeyCode() == KeyEvent.VK_W){
-            if(getKey(16) == true){
-                player.moveUpRun();
-            }else{
-                player.moveUpWalk();
-            }
-        }else if(e.getKeyCode() == KeyEvent.VK_A){
-            if(getKey(16) == true){
+    public void playerMove(){
+
+        if(getKey(KeyEvent.VK_W) == true){
+            if(getKey(KeyEvent.VK_SHIFT) == true){
+            //shift is pressed
+            player.moveUpRun();
+        }else{
+            player.moveUpWalk();
+        }
+        }else if(getKey(KeyEvent.VK_A) == true){
+            if(getKey(KeyEvent.VK_SHIFT) == true){
                 player.moveLeftRun();
             }else{
                 player.moveLeftWalk();
             }
-        }else if(e.getKeyCode() == KeyEvent.VK_S){
-            if(getKey(16) == true){
+        }else if(getKey(KeyEvent.VK_S) == true){
+            if(getKey(KeyEvent.VK_SHIFT) == true){
                 player.moveDownRun();
             }else{
                 player.moveDownWalk();
             }
-        }else if(e.getKeyCode() == KeyEvent.VK_D){
-            if(getKey(16) == true){
+        }else if(getKey(KeyEvent.VK_D) == true){
+            if(getKey(KeyEvent.VK_SHIFT) == true){
                 player.moveRightRun();
             }else{
                 player.moveRightWalk();
@@ -150,8 +150,8 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
         }
     }
     
-    public void playerAttack(KeyEvent e){
-        if(e.getKeyCode() == KeyEvent.VK_SPACE){
+    public void playerAttack(){
+        if(getKey(KeyEvent.VK_SPACE) == true){
             player.attack();
         }
     }
@@ -177,5 +177,4 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     public void mouseDragged(MouseEvent e){
 
     }
-    
 }
