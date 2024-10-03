@@ -15,6 +15,7 @@ public class Game implements ActionListener{
     Timer gameTimer;
     Gui gui;
     Player player;
+    Slime slime;
     double now, lastSecond, frameRate, framesLastSecond;
     Input input;
     ///////////////
@@ -46,6 +47,7 @@ public class Game implements ActionListener{
             framesLastSecond ++;
         }
         this.player = input.getPlayer(); //updates player with the inputs copy of player
+        this.slime  = new Slime();
         gui.background((int)frameRate * 2, (int)frameRate, (int)frameRate * 2);
         gui.displayFPS((int)frameRate);
         gui.drawPlayer(player);
