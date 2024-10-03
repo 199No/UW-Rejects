@@ -66,42 +66,42 @@ public class Player {
 
     // A
     public void moveLeftWalk(){
-        xPos -= 5;
+        xPos -= 2;
     }
 
     // D
     public void moveRightWalk(){
-        xPos += 5;
+        xPos += 2;
     }
 
     // shift + A
     public void moveLeftRun(){
-        xPos -= 10;
+        xPos -= 4;
     }
 
     //shift + D
     public void moveRightRun(){
-        xPos += 10;
+        xPos += 4;
     }
 
     // W
     public void moveUpWalk(){
-        yPos -= 5;
+        yPos -= 2;
     }
 
     // S
     public void moveDownWalk(){
-        yPos += 5;
+        yPos += 2;
     }
 
     // shift + W
     public void moveUpRun(){
-        yPos -= 10;
+        yPos -= 4;
     }
     
     // shift + S
     public void moveDownRun(){
-        yPos += 10;
+        yPos += 4;
     }
 
     public void teleport(int x, int y){
