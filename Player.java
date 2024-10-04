@@ -68,28 +68,24 @@ public class Player {
 
     // A
     public void moveLeftWalk(){
-        xPos -= 5;
         xDir = -1;
         xPos -= 2;
     }
 
     // D
     public void moveRightWalk(){
-        xPos += 5;
         xDir = 1;
         xPos += 2;
     }
 
     // shift + A
     public void moveLeftRun(){
-        xPos -= 10;
         xDir = -1;
         xPos -= 4;
     }
 
     //shift + D
     public void moveRightRun(){
-        xPos += 10;
         xDir = 1;
         xPos += 4;
     }
