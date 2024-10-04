@@ -29,6 +29,9 @@ public class Gui extends JPanel{
     JFrame frame = new JFrame("The Divided Realms INDEV");
     BufferedImage[] playerImages;
     int lastPlayerXDir = -1;
+    double lastPlayerStep;
+    
+    int step;
     ///////////////
     //Constuctor
     //////////////
@@ -58,6 +61,8 @@ public class Gui extends JPanel{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(this);
         drawQueue = new ArrayList<GraphicsRunnable>();
+        lastPlayerStep = System.currentTimeMillis();
+        step = 0;
     }
 
 //-------------------------------------------------//
@@ -98,22 +103,20 @@ public class Gui extends JPanel{
     public void drawPlayer(Player p){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                if(p.getDirection() == 2){
-                    lastPlayerXDir = -1;
-                } else if(p.getDirection() == 4){
-                    lastPlayerXDir = 1;
-                }
-                int step = 1;
-                BufferedImage playerImage = playerImages[4].getSubimage(step * 19, 0, (step + 1) * 19, 19);
+                BufferedImage playerImage = playerImages[4].getSubimage(step * 19, 0, 19, 19);
                 AffineTransform f = AffineTransform.getScaleInstance(1, 1);
-                if(lastPlayerXDir > 0){
+                if(p.getXDir() > 0){
                     f.translate((int)(p.getxPos()), p.getyPos());
                 } else {
                     f.translate((int)(p.getxPos() + playerImage.getWidth() * 2), p.getyPos());
                 }
-                f.scale(lastPlayerXDir * 2, 2);
+                f.scale(p.getXDir() * 2, 2);
                 g2d.drawRect((int)p.getxPos(), (int)p.getyPos(), 38, 38);
                 g2d.drawImage(playerImage, f, null);
+                if(System.currentTimeMillis() - lastPlayerStep > 200){
+                    step = (step + 1) % 4;
+                    lastPlayerStep = System.currentTimeMillis();
+                }
             }
         });
     }
