@@ -17,10 +17,9 @@ public class Main{
         new Game();
 
 
-        Sounds bob = new Sounds();
-        bob.GameboySoundPlay();
-        
-        
+        Sounds SirMixALot = new Sounds();
+        SirMixALot.CountrysidePlay();
+        SirMixALot.WalkingPlay();        
     }
 //-------------------------------------------------//
 //                    Methods                      //

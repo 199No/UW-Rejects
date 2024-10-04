@@ -15,8 +15,8 @@ public class Slime extends Enemies{
         this.speed = 10;
         this.width = 5;
         this.height = 5;
-        this.xPos = 10;
-        this.yPos = 10;
+        this.xPos = 1200;
+        this.yPos = 500;
         System.out.println("Enemies!");
     }
 
