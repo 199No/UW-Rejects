@@ -85,7 +85,13 @@ public class Gui extends JPanel{
                 try {
                     g2d.setColor(new Color(r, g, b));
                     g2d.fillRect(0, 0, width, height);
-                    g2d.drawImage(ImageIO.read(new File("Images/Gods/Imagation.png")), AffineTransform.getScaleInstance(1.65, 1.65), null);
+                    for(int y = 0; y < 12; y++){
+                        for(int x = 0; x < 24; x++){
+                            AffineTransform a = AffineTransform.getScaleInstance(0.4, 0.4);
+                            a.translate(x* 38.4 * 2.5, y * 38.4 * 2.5);
+                            g2d.drawImage(ImageIO.read(new File("Images\\Enviroment\\Tiles\\Snow Tile-1.png.png")), a, null);
+                        }
+                    }
                 } catch (Exception e){
                     e.printStackTrace();
                 }
