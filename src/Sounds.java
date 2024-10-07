@@ -17,10 +17,14 @@ public class Sounds {
     Clip clipAnvilHit;
     Clip clipBang;
     Clip clipCarnival;
+    Clip clipCountryside;
     Clip clipDeath;
+    Clip clipForestWalk;
     Clip clipGameboySound;
     Clip clipLevelUp;
     Clip clipMoneyChing;
+    Clip clipRainForest;
+    Clip clipWalking;
 
     ///////////////
     //Constuctor
@@ -130,6 +134,38 @@ public class Sounds {
     }
 
 
+    public void CountrysidePlay(){
+        try {
+            
+            //make the SoundFile Var = the SoundFile Given
+            File soundFileLevelUp = new File("Sounds\\Countryside.wav");
+            
+            //Get the Audio from the Soundfile
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+
+            //Make the clip equal to the Audio
+            clipCountryside = AudioSystem.getClip(); // Create a new Clip for each sound
+            
+            //Open the Clip
+            clipCountryside.open(audioInputStream);
+
+            //Play the clip of that sound
+            clipCountryside.start();
+        } 
+        //Cacth for the program
+        catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+
+            //If something hapeens print it out
+            e.printStackTrace();
+
+        }
+    }
+    public void CountrysideStop() {
+        clipCountryside.flush();
+        clipCountryside.close(); 
+    }
+
+
     public void DeathPlay(){
         try {
             
@@ -159,6 +195,38 @@ public class Sounds {
     public void DeathStop() {
         clipDeath.flush();
         clipDeath.close(); 
+    }
+
+
+    public void ForestWalkPlay(){
+        try {
+            
+            //make the SoundFile Var = the SoundFile Given
+            File soundFileLevelUp = new File("Sounds\\ForestWalk.wav");
+            
+            //Get the Audio from the Soundfile
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+
+            //Make the clip equal to the Audio
+            clipForestWalk = AudioSystem.getClip(); // Create a new Clip for each sound
+            
+            //Open the Clip
+            clipForestWalk.open(audioInputStream);
+
+            //Play the clip of that sound
+            clipForestWalk.start();
+        } 
+        //Cacth for the program
+        catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+
+            //If something hapeens print it out
+            e.printStackTrace();
+
+        }
+    }
+    public void ForestWalkStop() {
+        clipForestWalk.flush();
+        clipForestWalk.close(); 
     }
 
 
@@ -257,6 +325,69 @@ public class Sounds {
         clipMoneyChing.close(); 
     }
 
-    
+
+    public void RainForestPlay(){
+        try {
+            
+            //make the SoundFile Var = the SoundFile Given
+            File soundFileLevelUp = new File("Sounds\\RainForest.wav");
+            
+            //Get the Audio from the Soundfile
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+
+            //Make the clip equal to the Audio
+            clipRainForest = AudioSystem.getClip(); // Create a new Clip for each sound
+            
+            //Open the Clip
+            clipRainForest.open(audioInputStream);
+
+            //Play the clip of that sound
+            clipRainForest.start();
+        } 
+        //Cacth for the program
+        catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+
+            //If something hapeens print it out
+            e.printStackTrace();
+
+        }
+    }
+    public void RainForestStop() {
+        clipRainForest.flush();
+        clipRainForest.close(); 
+    }
+
+
+    public void WalkingPlay(){
+        try {
+            
+            //make the SoundFile Var = the SoundFile Given
+            File soundFileLevelUp = new File("Sounds\\Walking.wav");
+            
+            //Get the Audio from the Soundfile
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+
+            //Make the clip equal to the Audio
+            clipWalking = AudioSystem.getClip(); // Create a new Clip for each sound
+            
+            //Open the Clip
+            clipWalking.open(audioInputStream);
+
+            //Play the clip of that sound
+            clipWalking.start();
+        } 
+        //Cacth for the program
+        catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+
+            //If something hapeens print it out
+            e.printStackTrace();
+
+        }
+    }
+    public void WalkingStop() {
+        clipWalking.flush();
+        clipWalking.close(); 
+    }
+
 
 }

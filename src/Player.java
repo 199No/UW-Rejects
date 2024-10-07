@@ -20,6 +20,7 @@ public class Player {
     private final int width = 10;
     private final int height = 10;
     private boolean[] direction = new boolean[4];
+    private int xDir;
     ///////////////
     //Constuctor
     //////////////
@@ -30,6 +31,7 @@ public class Player {
         xPos = 0;
         yPos = 0;
         this.direction[0] = true;
+        xDir = 1;
     }
 
 //-------------------------------------------------//
@@ -67,21 +69,25 @@ public class Player {
 
     // A
     public void moveLeftWalk(){
+        xDir = -1;
         xPos -= 2;
     }
 
     // D
     public void moveRightWalk(){
+        xDir = 1;
         xPos += 2;
     }
 
     // shift + A
     public void moveLeftRun(){
+        xDir = -1;
         xPos -= 4;
     }
 
     //shift + D
     public void moveRightRun(){
+        xDir = 1;
         xPos += 4;
     }
 
@@ -116,4 +122,7 @@ public class Player {
         System.out.println("Space Pressed: Attack! " + this.damage);
     }
 
+    public int getXDir(){
+        return xDir;
+    }
 }
