@@ -57,8 +57,13 @@ public class Game implements ActionListener{
         input.playerMove();
         input.playerAttack();
         this.player = input.getPlayer(); //updates player with the inputs copy of player
-        this.slime.moveTowardsPlayer(this.player.getxPos(), this.player.getyPos()); //slime moves towards player's new positon (after input);
-        checkSlime();
+
+
+
+        //movement for slime
+        this.slime.checkSlimeStatus(this.player);
+        this.slime.move(this.player); //slime moves towards player's new positon (after input);
+
         gui.background((int)frameRate * 2, (int)frameRate, (int)frameRate * 2);
         gui.displayFPS((int)frameRate);
         gui.drawPlayer(player);
