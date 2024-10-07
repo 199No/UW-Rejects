@@ -19,6 +19,8 @@ public class Enemies {
     protected int yPos;
     protected int width;
     protected int height;
+    protected boolean alert = false;
+    protected boolean angry = false;
     ///////////////
     //Constuctor
     //////////////
