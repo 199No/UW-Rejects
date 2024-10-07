@@ -422,4 +422,12 @@ public class Sounds {
     }
 
 
+
+    //Instead of taking a filepath take a name IE "Walking" 
+    //When that happens do method play 
+    //Make a list of all the clips with their sound files already grabbed
+    //Have a thing that finds that clip and sets a int to its index
+    //Play[index]
+
+    //Find a way to for loop through all files
 }
