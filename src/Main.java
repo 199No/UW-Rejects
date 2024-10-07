@@ -20,7 +20,8 @@ public class Main{
 
         Sounds SirMixALot = new Sounds();
         SirMixALot.CountrysidePlay();
-        SirMixALot.WalkingPlay();        
+        SirMixALot.WalkingPlay();    
+        SirMixALot.SwordAttackPlay();    
     }
 //-------------------------------------------------//
 //                    Methods                      //
