@@ -54,34 +54,27 @@ public class Slime extends Enemies{
         int playerY = player.getyPos();
         int eyeSight = 20;
         this.alert = false;
-        //////////////////////////
-        // DOES NOT WORK!
-        /////////////////////////
-        if(slimeX < playerX){
-            if(slimeY < playerY){
-                //bigger playX & playY
-                if(playerX - slimeX < eyeSight && playerY - slimeY < eyeSight){
-                    this.alert = true;
-                }
-            }else{
-                //bigger playX & slimeY
-                if(playerX - slimeX < eyeSight && slimeY - playerY < eyeSight){
-                    this.alert = true;
-                }
-            }
+
+        //check to see if slime is alert
+
+        if( Math.abs((slimeX - playerX)/(slimeY - playerY)) < eyeSight || Math.abs((playerX - slimeX)/(playerY - slimeY)) < eyeSight){
+            move(player);
         }else{
-            if(slimeY < playerY){
-                //bigger slimeX & playerY
-                if(slimeX - playerX < eyeSight && playerY - slimeY < eyeSight){
-                    this.alert = true;
-                }
-            }else{
-                //bigger slimeX & slimeY
-                if(slimeX - playerX < eyeSight && slimeY - playerY < eyeSight){
-                    this.alert = true;
-                }
-            }
+            //move randomly or dont move at all
         }
+
+
+
+        /*
+
+
+
+         if(slime alert){
+            moveTowardsPlayer{
+         }else{
+            move randomly OR dont move at all
+         }
+         */
 
         if(this.health < 5){
             //slime is below half health
