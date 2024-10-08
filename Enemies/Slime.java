@@ -16,7 +16,7 @@ public class Slime extends Enemies{
         this.speed = 10;
         this.width = 5;
         this.height = 5;
-        this.xPos = 1200;
+        this.xPos = 500;
         this.yPos = 500;
         System.out.println("Enemies!");
     }
@@ -25,51 +25,67 @@ public class Slime extends Enemies{
     //                    Methods                      //
     //-------------------------------------------------// 
 
+
     //moves towards player by 1 tile (both x and y each)
     //does this when alerted
-    public void moveTowardsPlayer(Player player){
-        if(this.xPos < player.getxPos()){
-            xPos++;
-        }else if(this.xPos > player.getxPos()){
-            xPos--;
-        }
-        if(this.yPos > player.getyPos()){
-            yPos--;
-        }else if(this.yPos < player.getyPos()){
-            yPos++;
+    public void move(Player player){
+        if(this.alert){
+            //moving towards player
+            if(this.xPos < player.getxPos()){
+                xPos++;
+            }else if(this.xPos > player.getxPos()){
+                xPos--;
+            }
+            if(this.yPos > player.getyPos()){
+                yPos--;
+            }else if(this.yPos < player.getyPos()){
+                yPos++;
+            }
+        }else{
+            //move randomly (not moving for slime)
         }
     }
 
     //checks if the slimes position is close to player "alerts" slime when close to
-    public void lookForPlayer(Player player){
+    public void checkSlimeStatus(Player player){
         int slimeX = this.getxPos();
         int slimeY = this.getyPos();
         int playerX = player.getxPos();
         int playerY = player.getyPos();
+        int eyeSight = 20;
+        this.alert = false;
+        //////////////////////////
+        // DOES NOT WORK!
+        /////////////////////////
         if(slimeX < playerX){
             if(slimeY < playerY){
                 //bigger playX & playY
-                if(playerX - slimeX < 5 || playerY - slimeY < 5){
+                if(playerX - slimeX < eyeSight && playerY - slimeY < eyeSight){
                     this.alert = true;
                 }
             }else{
                 //bigger playX & slimeY
-                if(playerX - slimeX < 5 || slimeY - playerY < 5){
+                if(playerX - slimeX < eyeSight && slimeY - playerY < eyeSight){
                     this.alert = true;
                 }
             }
         }else{
             if(slimeY < playerY){
                 //bigger slimeX & playerY
-                if(slimeX - playerX < 5 || playerY - slimeY < 5){
+                if(slimeX - playerX < eyeSight && playerY - slimeY < eyeSight){
                     this.alert = true;
                 }
             }else{
                 //bigger slimeX & slimeY
-                if(slimeX - playerX < 5 || slimeY - playerY < 5){
+                if(slimeX - playerX < eyeSight && slimeY - playerY < eyeSight){
                     this.alert = true;
                 }
             }
+        }
+
+        if(this.health < 5){
+            //slime is below half health
+            this.angry = true;
         }
 
     }
