@@ -18,6 +18,27 @@ public class Sounds{
     Clip clipAnvilHit;
     AudioInputStream clipBangaudioInputStream;
     Clip clipBang;
+    AudioInputStream clipCarnivalaudioInputStream;
+    Clip clipCarnival; 
+    AudioInputStream clipCountrysideaudioInputStream;
+    Clip clipCountryside;
+    AudioInputStream clipDeathaudioInputStream;
+    Clip clipDeath;
+    AudioInputStream clipForestWalkaudioInputStream;
+    Clip clipForestWalk;
+    AudioInputStream clipGameboySoundaudioInputStream;
+    Clip clipGameboySound;
+    AudioInputStream clipLevelUpaudioInputStream;
+    Clip clipLevelUp;
+    AudioInputStream clipMoneyChingaudioInputStream;
+    Clip clipMoneyChing;
+    AudioInputStream clipRainForestaudioInputStream;
+    Clip clipRainForest;
+    AudioInputStream clipSwordAttackaudioInputStream;
+    Clip clipSwordAttack;
+    AudioInputStream clipWalkingaudioInputStream;
+    Clip clipWalking;
+
 
     ///////////////
     //Constuctor
