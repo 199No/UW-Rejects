@@ -17,11 +17,10 @@ public class Main{
     public static void main(String[] args) throws AWTException{
         new Game();
 
-
         Sounds SirMixALot = new Sounds();
-        SirMixALot.CountrysidePlay();
-        SirMixALot.WalkingPlay();    
-        SirMixALot.SwordAttackPlay();    
+        SirMixALot.Play("AnvilHit");
+        SirMixALot.Play("Bang");
+        
     }
 //-------------------------------------------------//
 //                    Methods                      //
