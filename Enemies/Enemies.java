@@ -19,6 +19,7 @@ public class Enemies {
     protected int yPos;
     protected int width;
     protected int height;
+    protected int eyesight;
     protected boolean alert = false;
     protected boolean angry = false;
     ///////////////
@@ -58,6 +59,10 @@ public class Enemies {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getEyesight() {
+        return eyesight;
     }
     
     public int[] getLocation() {

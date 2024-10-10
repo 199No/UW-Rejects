@@ -125,4 +125,10 @@ public class Player {
     public int getXDir(){
         return xDir;
     }
+    public int getWidth(){
+        return this.width;
+    }
+    public int getHeight(){
+        return this.height;
+    }
 }

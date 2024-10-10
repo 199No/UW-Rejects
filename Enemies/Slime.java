@@ -16,6 +16,7 @@ public class Slime extends Enemies{
         this.speed = 10;
         this.width = 5;
         this.height = 5;
+        this.eyesight = 5;
         this.xPos = 500;
         this.yPos = 500;
         System.out.println("Enemies!");
@@ -48,38 +49,70 @@ public class Slime extends Enemies{
 
     //checks if the slimes position is close to player "alerts" slime when close to
     public void checkSlimeStatus(Player player){
-        int slimeX = this.getxPos();
-        int slimeY = this.getyPos();
-        int playerX = player.getxPos();
-        int playerY = player.getyPos();
-        int eyeSight = 20;
-        this.alert = false;
+        this.alert = checkAlert(player);
+        this.angry = checkAnger();
 
-        //check to see if slime is alert
-
-        if( Math.abs((slimeX - playerX)/(slimeY - playerY)) < eyeSight || Math.abs((playerX - slimeX)/(playerY - slimeY)) < eyeSight){
-            move(player);
-        }else{
-            //move randomly or dont move at all
-        }
-
-
-
-        /*
-
-
-
-         if(slime alert){
-            moveTowardsPlayer{
-         }else{
-            move randomly OR dont move at all
-         }
-         */
 
         if(this.health < 5){
             //slime is below half health
             this.angry = true;
         }
 
+    }
+
+    //checks if the players position (with its width and height) is inside the radius of the eyesight of the slime
+    public boolean checkAlert(Player player){
+        int slimeX = this.getxPos();
+        int slimeY = this.getyPos();
+
+        int eyesight = this.getEyesight();
+
+        int playerX = player.getxPos();
+        int playerY = player.getyPos();
+
+        int pWidth = player.getWidth();
+        int pHeight = player.getHeight();
+        
+        int closestPlayerX;
+        int closestPlayerY;
+
+        //basically asking if the player is on the right or left
+        if(slimeX - (playerX + pWidth) < slimeX - (playerX - pWidth)){
+            //player is on right side
+            closestPlayerX = playerX + pWidth;
+
+        }else if(slimeX - (playerX + pWidth) > slimeX - (playerX - pWidth)){
+            //player is on left side
+            closestPlayerX = playerX - pWidth;
+        }else{
+            //x's are equal;
+            closestPlayerX = slimeX;
+        }
+
+        if(slimeY - (playerY + pHeight) < slimeY - (playerY - pHeight)){
+            //player is above
+            closestPlayerY = playerY + pHeight;
+        }else if(slimeX - (playerX + pHeight) > slimeX - (playerX - pHeight)){
+            //player is below
+            closestPlayerY = playerY - pHeight;
+        }else{
+            //y's are equal;
+            closestPlayerY = slimeY;
+        }
+
+        if(Math.abs((slimeY - closestPlayerY)/(slimeX - closestPlayerX)) < eyesight){
+            System.out.println("Inside Circle");
+            return true;
+        }else{
+            System.out.println("Outside circle");
+            return false;
+        }
+    }
+    public boolean checkAnger(){
+        if(this.health < 5){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
