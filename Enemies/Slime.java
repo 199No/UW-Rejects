@@ -16,7 +16,7 @@ public class Slime extends Enemies{
         this.speed = 10;
         this.width = 5;
         this.height = 5;
-        this.eyesight = 100;
+        this.eyesight = 400;
         this.xPos = 500;
         this.yPos = 500;
         this.alert = false;
@@ -81,7 +81,7 @@ public class Slime extends Enemies{
             differenceX = 1;
         }
 
-        if(Math.abs((differenceY)/(differenceX)) < eyesight){
+        if((differenceY)/(differenceX) > eyesight){
             return true;
         }else{
             return false;
