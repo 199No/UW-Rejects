@@ -16,9 +16,10 @@ public class Slime extends Enemies{
         this.speed = 10;
         this.width = 5;
         this.height = 5;
-        this.eyesight = 5;
+        this.eyesight = 100;
         this.xPos = 500;
         this.yPos = 500;
+        this.alert = false;
         System.out.println("Enemies!");
     }
 
@@ -73,9 +74,20 @@ public class Slime extends Enemies{
         int pWidth = player.getWidth();
         int pHeight = player.getHeight();
         
-        int closestPlayerX;
-        int closestPlayerY;
+        int differenceX = slimeX - playerX;
+        int differenceY = slimeY - playerY;
 
+        if(slimeX - playerX == 0){
+            differenceX = 1;
+        }
+
+        if(Math.abs((differenceY)/(differenceX)) < eyesight){
+            return true;
+        }else{
+            return false;
+        }
+
+        /* 
         //basically asking if the player is on the right or left
         if(slimeX - (playerX + pWidth) < slimeX - (playerX - pWidth)){
             //player is on right side
@@ -92,7 +104,7 @@ public class Slime extends Enemies{
         if(slimeY - (playerY + pHeight) < slimeY - (playerY - pHeight)){
             //player is above
             closestPlayerY = playerY + pHeight;
-        }else if(slimeX - (playerX + pHeight) > slimeX - (playerX - pHeight)){
+        }else if(slimeX - (playerX + pHeight) < slimeX - (playerX - pHeight)){
             //player is below
             closestPlayerY = playerY - pHeight;
         }else{
@@ -100,6 +112,16 @@ public class Slime extends Enemies{
             closestPlayerY = slimeY;
         }
 
+        if(slimeX - closestPlayerX == 0){
+            if (slimeY - closestPlayerY < eyesight){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        */
+
+        /* 
         if(Math.abs((slimeY - closestPlayerY)/(slimeX - closestPlayerX)) < eyesight){
             System.out.println("Inside Circle");
             return true;
@@ -107,6 +129,8 @@ public class Slime extends Enemies{
             System.out.println("Outside circle");
             return false;
         }
+
+        */
     }
     public boolean checkAnger(){
         if(this.health < 5){
