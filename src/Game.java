@@ -71,14 +71,15 @@ public class Game implements ActionListener{
         this.slime.move(this.player); //slime moves towards player's new positon (after input);
 
         gui.background((int)frameRate * 2, (int)frameRate, (int)frameRate * 2);
+        
+        gui.addToQueue(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                g2d.drawImage(image.getScaledInstance(76, 114, 0), 114, 347, null);
+            }
+        });
         gui.displayFPS((int)frameRate);
         gui.drawPlayer(player);
         gui.drawEnemies(enemies);
-        gui.addToQueue(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
-                g2d.drawImage(image.getScaledInstance(76, 114, 0), 0, 0, null);
-            }
-        });
         gui.repaint();
         now = System.currentTimeMillis();
     }
