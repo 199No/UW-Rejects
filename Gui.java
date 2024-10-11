@@ -30,7 +30,7 @@ public class Gui extends JPanel{
     BufferedImage[] playerImages;
     int lastPlayerXDir = -1;
     double lastPlayerStep;
-    
+    BufferedImage[] envImages;
     int step;
     ///////////////
     //Constuctor
@@ -46,6 +46,10 @@ public class Gui extends JPanel{
 
 
         } catch (Exception e){e.printStackTrace();}
+        envImages = new BufferedImage[5];
+        try{
+            envImages[0] = ImageIO.read(new File("Images\\Enviroment\\Tiles\\Snow Tile-1.png.png"));
+        } catch (Exception e){e.printStackTrace();};
         this.width = WIDTH;
         this.height = HEIGHT;
         this.setSize(width, height);
@@ -79,6 +83,9 @@ public class Gui extends JPanel{
         }
         drawQueue.clear();
     }
+    public void addToQueue(GraphicsRunnable g){
+        drawQueue.add(g);
+    }
     public void background(int r, int g, int b){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
@@ -89,7 +96,7 @@ public class Gui extends JPanel{
                         for(int x = 0; x < 24; x++){
                             AffineTransform a = AffineTransform.getScaleInstance(0.4, 0.4);
                             a.translate(x* 38.4 * 2.5, y * 38.4 * 2.5);
-                            g2d.drawImage(ImageIO.read(new File("Images\\Enviroment\\Tiles\\Snow Tile-1.png.png")), a, null);
+                            g2d.drawImage(envImages[0], a, null);
                         }
                     }
                 } catch (Exception e){
