@@ -49,7 +49,7 @@ public class Gui extends JPanel{
         } catch (Exception e){e.printStackTrace();}
         envImages = new BufferedImage[5];
         try{
-            envImages[0] = ImageIO.read(new File("Images\\Enviroment\\Tiles\\Snow Tile-1.png.png"));
+            envImages[0] = ImageIO.read(new File("Images\\Enviroment\\Tiles\\Snow Tile.png.png"));
         } catch (Exception e){e.printStackTrace();};
         this.width = WIDTH;
         this.height = HEIGHT;

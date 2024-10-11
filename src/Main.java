@@ -3,6 +3,7 @@ package src;
 //                    Imports                      //
 //-------------------------------------------------// 
 import java.awt.AWTException;
+import java.io.IOException;
 //-------------------------------------------------//
 //                     Main                        //
 //-------------------------------------------------// 
@@ -14,7 +15,7 @@ public class Main{
     ///////////////
     //Constuctor
     //////////////
-    public static void main(String[] args) throws AWTException{
+    public static void main(String[] args) throws AWTException, IOException{
         new Game();
 
         Sounds SirMixALot = new Sounds();

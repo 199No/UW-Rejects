@@ -5,8 +5,13 @@ package src;
 import java.awt.AWTException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Timer;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.Timer;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import Enemies.*;
@@ -23,12 +28,13 @@ public class Game implements ActionListener{
     Slime slime;
     double now, lastSecond, frameRate, framesLastSecond;
     Input input;
+    BufferedImage image;
     private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
     ///////////////
     //Constuctor
     //////////////
-    public Game() throws AWTException{
-        
+    public Game() throws AWTException, IOException{
+        image = ImageIO.read(new File("Images\\Enviroment\\appleTree.png"));
         player = new Player();
         this.slime  = new Slime();
         enemies.add(this.slime);
@@ -68,6 +74,11 @@ public class Game implements ActionListener{
         gui.displayFPS((int)frameRate);
         gui.drawPlayer(player);
         gui.drawEnemies(enemies);
+        gui.addToQueue(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                g2d.drawImage(image.getScaledInstance(76, 114, 0), 0, 0, null);
+            }
+        });
         gui.repaint();
         now = System.currentTimeMillis();
     }
