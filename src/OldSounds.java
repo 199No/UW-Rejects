@@ -1,3 +1,4 @@
+package src;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
@@ -9,7 +10,7 @@ import javax.sound.sampled.*;
 //-------------------------------------------------//
 //                    Sounds                       //
 //-------------------------------------------------// 
-public class Sounds {
+public class OldSounds {
     ///////////////
     //Properties
     //////////////
@@ -23,13 +24,14 @@ public class Sounds {
     Clip clipLevelUp;
     Clip clipMoneyChing;
     Clip clipRainForest;
+    Clip clipSwordAttack;
     Clip clipWalking;
 
     ///////////////
     //Constuctor
     //////////////
     //Dont do anything when a sound is created
-    public Sounds(){} 
+    public OldSounds(){} 
 
 
 
@@ -41,10 +43,10 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\AnvilHit.wav");
+            File soundFile = new File("Sounds\\AnvilHit.wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
             clipAnvilHit = AudioSystem.getClip(); // Create a new Clip for each sound
@@ -73,10 +75,10 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\Bang.wav");
+            File soundFile = new File("Sounds\\Bang.wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
             clipBang = AudioSystem.getClip(); // Create a new Clip for each sound
@@ -105,10 +107,10 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\CARNIVAL(KanyeWest).wav");
+            File soundFile = new File("Sounds\\CARNIVAL(KanyeWest).wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
             clipCarnival = AudioSystem.getClip(); // Create a new Clip for each sound
@@ -137,10 +139,10 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\Countryside.wav");
+            File soundFile = new File("Sounds\\Countryside.wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
             clipCountryside = AudioSystem.getClip(); // Create a new Clip for each sound
@@ -169,10 +171,10 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\Death.wav");
+            File soundFile = new File("Sounds\\Death.wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
             clipDeath = AudioSystem.getClip(); // Create a new Clip for each sound
@@ -201,10 +203,10 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\ForestWalk.wav");
+            File soundFile = new File("Sounds\\ForestWalk.wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
             clipForestWalk = AudioSystem.getClip(); // Create a new Clip for each sound
@@ -233,10 +235,10 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\GameboySound.wav");
+            File soundFile = new File("Sounds\\GameboySound.wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
             clipGameboySound = AudioSystem.getClip(); // Create a new Clip for each sound
@@ -265,10 +267,10 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\LevelUp.wav");
+            File soundFile = new File("Sounds\\LevelUp.wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
             clipLevelUp = AudioSystem.getClip(); // Create a new Clip for each sound
@@ -297,10 +299,10 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\MoneyChing.wav");
+            File soundFile = new File("Sounds\\MoneyChing.wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
             clipMoneyChing = AudioSystem.getClip(); // Create a new Clip for each sound
@@ -329,10 +331,10 @@ public class Sounds {
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\RainForest.wav");
+            File soundFile = new File("Sounds\\RainForest.wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
             clipRainForest = AudioSystem.getClip(); // Create a new Clip for each sound
@@ -357,14 +359,46 @@ public class Sounds {
     }
 
 
+    public void SwordAttackPlay(){
+        try {
+            
+            //make the SoundFile Var = the SoundFile Given
+            File soundFile = new File("Sounds\\SwordAttack.wav");
+            
+            //Get the Audio from the Soundfile
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+
+            //Make the clip equal to the Audio
+            clipSwordAttack = AudioSystem.getClip(); // Create a new Clip for each sound
+            
+            //Open the Clip
+            clipSwordAttack.open(audioInputStream);
+
+            //Play the clip of that sound
+            clipSwordAttack.start();
+        } 
+        //Cacth for the program
+        catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+
+            //If something hapeens print it out
+            e.printStackTrace();
+
+        }
+    }
+    public void SwordAttackStop() {
+        clipSwordAttack.flush();
+        clipSwordAttack.close(); 
+    }
+
+
     public void WalkingPlay(){
         try {
             
             //make the SoundFile Var = the SoundFile Given
-            File soundFileLevelUp = new File("Sounds\\Walking.wav");
+            File soundFile = new File("Sounds\\Walking.wav");
             
             //Get the Audio from the Soundfile
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFileLevelUp);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
 
             //Make the clip equal to the Audio
             clipWalking = AudioSystem.getClip(); // Create a new Clip for each sound
@@ -389,4 +423,12 @@ public class Sounds {
     }
 
 
+
+    //Instead of taking a filepath take a name IE "Walking" 
+    //When that happens do method play 
+    //Make a list of all the clips with their sound files already grabbed
+    //Have a thing that finds that clip and sets a int to its index
+    //Play[index]
+
+    //Find a way to for loop through all files
 }
