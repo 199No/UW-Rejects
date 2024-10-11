@@ -73,7 +73,7 @@ public class Game implements ActionListener{
     }
 
     public void checkSlime(){
-        if(this.slime.getxPos() == this.player.getxPos() && this.slime.getyPos() == this.player.getxPos()){
+        if(this.slime.getxPos() == this.player.getxPos() && this.slime.getyPos() == this.player.getyPos()){
             System.out.println("YOU DIEDEDEDEDEDEDDEDED");
         }
     }
