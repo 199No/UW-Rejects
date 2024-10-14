@@ -25,7 +25,6 @@ public class Game implements ActionListener{
     Timer gameTimer;
     Gui gui;
     Player player;
-    Slime slime;
     double now, lastSecond, frameRate, framesLastSecond;
     Input input;
     BufferedImage image;
@@ -36,9 +35,8 @@ public class Game implements ActionListener{
     public Game() throws AWTException, IOException{
         image = ImageIO.read(new File("Images\\Enviroment\\appleTree.png"));
         player = new Player();
-        this.slime  = new Slime();
-        enemies.add(this.slime);
         input = new Input(player);
+        enemies.add(createSlime());
         gui = new Gui(1280, 720, input);
         gameTimer = new Timer(5, this);
         gameTimer.start();
@@ -66,10 +64,10 @@ public class Game implements ActionListener{
 
 
 
-        //movement for slime
-        this.slime.checkSlimeStatus(this.player);
-        this.slime.move(this.player); //slime moves towards player's new positon (after input);
-
+        for(int i = 0; i < this.enemies.size(); i++){
+            this.enemies.get(i).checkStatus(this.player);
+        }
+    
         gui.background((int)frameRate * 2, (int)frameRate, (int)frameRate * 2);
         gui.displayFPS((int)frameRate);
         gui.drawPlayer(player);
@@ -83,10 +81,15 @@ public class Game implements ActionListener{
         now = System.currentTimeMillis();
     }
 
-    public void checkSlime(){
-        if(this.slime.getxPos() == this.player.getxPos() && this.slime.getyPos() == this.player.getyPos()){
-            System.out.println("YOU DIEDEDEDEDEDEDDEDED");
-        }
+    public Slime createSlime(){
+        return new Slime();
+    }
+
+    public void checkHitBoxes(){
+
+        //checks if any of the hitboxes are touching eachother
+        //use for loop with arraylist of enemies and the x & y values of the player (width and height)
+
     }
 
 

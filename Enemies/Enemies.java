@@ -1,14 +1,15 @@
 package Enemies;
 
-
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
 
+import src.Player;
+
 //-------------------------------------------------//
 //                   Enemies                       //
 //-------------------------------------------------// 
-public class Enemies {
+public abstract class Enemies {
     ///////////////
     //Properties
     ///////////////
@@ -22,6 +23,9 @@ public class Enemies {
     protected int eyesight;
     protected boolean alert = false;
     protected boolean angry = false;
+    protected int now;
+    protected int nextMovement; //random number
+    protected int lastMovement;
     ///////////////
     //Constuctor
     //////////////
@@ -32,6 +36,22 @@ public class Enemies {
     //-------------------------------------------------//
     //                    Methods                      //
     //-------------------------------------------------// 
+
+    public void checkStatus(Player player){
+        //checks if the enemy is alert
+    }
+
+    public void updateMovement(){
+        //updates ticks positions
+    }
+
+    public void updateTimer(){
+        //update the ingame timer
+    }
+
+    public void update(){
+        // up date the status (?)
+    }
 
     public int getHealth() {
         return health;

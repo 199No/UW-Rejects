@@ -1,6 +1,14 @@
 package Enemies;
+
+//-------------------------------------------------//
+//                    Imports                      //
+//-------------------------------------------------// 
+
 import src.Player;
 
+//-------------------------------------------------//
+//                   Enemies                       //
+//-------------------------------------------------// 
 public class Slime extends Enemies{
     ///////////////
     //Properties
@@ -18,8 +26,10 @@ public class Slime extends Enemies{
         this.height = 5;
         this.eyesight = 400;
         this.xPos = 500;
-        this.yPos = 500;
+        this.yPos = 100;
         this.alert = false;
+
+
         System.out.println("Enemies!");
     }
 
@@ -28,28 +38,8 @@ public class Slime extends Enemies{
     //-------------------------------------------------// 
 
 
-    //moves towards player by 1 tile (both x and y each)
-    //does this when alerted
-    public void move(Player player){
-        if(this.alert){
-            //moving towards player
-            if(this.xPos < player.getxPos()){
-                xPos++;
-            }else if(this.xPos > player.getxPos()){
-                xPos--;
-            }
-            if(this.yPos > player.getyPos()){
-                yPos--;
-            }else if(this.yPos < player.getyPos()){
-                yPos++;
-            }
-        }else{
-            //move randomly (not moving for slime)
-        }
-    }
-
     //checks if the slimes position is close to player "alerts" slime when close to
-    public void checkSlimeStatus(Player player){
+    public void checkStatus(Player player){
         this.alert = checkAlert(player);
         this.angry = checkAnger();
 
@@ -70,9 +60,6 @@ public class Slime extends Enemies{
 
         int playerX = player.getxPos();
         int playerY = player.getyPos();
-
-        int pWidth = player.getWidth();
-        int pHeight = player.getHeight();
         
         int differenceX = slimeX - playerX;
         int differenceY = slimeY - playerY;
@@ -82,61 +69,23 @@ public class Slime extends Enemies{
         }
 
         if((differenceY)/(differenceX) > eyesight){
+            System.out.println((differenceY)/(differenceX));
             return true;
         }else{
             return false;
         }
-
-        /* 
-        //basically asking if the player is on the right or left
-        if(slimeX - (playerX + pWidth) < slimeX - (playerX - pWidth)){
-            //player is on right side
-            closestPlayerX = playerX + pWidth;
-
-        }else if(slimeX - (playerX + pWidth) > slimeX - (playerX - pWidth)){
-            //player is on left side
-            closestPlayerX = playerX - pWidth;
-        }else{
-            //x's are equal;
-            closestPlayerX = slimeX;
-        }
-
-        if(slimeY - (playerY + pHeight) < slimeY - (playerY - pHeight)){
-            //player is above
-            closestPlayerY = playerY + pHeight;
-        }else if(slimeX - (playerX + pHeight) < slimeX - (playerX - pHeight)){
-            //player is below
-            closestPlayerY = playerY - pHeight;
-        }else{
-            //y's are equal;
-            closestPlayerY = slimeY;
-        }
-
-        if(slimeX - closestPlayerX == 0){
-            if (slimeY - closestPlayerY < eyesight){
-                return true;
-            }else{
-                return false;
-            }
-        }
-        */
-
-        /* 
-        if(Math.abs((slimeY - closestPlayerY)/(slimeX - closestPlayerX)) < eyesight){
-            System.out.println("Inside Circle");
-            return true;
-        }else{
-            System.out.println("Outside circle");
-            return false;
-        }
-
-        */
     }
+
     public boolean checkAnger(){
         if(this.health < 5){
             return true;
         }else{
             return false;
         }
+    }
+
+    public void update(){
+        //give now
+        //update tick
     }
 }
