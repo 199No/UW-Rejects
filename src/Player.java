@@ -17,8 +17,8 @@ public class Player {
     private int speed;
     private int xPos;
     private int yPos;
-    private final int width = 10;
-    private final int height = 10;
+    private final int width = 38;
+    private final int height = 38;
     private boolean[] direction = new boolean[4];
     private int xDir;
     ///////////////

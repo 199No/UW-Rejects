@@ -5,8 +5,13 @@ package src;
 import java.awt.AWTException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Timer;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.Timer;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import Enemies.*;
@@ -23,12 +28,13 @@ public class Game implements ActionListener{
     Slime slime;
     double now, lastSecond, frameRate, framesLastSecond;
     Input input;
+    BufferedImage image;
     private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
     ///////////////
     //Constuctor
     //////////////
-    public Game() throws AWTException{
-        
+    public Game() throws AWTException, IOException{
+        image = ImageIO.read(new File("Images\\Enviroment\\appleTree.png"));
         player = new Player();
         this.slime  = new Slime();
         enemies.add(this.slime);
@@ -65,6 +71,12 @@ public class Game implements ActionListener{
         this.slime.move(this.player); //slime moves towards player's new positon (after input);
 
         gui.background((int)frameRate * 2, (int)frameRate, (int)frameRate * 2);
+        
+        gui.addToQueue(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                g2d.drawImage(image.getScaledInstance(76, 114, 0), 114, 347, null);
+            }
+        });
         gui.displayFPS((int)frameRate);
         gui.drawPlayer(player);
         gui.drawEnemies(enemies);
@@ -73,7 +85,7 @@ public class Game implements ActionListener{
     }
 
     public void checkSlime(){
-        if(this.slime.getxPos() == this.player.getxPos() && this.slime.getyPos() == this.player.getxPos()){
+        if(this.slime.getxPos() == this.player.getxPos() && this.slime.getyPos() == this.player.getyPos()){
             System.out.println("YOU DIEDEDEDEDEDEDDEDED");
         }
     }
