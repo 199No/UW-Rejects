@@ -14,7 +14,7 @@ public class Sounds{
     ///////////////
     //Properties
     //////////////
-    AudioInputStream AnvilHitaudioInputStream;
+    AudioInputStream clipAnvilHitaudioInputStream;
     Clip clipAnvilHit;
     AudioInputStream clipBangaudioInputStream;
     Clip clipBang;
@@ -46,11 +46,11 @@ public class Sounds{
     //Dont do anything when a sound is created
     public Sounds(){
         try{
-            AnvilHitaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\AnvilHit.wav"));
+            clipAnvilHitaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\AnvilHit.wav"));
             clipAnvilHit = AudioSystem.getClip();
             clipBangaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Bang.wav"));
             clipBang = AudioSystem.getClip();
-            clipCarnivalaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\CARNIVAL(KanyeWest).wav"));
+            clipCarnivalaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Carnival.wav"));
             clipCarnival = AudioSystem.getClip();
             clipCountrysideaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Countryside.wav"));
             clipCountryside = AudioSystem.getClip();
@@ -72,14 +72,6 @@ public class Sounds{
             clipWalking = AudioSystem.getClip();
         }  
 
-
-
-
-
-
-
-
-
         //Cacth for the program
         catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             //If something hapeens print it out
@@ -98,12 +90,52 @@ public class Sounds{
     public void Play(String clipType){
         try{
             if(clipType == "AnvilHit"){
-                clipAnvilHit.open(AnvilHitaudioInputStream);
+                clipAnvilHit.open(clipAnvilHitaudioInputStream);
                 clipAnvilHit.start();
             }
             else if(clipType == "Bang"){
                 clipBang.open(clipBangaudioInputStream);
                 clipBang.start();
+            }
+            else if(clipType == "Carnival"){
+                clipCarnival.open(clipCarnivalaudioInputStream);
+                clipCarnival.start();
+            }
+            else if(clipType == "CountrySide"){
+                clipCountryside.open(clipCountrysideaudioInputStream);
+                clipCountryside.start();
+            }
+            else if(clipType == "Death"){
+                clipDeath.open(clipDeathaudioInputStream);
+                clipDeath.start();
+            }
+            else if(clipType == "ForestWalk"){
+                clipForestWalk.open(clipForestWalkaudioInputStream);
+                clipForestWalk.start();
+            }
+            else if(clipType == "GameboySound"){
+                clipGameboySound.open(clipGameboySoundaudioInputStream);
+                clipGameboySound.start();
+            }
+            else if(clipType == "LevelUp"){
+                clipLevelUp.open(clipLevelUpaudioInputStream);
+                clipLevelUp.start();
+            }
+            else if(clipType == "MoneyChing"){
+                clipMoneyChing.open(clipMoneyChingaudioInputStream);
+                clipMoneyChing.start();
+            }
+            else if(clipType == "RainForest"){
+                clipRainForest.open(clipRainForestaudioInputStream);
+                clipRainForest.start();
+            }
+            else if(clipType == "SwordAttack"){
+                clipSwordAttack.open(clipSwordAttackaudioInputStream);
+                clipSwordAttack.start();
+            }
+            else if(clipType == "Walking"){
+                clipWalking.open(clipWalkingaudioInputStream);
+                clipWalking.start();
             }
         }
         catch (IOException | LineUnavailableException e) {
@@ -120,6 +152,46 @@ public class Sounds{
         else if(clipType == "Bang"){
             clipBang.flush();
             clipBang.stop();
+        }
+        else if(clipType == "Carnival"){
+            clipCarnival.flush();
+            clipCarnival.stop();
+        }
+        else if(clipType == "CountrySide"){
+            clipCountryside.flush();
+            clipCountryside.stop();
+        }
+        else if(clipType == "Death"){
+            clipDeath.flush();
+            clipDeath.stop();
+        }
+        else if(clipType == "ForestWalk"){
+            clipForestWalk.flush();
+            clipForestWalk.stop();
+        }
+        else if(clipType == "GameboySound"){
+            clipGameboySound.flush();
+            clipGameboySound.stop();
+        }
+        else if(clipType == "LevelUp"){
+            clipLevelUp.flush();
+            clipLevelUp.stop();
+        }
+        else if(clipType == "MoneyChing"){
+            clipMoneyChing.flush();
+            clipMoneyChing.stop();
+        }
+        else if(clipType == "RainForest"){
+            clipRainForest.flush();
+            clipRainForest.stop();
+        }
+        else if(clipType == "SwordAttack"){
+            clipSwordAttack.flush();
+            clipSwordAttack.stop();
+        }
+        else if(clipType == "Walking"){
+            clipWalking.flush();
+            clipWalking.stop();
         }
     }
 }
