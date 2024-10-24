@@ -38,42 +38,63 @@ public class Slime extends Enemies{
     //-------------------------------------------------// 
 
 
+
+
     //checks if the slimes position is close to player "alerts" slime when close to
     public void checkStatus(Player player){
         this.alert = checkAlert(player);
         this.angry = checkAnger();
 
-
-        if(this.health < 5){
-            //slime is below half health
-            this.angry = true;
+        if(this.alert){
+            moveTowardsPlayer(player);
         }
-
     }
 
-    //checks if the players position (with its width and height) is inside the radius of the eyesight of the slime
+    public void moveTowardsPlayer(Player player){
+        int playx = player.getxPos();
+        int playy = player.getyPos();
+
+
+        int y = this.getyPos();
+        int x = this.getxPos();
+
+        if(playx >= x){
+            //move right
+            this.xPos++;
+        }
+        if(playx <= x){
+            //move left
+            this.xPos--;
+        }
+        if(playy >= y){
+            //move down
+            this.yPos++;
+        }
+        if(playy <= y){
+            //move up
+            this.yPos--;
+        }
+    }
+
+    
     public boolean checkAlert(Player player){
-        int slimeX = this.getxPos();
-        int slimeY = this.getyPos();
-
-        int eyesight = this.getEyesight();
-
-        int playerX = player.getxPos();
-        int playerY = player.getyPos();
         
-        int differenceX = slimeX - playerX;
-        int differenceY = slimeY - playerY;
+        int playx = player.getxPos();
+        int playy = player.getyPos();
 
-        if(slimeX - playerX == 0){
-            differenceX = 1;
-        }
 
-        if((differenceY)/(differenceX) > eyesight){
-            System.out.println((differenceY)/(differenceX));
-            return true;
-        }else{
-            return false;
+        int y = this.getyPos();
+        int x = this.getxPos();
+
+        // x    play   +this.getwidth         x - this.getwidth playx x    
+        if(x <= playx && playx <= x + this.eyesight || x - this.eyesight <= playx && playx <= x){
+            if(y <= playy && playy <= y + this.eyesight || y - this.eyesight <= playy && playy <= y ){
+                return true;
+            }
         }
+        return false;
+
+
     }
 
     public boolean checkAnger(){
@@ -84,7 +105,7 @@ public class Slime extends Enemies{
         }
     }
 
-    public void update(){
+    public void update(Player player){
         //give now
         //update tick
     }

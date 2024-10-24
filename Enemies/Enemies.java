@@ -41,6 +41,25 @@ public abstract class Enemies {
         //checks if the enemy is alert
     }
 
+     //return true if player is inside hitbox (got hit)
+     public boolean checkHitbox(Player player){
+
+        int playx = player.getxPos();
+        int playy = player.getyPos();
+
+        int y = this.getyPos();
+        int x = this.getxPos();
+
+        // x    play   +this.getwidth         x - this.getwidth playx x    
+        if(x <= playx && playx <= x + this.getWidth() || x - this.getWidth() <= playx && playx <= x){
+            if(y <= playy && playy <= y + this.getHeight() || y - this.getHeight() <= playy && playy <= y ){
+                //System.out.println("slime hit player");
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void updateMovement(){
         //updates ticks positions
     }

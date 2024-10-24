@@ -116,6 +116,15 @@ public class Player {
         yPos = y;
     }
 
+    public void loseHealth(){
+        this.health--;
+    }
+    public void checkPlayer(){
+        if(this.health == 0){
+            System.out.println("IM DEAD");
+        }
+    }
+
     // space
     public void attack(){
         //use damage variable
