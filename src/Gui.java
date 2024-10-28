@@ -39,15 +39,25 @@ public class Gui extends JPanel{
     public Gui(int width, int height, Input input) {
         playerImages = new BufferedImage[5];
         try {
+            /* 
             playerImages[0] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_LL-1.png.png"));
             playerImages[1] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
             playerImages[2] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_RL.png-1.png.png"));
             playerImages[3] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
-            //playerImages[4] = ImageIO.read(new File("Images\\Player\\BluePlayerSheet.png"));
+            */
+
+
+            // *********** Figure out how to get sections of the spread sheet, line 130 does not work which should be 
+            //   the line to determine the x and y size for the sections of the spreadsheet ******************8
+            playerImages[0] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
+            playerImages[1] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
+            playerImages[2] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
+            playerImages[3] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
+            playerImages[4] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
 
 
         } catch (Exception e){e.printStackTrace();}
-        envImages = new BufferedImage[5];
+            envImages = new BufferedImage[5];
         try{
             envImages[0] = ImageIO.read(new File("Images\\Enviroment\\Tiles\\Snow Tile.png.png"));
         } catch (Exception e){e.printStackTrace();};
@@ -117,7 +127,7 @@ public class Gui extends JPanel{
     public void drawPlayer(Player p){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                //BufferedImage playerImage = playerImages[4].getSubimage(step * 19, 0, 19, 19);
+            //    BufferedImage playerImage = playerImages[4].getSubimage(step * 19, 0, 19, 19);
                 AffineTransform f = AffineTransform.getScaleInstance(1, 1);
                 if(p.getXDir() > 0){
                     f.translate((int)(p.getxPos()), p.getyPos());
