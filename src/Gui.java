@@ -43,7 +43,7 @@ public class Gui extends JPanel{
             playerImages[1] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
             playerImages[2] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_RL.png-1.png.png"));
             playerImages[3] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
-            playerImages[4] = ImageIO.read(new File("Images\\Player\\BluePlayerSheet.png"));
+            //playerImages[4] = ImageIO.read(new File("Images\\Player\\BluePlayerSheet.png"));
 
 
         } catch (Exception e){e.printStackTrace();}
@@ -117,16 +117,16 @@ public class Gui extends JPanel{
     public void drawPlayer(Player p){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                BufferedImage playerImage = playerImages[4].getSubimage(step * 19, 0, 19, 19);
+                //BufferedImage playerImage = playerImages[4].getSubimage(step * 19, 0, 19, 19);
                 AffineTransform f = AffineTransform.getScaleInstance(1, 1);
                 if(p.getXDir() > 0){
                     f.translate((int)(p.getxPos()), p.getyPos());
                 } else {
-                    f.translate((int)(p.getxPos() + playerImage.getWidth() * 2), p.getyPos());
+                    //f.translate((int)(p.getxPos() + playerImage.getWidth() * 2), p.getyPos());
                 }
                 f.scale(p.getXDir() * 2, 2);
                 g2d.drawRect((int)p.getxPos(), (int)p.getyPos(), 38, 38);
-                g2d.drawImage(playerImage, f, null);
+                //g2d.drawImage(playerImage, f, null);
                 if(System.currentTimeMillis() - lastPlayerStep > 200){
                     step = (step + 1) % 4;
                     lastPlayerStep = System.currentTimeMillis();
