@@ -13,9 +13,9 @@ import javax.sound.sampled.*;
 public class Sounds{
     ///////////////
     //Properties
-    //////////////
-    AudioInputStream clipAnvilHitaudioInputStream;
-    Clip clipAnvilHit;
+    ///////////////
+    AudioInputStream clipAnvilHitaudioInputStream;                  //Define the Audio InputStream  (Do this once for each Clip)
+    Clip clipAnvilHit;                                              //Define the Clip               (Do this once for each Sound)
     AudioInputStream clipBangaudioInputStream;
     Clip clipBang;
     AudioInputStream clipCarnivalaudioInputStream;
@@ -40,12 +40,11 @@ public class Sounds{
     Clip clipWalking;
 
 
-    ///////////////
-    //Constuctor
-    //////////////
-    //Dont do anything when a sound is created
+    //When Sound is created define all Sounds 
     public Sounds(){
         try{
+            //Use the Already Define variables and assign them their values 
+            //Defineing all hear preloads all the Sounds that way their is no lag in the game
             clipAnvilHitaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\AnvilHit.wav"));
             clipAnvilHit = AudioSystem.getClip();
             clipBangaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Bang.wav"));
@@ -87,9 +86,13 @@ public class Sounds{
 //                    Methods                      //
 //-------------------------------------------------// 
 
+    //Play method is unviersal for all sounds
     public void Play(String clipType){
+        //Takes in the name of the Sound that wants to be played
         try{
+            //If statements find which sound the Player is talking about.
             if(clipType == "AnvilHit"){
+                //If we have found the right sound play that sound
                 clipAnvilHit.open(clipAnvilHitaudioInputStream);
                 clipAnvilHit.start();
             }
@@ -138,14 +141,19 @@ public class Sounds{
                 clipWalking.start();
             }
         }
+
+        //Cacth for the program
         catch (IOException | LineUnavailableException e) {
             //If something hapeens print it out
             e.printStackTrace();
         }
     }
 
+    //Stop method is unviresal for all sounds
     public void Stop(String clipType){
+        //Takes in the name of the sound that needs to be stopped
         if(clipType == "AnvilHit"){
+            //If the correct sounds has been found then stop it
             clipAnvilHit.flush();
             clipAnvilHit.close(); 
         }
