@@ -20,7 +20,7 @@ public class Main{
 
         Sounds SirMixALot = new Sounds();
         SirMixALot.Play("AnvilHit");
-        SirMixALot.Play("Bang");
+        SirMixALot.Stop("AnvilHit");
         
     }
 //-------------------------------------------------//

@@ -13,9 +13,9 @@ import javax.sound.sampled.*;
 public class Sounds{
     ///////////////
     //Properties
-    //////////////
-    AudioInputStream clipAnvilHitaudioInputStream;
-    Clip clipAnvilHit;
+    ///////////////
+    AudioInputStream clipAnvilHitaudioInputStream;                  //Define the Audio InputStream  (Do this once for each Clip)
+    Clip clipAnvilHit;                                              //Define the Clip               (Do this once for each Sound)
     AudioInputStream clipBangaudioInputStream;
     Clip clipBang;
     AudioInputStream clipCarnivalaudioInputStream;
@@ -36,39 +36,42 @@ public class Sounds{
     Clip clipRainForest;
     AudioInputStream clipSwordAttackaudioInputStream;
     Clip clipSwordAttack;
+    AudioInputStream clipTrumpOliveraudioInputStream;
+    Clip clipTrumpOliver;
     AudioInputStream clipWalkingaudioInputStream;
     Clip clipWalking;
 
 
-    ///////////////
-    //Constuctor
-    //////////////
-    //Dont do anything when a sound is created
+    //When Sound is created define all Sounds 
     public Sounds(){
         try{
-            clipAnvilHitaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\AnvilHit.wav"));
+            //Use the Already Define variables and assign them their values 
+            //Defineing all hear preloads all the Sounds that way their is no lag in the game
+            clipAnvilHitaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Misc Sounds\\AnvilHit.wav"));
             clipAnvilHit = AudioSystem.getClip();
-            clipBangaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Bang.wav"));
+            clipBangaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\Bang.wav"));
             clipBang = AudioSystem.getClip();
-            clipCarnivalaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Carnival.wav"));
+            clipCarnivalaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\Carnival.wav"));
             clipCarnival = AudioSystem.getClip();
-            clipCountrysideaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Countryside.wav"));
+            clipCountrysideaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\Countryside.wav"));
             clipCountryside = AudioSystem.getClip();
-            clipDeathaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Death.wav"));
+            clipDeathaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\Death.wav"));
             clipDeath = AudioSystem.getClip();
-            clipForestWalkaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\ForestWalk.wav"));
+            clipForestWalkaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\ForestWalk.wav"));
             clipForestWalk = AudioSystem.getClip();
-            clipGameboySoundaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\GameboySound.wav"));
+            clipGameboySoundaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\GameboySound.wav"));
             clipGameboySound = AudioSystem.getClip();
-            clipLevelUpaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\LevelUp.wav"));
+            clipLevelUpaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\LevelUp.wav"));
             clipLevelUp = AudioSystem.getClip();
-            clipMoneyChingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\MoneyChing.wav"));
+            clipMoneyChingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\MoneyChing.wav"));
             clipMoneyChing = AudioSystem.getClip();
-            clipRainForestaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\RainForest.wav"));
+            clipRainForestaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\RainForest.wav"));
             clipRainForest = AudioSystem.getClip();
-            clipSwordAttackaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\SwordAttack.wav"));
+            clipSwordAttackaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\SwordAttack.wav"));
             clipSwordAttack = AudioSystem.getClip();
-            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Walking.wav"));
+            clipTrumpOliveraudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\TrumpOliver.wav"));
+            clipTrumpOliver = AudioSystem.getClip();
+            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
             clipWalking = AudioSystem.getClip();
         }  
 
@@ -87,9 +90,13 @@ public class Sounds{
 //                    Methods                      //
 //-------------------------------------------------// 
 
+    //Play method is unviersal for all sounds
     public void Play(String clipType){
+        //Takes in the name of the Sound that wants to be played
         try{
+            //If statements find which sound the Player is talking about.
             if(clipType == "AnvilHit"){
+                //If we have found the right sound play that sound
                 clipAnvilHit.open(clipAnvilHitaudioInputStream);
                 clipAnvilHit.start();
             }
@@ -133,19 +140,28 @@ public class Sounds{
                 clipSwordAttack.open(clipSwordAttackaudioInputStream);
                 clipSwordAttack.start();
             }
+            else if(clipType == "TrumpOliver"){
+                clipTrumpOliver.open(clipTrumpOliveraudioInputStream);
+                clipTrumpOliver.start();
+            }
             else if(clipType == "Walking"){
                 clipWalking.open(clipWalkingaudioInputStream);
                 clipWalking.start();
             }
         }
+
+        //Cacth for the program
         catch (IOException | LineUnavailableException e) {
             //If something hapeens print it out
             e.printStackTrace();
         }
     }
 
+    //Stop method is unviresal for all sounds
     public void Stop(String clipType){
+        //Takes in the name of the sound that needs to be stopped
         if(clipType == "AnvilHit"){
+            //If the correct sounds has been found then stop it
             clipAnvilHit.flush();
             clipAnvilHit.close(); 
         }
@@ -188,6 +204,10 @@ public class Sounds{
         else if(clipType == "SwordAttack"){
             clipSwordAttack.flush();
             clipSwordAttack.stop();
+        }
+        else if(clipType == "TrumpOliver"){
+            clipTrumpOliver.flush();
+            clipTrumpOliver.stop();
         }
         else if(clipType == "Walking"){
             clipWalking.flush();
