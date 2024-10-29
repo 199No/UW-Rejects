@@ -9,8 +9,6 @@ import Enemies.Enemies;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
