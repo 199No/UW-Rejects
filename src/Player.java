@@ -110,6 +110,22 @@ public class Player {
     public void moveDownRun(){
         yPos += 4;
     }
+    
+    public void dashUp(){
+
+    }
+
+    public void dashDown(){
+        
+    }
+
+    public void dashLeft(){
+        
+    }
+
+    public void dashRight(){
+        
+    }
 
     public void teleport(int x, int y){
         xPos = x;
