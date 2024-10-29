@@ -47,31 +47,31 @@ public class Sounds{
         try{
             //Use the Already Define variables and assign them their values 
             //Defineing all hear preloads all the Sounds that way their is no lag in the game
-            clipAnvilHitaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\AnvilHit.wav"));
+            clipAnvilHitaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Misc Sounds\\AnvilHit.wav"));
             clipAnvilHit = AudioSystem.getClip();
-            clipBangaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Bang.wav"));
+            clipBangaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\Bang.wav"));
             clipBang = AudioSystem.getClip();
-            clipCarnivalaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Carnival.wav"));
+            clipCarnivalaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\Carnival.wav"));
             clipCarnival = AudioSystem.getClip();
-            clipCountrysideaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Countryside.wav"));
+            clipCountrysideaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\Countryside.wav"));
             clipCountryside = AudioSystem.getClip();
-            clipDeathaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Death.wav"));
+            clipDeathaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\Death.wav"));
             clipDeath = AudioSystem.getClip();
-            clipForestWalkaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\ForestWalk.wav"));
+            clipForestWalkaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\ForestWalk.wav"));
             clipForestWalk = AudioSystem.getClip();
-            clipGameboySoundaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\GameboySound.wav"));
+            clipGameboySoundaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\GameboySound.wav"));
             clipGameboySound = AudioSystem.getClip();
-            clipLevelUpaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\LevelUp.wav"));
+            clipLevelUpaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\LevelUp.wav"));
             clipLevelUp = AudioSystem.getClip();
-            clipMoneyChingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\MoneyChing.wav"));
+            clipMoneyChingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\MoneyChing.wav"));
             clipMoneyChing = AudioSystem.getClip();
-            clipRainForestaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\RainForest.wav"));
+            clipRainForestaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\RainForest.wav"));
             clipRainForest = AudioSystem.getClip();
-            clipSwordAttackaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\SwordAttack.wav"));
+            clipSwordAttackaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\SwordAttack.wav"));
             clipSwordAttack = AudioSystem.getClip();
-            clipTrumpOliveraudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\SwordAttack.wav"));
+            clipTrumpOliveraudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\TrumpOliver.wav"));
             clipTrumpOliver = AudioSystem.getClip();
-            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Walking.wav"));
+            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
             clipWalking = AudioSystem.getClip();
         }  
 
