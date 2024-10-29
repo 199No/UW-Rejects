@@ -115,6 +115,22 @@ public class Player {
         yPos += 4;
         yDir = -1;
     }
+    
+    public void dashUp(){
+
+    }
+
+    public void dashDown(){
+        
+    }
+
+    public void dashLeft(){
+        
+    }
+
+    public void dashRight(){
+        
+    }
 
     public void teleport(int x, int y){
         xPos = x;
