@@ -36,6 +36,8 @@ public class Sounds{
     Clip clipRainForest;
     AudioInputStream clipSwordAttackaudioInputStream;
     Clip clipSwordAttack;
+    AudioInputStream clipTrumpOliveraudioInputStream;
+    Clip clipTrumpOliver;
     AudioInputStream clipWalkingaudioInputStream;
     Clip clipWalking;
 
@@ -67,6 +69,8 @@ public class Sounds{
             clipRainForest = AudioSystem.getClip();
             clipSwordAttackaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\SwordAttack.wav"));
             clipSwordAttack = AudioSystem.getClip();
+            clipTrumpOliveraudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\SwordAttack.wav"));
+            clipTrumpOliver = AudioSystem.getClip();
             clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Walking.wav"));
             clipWalking = AudioSystem.getClip();
         }  
@@ -136,6 +140,10 @@ public class Sounds{
                 clipSwordAttack.open(clipSwordAttackaudioInputStream);
                 clipSwordAttack.start();
             }
+            else if(clipType == "TrumpOliver"){
+                clipTrumpOliver.open(clipTrumpOliveraudioInputStream);
+                clipTrumpOliver.start();
+            }
             else if(clipType == "Walking"){
                 clipWalking.open(clipWalkingaudioInputStream);
                 clipWalking.start();
@@ -196,6 +204,10 @@ public class Sounds{
         else if(clipType == "SwordAttack"){
             clipSwordAttack.flush();
             clipSwordAttack.stop();
+        }
+        else if(clipType == "TrumpOliver"){
+            clipTrumpOliver.flush();
+            clipTrumpOliver.stop();
         }
         else if(clipType == "Walking"){
             clipWalking.flush();
