@@ -20,7 +20,7 @@ public class Player {
     private final int width = 38;
     private final int height = 38;
     private boolean[] direction = new boolean[4];
-    private int xDir;
+    private int xDir, yDir;
     ///////////////
     //Constuctor
     //////////////
@@ -32,6 +32,7 @@ public class Player {
         yPos = 0;
         this.direction[0] = true;
         xDir = 1;
+        yDir = 1;
     }
 
 //-------------------------------------------------//
@@ -94,21 +95,25 @@ public class Player {
     // W
     public void moveUpWalk(){
         yPos -= 2;
+        yDir = 1;
     }
 
     // S
     public void moveDownWalk(){
         yPos += 2;
+        yDir = -1;
     }
 
     // shift + W
     public void moveUpRun(){
         yPos -= 4;
+        yDir = 1;
     }
     
     // shift + S
     public void moveDownRun(){
         yPos += 4;
+        yDir = -1;
     }
 
     public void teleport(int x, int y){
@@ -133,6 +138,10 @@ public class Player {
 
     public int getXDir(){
         return xDir;
+    }
+    
+    public int getYDir(){
+        return yDir;
     }
     public int getWidth(){
         return this.width;

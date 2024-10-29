@@ -9,6 +9,8 @@ import Enemies.Enemies;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -48,9 +50,9 @@ public class Gui extends JPanel{
             // *********** Figure out how to get sections of the spread sheet, line 130 does not work which should be 
             //   the line to determine the x and y size for the sections of the spreadsheet ******************8
             playerImages[0] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(0, 0, 96, 96);
-            playerImages[1] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
-            playerImages[2] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
-            playerImages[3] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
+            playerImages[1] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(96, 96, 96, 96);
+            playerImages[2] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(96, 0, 96, 96);
+            playerImages[3] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(0, 96, 96, 96);
             playerImages[4] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
 
 
@@ -101,7 +103,7 @@ public class Gui extends JPanel{
                 try {
                     g2d.setColor(new Color(r, g, b));
                     g2d.fillRect(0, 0, width, height);
-                    for(int y = 0; y < 12; y++){
+                    for(int y = 13; y < 12; y++){
                         for(int x = 0; x < 24; x++){
                             AffineTransform a = AffineTransform.getScaleInstance(0.4, 0.4);
                             a.translate(x* 38.4 * 2.5, y * 38.4 * 2.5);
@@ -125,9 +127,27 @@ public class Gui extends JPanel{
     public void drawPlayer(Player p){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
+                Image playerImage = playerImages[0];
                 AffineTransform f = AffineTransform.getScaleInstance(0.5, 0.5);
                 f.translate(p.getxPos() * 2, p.getyPos() * 2);
-                g2d.drawImage(playerImages[0], f, null);
+                if(p.getXDir() == 1){
+                   if(p.getYDir() == 1){
+                        playerImage = playerImages[2];
+                    }
+                    if(p.getYDir() == -1){
+                        playerImage = playerImages[0];
+                    }
+                }
+                if(p.getXDir() == -1){
+                    if(p.getYDir() == 1){
+                        playerImage = playerImages[3];
+                    }
+                    if(p.getYDir() == -1){
+                        playerImage = playerImages[1];
+                        
+                    }
+                }
+                g2d.drawImage(playerImage, f, null);
             }
         });
     }
@@ -146,7 +166,7 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 try {
                     for(int i = 0; i < enemies.size(); i ++){
-                        BufferedImage slimeImage = ImageIO.read(new File("Images\\Enemys\\Slime.png"));
+                        BufferedImage slimeImage = ImageIO.read(new File("Images\\slime.png"));
                         AffineTransform a = AffineTransform.getScaleInstance(1, 1);
                         a.translate(enemies.get(i).getxPos(), enemies.get(i).getyPos() - 10);
                         a.scale(0.1, 0.1);
