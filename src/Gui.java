@@ -47,7 +47,7 @@ public class Gui extends JPanel{
 
             // *********** Figure out how to get sections of the spread sheet, line 130 does not work which should be 
             //   the line to determine the x and y size for the sections of the spreadsheet ******************8
-            playerImages[0] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
+            playerImages[0] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(0, 0, 96, 96);
             playerImages[1] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
             playerImages[2] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
             playerImages[3] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
@@ -125,20 +125,9 @@ public class Gui extends JPanel{
     public void drawPlayer(Player p){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-            //    BufferedImage playerImage = playerImages[4].getSubimage(step * 19, 0, 19, 19);
-                AffineTransform f = AffineTransform.getScaleInstance(1, 1);
-                if(p.getXDir() > 0){
-                    f.translate((int)(p.getxPos()), p.getyPos());
-                } else {
-                    //f.translate((int)(p.getxPos() + playerImage.getWidth() * 2), p.getyPos());
-                }
-                f.scale(p.getXDir() * 2, 2);
-                g2d.drawRect((int)p.getxPos(), (int)p.getyPos(), 38, 38);
-                //g2d.drawImage(playerImage, f, null);
-                if(System.currentTimeMillis() - lastPlayerStep > 200){
-                    step = (step + 1) % 4;
-                    lastPlayerStep = System.currentTimeMillis();
-                }
+                AffineTransform f = AffineTransform.getScaleInstance(0.5, 0.5);
+                f.translate(p.getxPos() * 2, p.getyPos() * 2);
+                g2d.drawImage(playerImages[0], f, null);
             }
         });
     }
