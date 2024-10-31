@@ -131,7 +131,7 @@ public class Gui extends JPanel{
                 AffineTransform f = AffineTransform.getScaleInstance(0.5, 0.5);
                 f.translate(p.getxPos() * 2, p.getyPos() * 2);
                 if(p.getXDir() == 1){
-                   if(p.getYDir() == 1){
+                    if(p.getYDir() == 1){
                         playerImage = playerImages[2];
                     }
                     if(p.getYDir() == -1){

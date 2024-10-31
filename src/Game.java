@@ -69,6 +69,7 @@ public class Game implements ActionListener{
         for(int i = 0; i < this.enemies.size(); i++){
             this.enemies.get(i).checkStatus(this.player);
             if(this.enemies.get(i).checkHitbox(this.player)){
+                
                 this.player.loseHealth();
             }
         }
