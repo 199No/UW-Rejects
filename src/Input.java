@@ -4,6 +4,7 @@ package src;
 //-------------------------------------------------// 
 import java.awt.MouseInfo;
 import java.awt.event.*;
+import java.util.Arrays;
 //-------------------------------------------------//
 //                    Input                        //
 //-------------------------------------------------// 
@@ -18,6 +19,9 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     boolean[] keys = new boolean[90];
     Player player;
     int latestInput;
+    int pressed; 
+    int released;
+    int shortClick; //keycode of short click
     ///////////////
     //Comstuctor
     //////////////
@@ -32,6 +36,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
         movedY = 0;
         mouseLocked = true;
         latestInput = -1;
+        shortClick = -2;
     }
     public double mouseX(){
         return mouseX;
@@ -116,81 +121,77 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() < keys.length){
-            keys[e.getKeyCode()] = true;
+             //checks to see if this input was a new input
+            System.out.println(Arrays.toString(keys));
+            if(getKey(e.getKeyCode()) == false){
+                keys[e.getKeyCode()] = true;
+                System.out.println(Arrays.toString(keys));
+                latestInput = e.getKeyCode();
+                pressed = (int) System.currentTimeMillis();
+            }else{
+                keys[e.getKeyCode()] = true;
+            }
         }
     }
 
     //players movements WASD run/walk (with shift): Calls Player methods
     public void playerMove(){
-        //figure out and measure the time when the input difference is inbetween 50 and 200 then make sure same direction
-        //do calculation in checkDash()
-        System.out.println("difference " + ( Math.abs( (int) System.currentTimeMillis() ) - Math.abs(latestInput)) );
-        checkDash();
 
         if(getKey(KeyEvent.VK_W) == true){
             if(getKey(KeyEvent.VK_SHIFT) == true){
                 //shift and W is pressed
                 player.moveUpRun();
-                this.latestInput = (int) System.currentTimeMillis();
             }else{
                 //W pressed
                 player.moveUpWalk();
-                this.latestInput = (int) System.currentTimeMillis();
             }
         }if(getKey(KeyEvent.VK_A) == true){
             if(getKey(KeyEvent.VK_SHIFT) == true){
                 //shift and A pressed
                 player.moveLeftRun();
-                this.latestInput = (int) System.currentTimeMillis();
             }else{
                 //A pressed
                 player.moveLeftWalk();
-                this.latestInput = (int) System.currentTimeMillis();
             }
         }if(getKey(KeyEvent.VK_S) == true){
             if(getKey(KeyEvent.VK_SHIFT) == true){
                 // Shift and S is pressed
                 player.moveDownRun();
-                this.latestInput = (int) System.currentTimeMillis();
             }else{
                 //S is pressed
                 player.moveDownWalk();
-                this.latestInput = (int) System.currentTimeMillis();
             }
         }if(getKey(KeyEvent.VK_D) == true){
             if(getKey(KeyEvent.VK_SHIFT) == true){
                 //Shift and D is pressed
                 player.moveRightRun();
-                this.latestInput = (int) System.currentTimeMillis();
             }else{
                 //D is pressed
                 player.moveRightWalk();
-                this.latestInput = (int) System.currentTimeMillis();
             }
         }
     }
+
     public void playerAttack(){
         if(getKey(KeyEvent.VK_SPACE) == true){
             player.attack();
         }
     }
+
     public void checkDash(){
-        //checks to see if the input is 600 milliseconds after the latest input
-        if( (int) System.currentTimeMillis() - this.latestInput > 200){
-            //makes sure the player is only typing one input when dashing
-            if(getKey(KeyEvent.VK_W) && getKey(KeyEvent.VK_A) == false && getKey(KeyEvent.VK_S) == false && getKey(KeyEvent.VK_D) == false){
-                player.dashUp();
-                System.out.println("DASH");
-            }else if(getKey(KeyEvent.VK_W) == false && getKey(KeyEvent.VK_A) && getKey(KeyEvent.VK_S) == false && getKey(KeyEvent.VK_D) == false){
-                player.dashLeft();
-                System.out.println("DASH");
-            }else if(getKey(KeyEvent.VK_W) == false && getKey(KeyEvent.VK_A) == false && getKey(KeyEvent.VK_S) && getKey(KeyEvent.VK_D) == false){
-                player.dashDown();
-                System.out.println("DASH");
-            }else if(getKey(KeyEvent.VK_W) == false && getKey(KeyEvent.VK_A) == false && getKey(KeyEvent.VK_S) == false && getKey(KeyEvent.VK_D)){
-                player.dashRight();
-                System.out.println("DASH");
-            }
+
+        //checking if when you pressed and released is a short click
+        //System.out.println("rel - pre: " + (released - pressed));
+        if((released - pressed) > 50 && (released - pressed) < 200){
+            //sets the key that was short clicked to able to be dashed with
+            shortClick = latestInput;
+            return;
+        } else if(latestInput == shortClick){
+            player.playerDash(latestInput);
+        }else{
+            //if it was a long click or not the right, reset everything
+            latestInput = -1;
+            shortClick = -2;
         }
 
 
@@ -209,8 +210,14 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
             mouseX = lastX;
             mouseY = lastY;
         }
+
         if(e.getKeyCode() < keys.length){
-            keys[e.getKeyCode()] = false;
+            if(e.getKeyCode() == latestInput){
+                keys[e.getKeyCode()] = false;
+                released = (int) System.currentTimeMillis();
+            }else{
+                keys[e.getKeyCode()] = false; 
+            }
         }
     }
     @Override

@@ -116,20 +116,9 @@ public class Player {
         yDir = -1;
     }
     
-    public void dashUp(){
-
-    }
-
-    public void dashDown(){
-        
-    }
-
-    public void dashLeft(){
-        
-    }
-
-    public void dashRight(){
-        
+    //given the direction (key code) dash in that direction
+    public void playerDash(int keycode){
+        System.out.println("Player dashed! " + keycode);
     }
 
     public void teleport(int x, int y){
