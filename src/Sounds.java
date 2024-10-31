@@ -73,6 +73,13 @@ public class Sounds{
             clipTrumpOliver = AudioSystem.getClip();
             clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
             clipWalking = AudioSystem.getClip();
+
+            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
+            clipWalking = AudioSystem.getClip();
+            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
+            clipWalking = AudioSystem.getClip();
+            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
+            clipWalking = AudioSystem.getClip();
         }  
 
         //Cacth for the program
