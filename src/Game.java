@@ -60,6 +60,7 @@ public class Game implements ActionListener{
         }
         input.playerMove();
         input.playerAttack();
+        input.checkDash();
         this.player = input.getPlayer(); //updates player with the inputs copy of player
         this.player.checkPlayer();
 

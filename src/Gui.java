@@ -20,35 +20,29 @@ import java.io.File;
 public class Gui extends JPanel{
     ///////////////
     //Properties
-    //////////////
-    public static final double FOCAL_LENGTH = -400; 
+    ////////////// 
+    
+    // Width and height of the draw area
     int width;
     int height;
+    // Made public so that other classes can see them
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
+    // Where things get queued up to be drawn. 
+    // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
     ArrayList<GraphicsRunnable> drawQueue;
+    // You need a frame to draw things on.
     JFrame frame = new JFrame("The Divided Realms INDEV");
+    // Preloading. To be deprecated
     BufferedImage[] playerImages;
-    int lastPlayerXDir = -1;
-    double lastPlayerStep;
     BufferedImage[] envImages;
-    int step;
     ///////////////
     //Constuctor
     //////////////
     public Gui(int width, int height, Input input) {
         playerImages = new BufferedImage[5];
         try {
-            /* 
-            playerImages[0] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_LL-1.png.png"));
-            playerImages[1] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
-            playerImages[2] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_RL.png-1.png.png"));
-            playerImages[3] = ImageIO.read(new File("Images\\Player\\Old Player Stuff\\player_UL.png.png"));
-            */
-
-
-            // *********** Figure out how to get sections of the spread sheet, line 130 does not work which should be 
-            //   the line to determine the x and y size for the sections of the spreadsheet ******************8
+            // Load up all the player images (to be deprectated)
             playerImages[0] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(0, 0, 96, 96);
             playerImages[1] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(96, 96, 96, 96);
             playerImages[2] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(96, 0, 96, 96);
@@ -57,12 +51,15 @@ public class Gui extends JPanel{
 
 
         } catch (Exception e){e.printStackTrace();}
-            envImages = new BufferedImage[5];
+        // Load environment images
+        envImages = new BufferedImage[5];
         try{
             envImages[0] = ImageIO.read(new File("Images\\Enviroment\\Tiles\\Snow Tile.png.png"));
         } catch (Exception e){e.printStackTrace();};
+
         this.width = WIDTH;
         this.height = HEIGHT;
+        // JFrame setup
         this.setSize(width, height);
         frame.setSize(width, height);
 
@@ -75,28 +72,33 @@ public class Gui extends JPanel{
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(this);
+        // End JFrame setup
         drawQueue = new ArrayList<GraphicsRunnable>();
-        lastPlayerStep = System.currentTimeMillis();
-        step = 0;
     }
 
 //-------------------------------------------------//
 //                    Methods                      //
 //-------------------------------------------------// 
 
-    // Paint renamed
+    // Runs every frame and draws stuff to the screen.
+    // Called internally by Swing.
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
+        // Antialiasing
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        // Go through every item in the queue and draw it.
         for(int i = 0; i < drawQueue.size(); i++){
             drawQueue.get(i).draw(g2d);
         }
+        // Prevent memory leaks
         drawQueue.clear();
     }
+    // Allows other classes to run custom draw code.
     public void addToQueue(GraphicsRunnable g){
         drawQueue.add(g);
     }
+    // Draws background, trees, environment, etc for now.
     public void background(int r, int g, int b){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
@@ -116,6 +118,7 @@ public class Gui extends JPanel{
             }
         });
     }
+    // Draws a number to the screen, usually the FPS.
     public void displayFPS(int n){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
@@ -124,6 +127,7 @@ public class Gui extends JPanel{
             }
         });
     }
+    // Draw the player based on animations and current state.
     public void drawPlayer(Player p){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
@@ -155,18 +159,16 @@ public class Gui extends JPanel{
     
     public double width() { return width; }
     public double height() { return height; }
-    public double getFocalLength(){
-        return FOCAL_LENGTH;
-    }
 
     public void drawEnemies(ArrayList<Enemies> enemies){
         //given an arraylist type enemies
         //draw enemies based on their x and y positon {use getxPos() getyPos()}
+
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 try {
                     for(int i = 0; i < enemies.size(); i ++){
-                        BufferedImage slimeImage = ImageIO.read(new File("Images\\slime.png"));
+                        BufferedImage slimeImage = ImageIO.read(new File("Images\\Enemies\\slime.png"));
                         AffineTransform a = AffineTransform.getScaleInstance(1, 1);
                         a.translate(enemies.get(i).getxPos(), enemies.get(i).getyPos() - 10);
                         a.scale(0.1, 0.1);
