@@ -39,7 +39,13 @@ public class Sounds{
     AudioInputStream clipTrumpOliveraudioInputStream;
     Clip clipTrumpOliver;
     AudioInputStream clipWalkingaudioInputStream;
-    Clip clipWalking;
+    Clip clipWalking; 
+    AudioInputStream clipSlimeAttackaudioInputStream;
+    Clip clipSlimeAttack;
+    AudioInputStream clipSlimeDeathaudioInputStream;
+    Clip clipSlimeDeath;
+    AudioInputStream clipSlimeMoveaudioInputStream;
+    Clip clipSlimeMove;
 
 
     //When Sound is created define all Sounds 
@@ -73,13 +79,12 @@ public class Sounds{
             clipTrumpOliver = AudioSystem.getClip();
             clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
             clipWalking = AudioSystem.getClip();
-
-            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
-            clipWalking = AudioSystem.getClip();
-            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
-            clipWalking = AudioSystem.getClip();
-            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
-            clipWalking = AudioSystem.getClip();
+            clipSlimeAttackaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Enemies Sounds\\SlimeAttack.wav"));
+            clipSlimeAttack = AudioSystem.getClip();
+            clipSlimeDeathaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Enemies Sounds\\SlimeDeath.wav"));
+            clipSlimeDeath = AudioSystem.getClip();
+            clipSlimeMoveaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Enemies Sounds\\SlimeMove.wav"));
+            clipSlimeMove = AudioSystem.getClip();
         }  
 
         //Cacth for the program
@@ -155,6 +160,18 @@ public class Sounds{
                 clipWalking.open(clipWalkingaudioInputStream);
                 clipWalking.start();
             }
+            else if(clipType == "SlimeAttack"){
+                clipSlimeAttack.open(clipSlimeAttackaudioInputStream);
+                clipSlimeAttack.start();
+            }
+            else if(clipType == "SlimeDeath"){
+                clipSlimeDeath.open(clipSlimeDeathaudioInputStream);
+                clipSlimeDeath.start();
+            }
+            else if(clipType == "SlimeMove"){
+                clipSlimeMove.open(clipSlimeMoveaudioInputStream);
+                clipSlimeMove.start();
+            }
         }
 
         //Cacth for the program
@@ -219,6 +236,18 @@ public class Sounds{
         else if(clipType == "Walking"){
             clipWalking.flush();
             clipWalking.stop();
+        }
+        else if(clipType == "SlimeAttack"){
+            clipSlimeAttack.flush();
+            clipSlimeAttack.stop();
+        }
+        else if(clipType == "SlimeDeath"){
+            clipSlimeDeath.flush();
+            clipSlimeDeath.stop();
+        }
+        else if(clipType == "SlimeMove"){
+            clipSlimeMove.flush();
+            clipSlimeMove.stop();
         }
     }
 }
