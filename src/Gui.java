@@ -156,7 +156,7 @@ public class Gui extends JPanel{
         });
     }
 
-    
+    // Return the width and height of the 
     public double width() { return width; }
     public double height() { return height; }
 
