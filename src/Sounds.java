@@ -47,6 +47,7 @@ public class Sounds{
     AudioInputStream clipSlimeMoveaudioInputStream;
     Clip clipSlimeMove;
 
+    
 
     //When Sound is created define all Sounds 
     public Sounds(){
@@ -101,6 +102,8 @@ public class Sounds{
 //-------------------------------------------------//
 //                    Methods                      //
 //-------------------------------------------------// 
+
+
 
     //Play method is unviersal for all sounds
     public void Play(String clipType){
@@ -180,6 +183,8 @@ public class Sounds{
             e.printStackTrace();
         }
     }
+
+
 
     //Stop method is unviresal for all sounds
     public void Stop(String clipType){
