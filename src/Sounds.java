@@ -46,8 +46,11 @@ public class Sounds{
     Clip clipSlimeDeath;
     AudioInputStream clipSlimeMoveaudioInputStream;
     Clip clipSlimeMove;
+    AudioInputStream clipRollaudioInputStream;
+    Clip clipRoll;
+    AudioInputStream clipBuildCreepaudioInputStream;
+    Clip clipBuildCreep;
 
-    
 
     //When Sound is created define all Sounds 
     public Sounds(){
@@ -86,6 +89,10 @@ public class Sounds{
             clipSlimeDeath = AudioSystem.getClip();
             clipSlimeMoveaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Enemies Sounds\\SlimeMove.wav"));
             clipSlimeMove = AudioSystem.getClip();
+            clipRollaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Roll.wav"));
+            clipRoll = AudioSystem.getClip();
+            clipBuildCreepaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\BuildCreep.wav"));
+            clipBuildCreep = AudioSystem.getClip();
         }  
 
         //Cacth for the program
@@ -175,8 +182,16 @@ public class Sounds{
                 clipSlimeMove.open(clipSlimeMoveaudioInputStream);
                 clipSlimeMove.start();
             }
+            else if(clipType == "Roll"){
+                clipRoll.open(clipRollaudioInputStream);
+                clipRoll.start();
+            }
+            else if(clipType == "BuildCreep"){
+                clipBuildCreep.open(clipBuildCreepaudioInputStream);
+                clipBuildCreep.start();
+            }
         }
-
+        
         //Cacth for the program
         catch (IOException | LineUnavailableException e) {
             //If something hapeens print it out
@@ -253,6 +268,14 @@ public class Sounds{
         else if(clipType == "SlimeMove"){
             clipSlimeMove.flush();
             clipSlimeMove.stop();
+        }
+        else if(clipType == "Roll"){
+            clipRoll.flush();
+            clipRoll.stop();
+        }
+        else if(clipType == "BuildCreep"){
+            clipBuildCreep.flush();
+            clipBuildCreep.stop();
         }
     }
 }
