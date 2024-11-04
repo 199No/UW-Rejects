@@ -39,7 +39,17 @@ public class Sounds{
     AudioInputStream clipTrumpOliveraudioInputStream;
     Clip clipTrumpOliver;
     AudioInputStream clipWalkingaudioInputStream;
-    Clip clipWalking;
+    Clip clipWalking; 
+    AudioInputStream clipSlimeAttackaudioInputStream;
+    Clip clipSlimeAttack;
+    AudioInputStream clipSlimeDeathaudioInputStream;
+    Clip clipSlimeDeath;
+    AudioInputStream clipSlimeMoveaudioInputStream;
+    Clip clipSlimeMove;
+    AudioInputStream clipRollaudioInputStream;
+    Clip clipRoll;
+    AudioInputStream clipBuildCreepaudioInputStream;
+    Clip clipBuildCreep;
 
 
     //When Sound is created define all Sounds 
@@ -73,13 +83,16 @@ public class Sounds{
             clipTrumpOliver = AudioSystem.getClip();
             clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
             clipWalking = AudioSystem.getClip();
-
-            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
-            clipWalking = AudioSystem.getClip();
-            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
-            clipWalking = AudioSystem.getClip();
-            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
-            clipWalking = AudioSystem.getClip();
+            clipSlimeAttackaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Enemies Sounds\\SlimeAttack.wav"));
+            clipSlimeAttack = AudioSystem.getClip();
+            clipSlimeDeathaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Enemies Sounds\\SlimeDeath.wav"));
+            clipSlimeDeath = AudioSystem.getClip();
+            clipSlimeMoveaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Enemies Sounds\\SlimeMove.wav"));
+            clipSlimeMove = AudioSystem.getClip();
+            clipRollaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Roll.wav"));
+            clipRoll = AudioSystem.getClip();
+            clipBuildCreepaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\BuildCreep.wav"));
+            clipBuildCreep = AudioSystem.getClip();
         }  
 
         //Cacth for the program
@@ -96,6 +109,8 @@ public class Sounds{
 //-------------------------------------------------//
 //                    Methods                      //
 //-------------------------------------------------// 
+
+
 
     //Play method is unviersal for all sounds
     public void Play(String clipType){
@@ -155,14 +170,36 @@ public class Sounds{
                 clipWalking.open(clipWalkingaudioInputStream);
                 clipWalking.start();
             }
+            else if(clipType == "SlimeAttack"){
+                clipSlimeAttack.open(clipSlimeAttackaudioInputStream);
+                clipSlimeAttack.start();
+            }
+            else if(clipType == "SlimeDeath"){
+                clipSlimeDeath.open(clipSlimeDeathaudioInputStream);
+                clipSlimeDeath.start();
+            }
+            else if(clipType == "SlimeMove"){
+                clipSlimeMove.open(clipSlimeMoveaudioInputStream);
+                clipSlimeMove.start();
+            }
+            else if(clipType == "Roll"){
+                clipRoll.open(clipRollaudioInputStream);
+                clipRoll.start();
+            }
+            else if(clipType == "BuildCreep"){
+                clipBuildCreep.open(clipBuildCreepaudioInputStream);
+                clipBuildCreep.start();
+            }
         }
-
+        
         //Cacth for the program
         catch (IOException | LineUnavailableException e) {
             //If something hapeens print it out
             e.printStackTrace();
         }
     }
+
+
 
     //Stop method is unviresal for all sounds
     public void Stop(String clipType){
@@ -219,6 +256,26 @@ public class Sounds{
         else if(clipType == "Walking"){
             clipWalking.flush();
             clipWalking.stop();
+        }
+        else if(clipType == "SlimeAttack"){
+            clipSlimeAttack.flush();
+            clipSlimeAttack.stop();
+        }
+        else if(clipType == "SlimeDeath"){
+            clipSlimeDeath.flush();
+            clipSlimeDeath.stop();
+        }
+        else if(clipType == "SlimeMove"){
+            clipSlimeMove.flush();
+            clipSlimeMove.stop();
+        }
+        else if(clipType == "Roll"){
+            clipRoll.flush();
+            clipRoll.stop();
+        }
+        else if(clipType == "BuildCreep"){
+            clipBuildCreep.flush();
+            clipBuildCreep.stop();
         }
     }
 }
