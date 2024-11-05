@@ -54,7 +54,7 @@ public class Gui extends JPanel{
         // Load environment images
         envImages = new BufferedImage[5];
         try{
-            envImages[0] = ImageIO.read(new File("Images\\Enviroment\\Tiles\\Snow Tile.png.png"));
+            envImages[0] = ImageIO.read(new File("Images\\Enviroment\\Tiles\\tile_snow.png"));
         } catch (Exception e){e.printStackTrace();};
 
         this.width = WIDTH;
@@ -168,7 +168,7 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 try {
                     for(int i = 0; i < enemies.size(); i ++){
-                        BufferedImage slimeImage = ImageIO.read(new File("Images\\Enemies\\slime.png"));
+                        BufferedImage slimeImage = ImageIO.read(new File("Images\\Enemies\\slime_sheet.png"));
                         AffineTransform a = AffineTransform.getScaleInstance(1, 1);
                         a.translate(enemies.get(i).getxPos(), enemies.get(i).getyPos() - 10);
                         a.scale(0.1, 0.1);
