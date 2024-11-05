@@ -42,6 +42,7 @@ public class Game implements ActionListener{
         gameTimer.start();
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
+        Images images = new Images();
     }
 
 //-------------------------------------------------//
