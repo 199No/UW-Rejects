@@ -32,6 +32,21 @@ public class Slime extends Enemies{
 
         System.out.println("Enemies!");
     }
+    public Slime(int x, int y){
+        super();
+        this.health = 10;
+        this.damage = 1;
+        this.speed = 10;
+        this.width = 5;
+        this.height = 5;
+        this.eyesight = 400;
+        this.xPos = x;
+        this.yPos = y;
+        this.alert = false;
+
+
+        System.out.println("Enemies!");
+    }
 
     //-------------------------------------------------//
     //                    Methods                      //

@@ -2,7 +2,6 @@ package src;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
-import javax.swing.JPanel;
 
 //-------------------------------------------------//
 //                    Player                       //
@@ -11,7 +10,6 @@ public class Player {
     ///////////////
     //Properties
     //////////////
-    private JPanel JPanel;
     private int health;
     private int damage;
     private int speed;
@@ -62,10 +60,6 @@ public class Player {
             }
         }
         return -1;
-    }
-
-    public void setJPanel(JPanel panel){
-        this.JPanel = panel;
     }
 
     // A
@@ -126,15 +120,6 @@ public class Player {
         yPos = y;
     }
 
-    public void loseHealth(){
-        this.health--;
-    }
-    public void checkPlayer(){
-        if(this.health == 0){
-            System.out.println("IM DEAD");
-        }
-    }
-
     // space
     public void attack(){
         //use damage variable
@@ -148,10 +133,13 @@ public class Player {
     public int getYDir(){
         return yDir;
     }
+
     public int getWidth(){
         return this.width;
     }
+
     public int getHeight(){
         return this.height;
     }
+
 }
