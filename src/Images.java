@@ -10,7 +10,7 @@ public class Images {
     public Images(){
         recursiveImageLoad("Images");
         for(int i = 0; i < tempImageList.size(); i++){
-            System.out.println(tempImageList.get(i).toString());
+            System.out.println(tempImageList.get(i).getWidth(null));
         }
     }
     private void recursiveImageLoad(String folderPath){
