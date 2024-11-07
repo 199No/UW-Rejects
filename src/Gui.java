@@ -37,6 +37,8 @@ public class Gui extends JPanel{
     BufferedImage[] playerImages;
     BufferedImage[] envImages;
     Images images;
+    int slimeStep = 0;
+    double lastSlimeStep = System.currentTimeMillis();
     ///////////////
     //Constuctor
     //////////////
@@ -165,15 +167,16 @@ public class Gui extends JPanel{
     public void drawEnemies(ArrayList<Enemies> enemies){
         //given an arraylist type enemies
         //draw enemies based on their x and y positon {use getxPos() getyPos()}
-
+        double now = System.currentTimeMillis();
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 try {
                     for(int i = 0; i < enemies.size(); i ++){
-                        BufferedImage slimeImage = images.getImage("slimeSheet");
-                        AffineTransform a = AffineTransform.getScaleInstance(1, 1);
-                        a.translate(enemies.get(i).getxPos(), enemies.get(i).getyPos() - 10);
-                        a.scale(0.1, 0.1);
+                        BufferedImage slimeImage = images.getImage("slimeSheet").getSubimage(
+                            (slimeStep % 3) * 72, (int)Math.floor(slimeStep / 3) * 72, 72, 72);
+                        AffineTransform a = AffineTransform.getScaleInstance(3, 3);
+                        a.translate((enemies.get(i).getxPos()) / 3, (enemies.get(i).getyPos() - 10) / 3);
+                        a.scale(0.2, 0.2);
                         g2d.drawImage(slimeImage, a, null);
                     }
                 }
@@ -182,6 +185,13 @@ public class Gui extends JPanel{
                 }
             }
         });
+        if(now - lastSlimeStep > 150){
+            slimeStep ++;
+            lastSlimeStep = now;
+            if(slimeStep >= 7){
+                slimeStep = 0;
+            }
+        }
 
     }
 }
