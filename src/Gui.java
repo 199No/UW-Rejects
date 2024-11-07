@@ -36,25 +36,29 @@ public class Gui extends JPanel{
     // Preloading. To be deprecated
     BufferedImage[] playerImages;
     BufferedImage[] envImages;
+    Images images;
+    int slimeStep = 0;
+    double lastSlimeStep = System.currentTimeMillis();
     ///////////////
     //Constuctor
     //////////////
     public Gui(int width, int height, Input input) {
+        images = new Images();
         playerImages = new BufferedImage[5];
         try {
             // Load up all the player images (to be deprectated)
-            playerImages[0] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(0, 0, 96, 96);
-            playerImages[1] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(96, 96, 96, 96);
-            playerImages[2] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(96, 0, 96, 96);
-            playerImages[3] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png")).getSubimage(0, 96, 96, 96);
-            playerImages[4] = ImageIO.read(new File("Images\\Player\\Player spritesheet.png"));
+            playerImages[0] = images.getImage("Player spritesheet").getSubimage(0, 0, 96, 96);
+            playerImages[1] = images.getImage("Player spritesheet").getSubimage(96, 0, 96, 96);
+            playerImages[2] = images.getImage("Player spritesheet").getSubimage(0, 96, 96, 96);
+            playerImages[3] = images.getImage("Player spritesheet").getSubimage(96, 96, 96, 96);
+            playerImages[4] = images.getImage("Player spritesheet");
 
 
         } catch (Exception e){e.printStackTrace();}
         // Load environment images
         envImages = new BufferedImage[5];
         try{
-            envImages[0] = ImageIO.read(new File("Images\\Enviroment\\Tiles\\tile_snow.png"));
+            envImages[0] = images.getImage("tile_snow");
         } catch (Exception e){e.printStackTrace();};
 
         this.width = WIDTH;
@@ -163,15 +167,16 @@ public class Gui extends JPanel{
     public void drawEnemies(ArrayList<Enemies> enemies){
         //given an arraylist type enemies
         //draw enemies based on their x and y positon {use getxPos() getyPos()}
-
+        double now = System.currentTimeMillis();
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 try {
                     for(int i = 0; i < enemies.size(); i ++){
-                        BufferedImage slimeImage = ImageIO.read(new File("Images\\Enemies\\slime_sheet.png"));
-                        AffineTransform a = AffineTransform.getScaleInstance(1, 1);
-                        a.translate(enemies.get(i).getxPos(), enemies.get(i).getyPos() - 10);
-                        a.scale(0.1, 0.1);
+                        BufferedImage slimeImage = images.getImage("slimeSheet").getSubimage(
+                            (slimeStep % 3) * 72, (int)Math.floor(slimeStep / 3) * 72, 72, 72);
+                        AffineTransform a = AffineTransform.getScaleInstance(3, 3);
+                        a.translate((enemies.get(i).getxPos()) / 3, (enemies.get(i).getyPos() - 10) / 3);
+                        a.scale(0.2, 0.2);
                         g2d.drawImage(slimeImage, a, null);
                     }
                 }
@@ -180,6 +185,13 @@ public class Gui extends JPanel{
                 }
             }
         });
+        if(now - lastSlimeStep > 150){
+            slimeStep ++;
+            lastSlimeStep = now;
+            if(slimeStep >= 7){
+                slimeStep = 0;
+            }
+        }
 
     }
 }
