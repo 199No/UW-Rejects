@@ -15,6 +15,7 @@ public class Player {
     private int speed;
     private int xPos;
     private int yPos;
+    private int[] topLeft; //top left of the hitbox
     private final int width = 38;
     private final int height = 38;
     private boolean[] direction = new boolean[4];
@@ -29,6 +30,7 @@ public class Player {
         xPos = 0;
         yPos = 0;
         this.direction[0] = true;
+        this.topLeft = new int[]{xPos-this.getWidth(), yPos-this.getHeight()};
         xDir = 1;
         yDir = 1;
     }
@@ -46,6 +48,9 @@ public class Player {
 
     public int[] getLocation(){
         return new int[] {this.xPos,this.yPos};
+    }
+    public int[] getHitboxTopLeft(){
+        return new int[]{xPos-this.getWidth(), yPos-this.getHeight()};
     }
 
     public void setDirection(int direction){
