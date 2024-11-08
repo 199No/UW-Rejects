@@ -38,8 +38,6 @@ public class Sounds{
     Clip clipSwordAttack;
     AudioInputStream clipTrumpOliveraudioInputStream;
     Clip clipTrumpOliver;
-    AudioInputStream clipWalkingaudioInputStream;
-    Clip clipWalking; 
     AudioInputStream clipSlimeAttackaudioInputStream;
     Clip clipSlimeAttack;
     AudioInputStream clipSlimeDeathaudioInputStream;
@@ -51,6 +49,26 @@ public class Sounds{
     AudioInputStream clipBuildCreepaudioInputStream;
     Clip clipBuildCreep;
 
+    AudioInputStream clipWalkingFullaudioInputStream;
+    Clip clipWalkingFull; 
+    AudioInputStream clipWalking1audioInputStream;
+    Clip clipWalking1; 
+    AudioInputStream clipWalking2audioInputStream;
+    Clip clipWalking2; 
+    AudioInputStream clipWalking3audioInputStream;
+    Clip clipWalking3; 
+    AudioInputStream clipWalking4audioInputStream;
+    Clip clipWalking4; 
+    AudioInputStream clipWalking5audioInputStream;
+    Clip clipWalking5; 
+    AudioInputStream clipWalking6audioInputStream;
+    Clip clipWalking6; 
+    AudioInputStream clipWalking7audioInputStream;
+    Clip clipWalking7; 
+    AudioInputStream clipWalking8audioInputStream;
+    Clip clipWalking8; 
+    AudioInputStream clipWalking9audioInputStream;
+    Clip clipWalking9; 
 
     //When Sound is created define all Sounds 
     public Sounds(){
@@ -81,8 +99,6 @@ public class Sounds{
             clipSwordAttack = AudioSystem.getClip();
             clipTrumpOliveraudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\EasterEgg\\TrumpOliver.wav"));
             clipTrumpOliver = AudioSystem.getClip();
-            clipWalkingaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking.wav"));
-            clipWalking = AudioSystem.getClip();
             clipSlimeAttackaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Enemies Sounds\\SlimeAttack.wav"));
             clipSlimeAttack = AudioSystem.getClip();
             clipSlimeDeathaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Enemies Sounds\\SlimeDeath.wav"));
@@ -93,6 +109,28 @@ public class Sounds{
             clipRoll = AudioSystem.getClip();
             clipBuildCreepaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\BuildCreep.wav"));
             clipBuildCreep = AudioSystem.getClip();
+
+
+            clipWalkingFullaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\FullWalking.wav"));
+            clipWalkingFull = AudioSystem.getClip();
+            clipWalking1audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking1.wav"));
+            clipWalking1 = AudioSystem.getClip();
+            clipWalking2audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking2.wav"));
+            clipWalking2 = AudioSystem.getClip();
+            clipWalking3audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking3.wav"));
+            clipWalking3 = AudioSystem.getClip();
+            clipWalking4audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking4.wav"));
+            clipWalking4 = AudioSystem.getClip();
+            clipWalking5audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking5.wav"));
+            clipWalking5 = AudioSystem.getClip();
+            clipWalking6audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking6.wav"));
+            clipWalking6 = AudioSystem.getClip();
+            clipWalking7audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking7.wav"));
+            clipWalking7 = AudioSystem.getClip();
+            clipWalking8audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking8.wav"));
+            clipWalking8 = AudioSystem.getClip();
+            clipWalking9audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
+            clipWalking9 = AudioSystem.getClip();
         }  
 
         //Cacth for the program
@@ -166,10 +204,6 @@ public class Sounds{
                 clipTrumpOliver.open(clipTrumpOliveraudioInputStream);
                 clipTrumpOliver.start();
             }
-            else if(clipType == "Walking"){
-                clipWalking.open(clipWalkingaudioInputStream);
-                clipWalking.start();
-            }
             else if(clipType == "SlimeAttack"){
                 clipSlimeAttack.open(clipSlimeAttackaudioInputStream);
                 clipSlimeAttack.start();
@@ -189,6 +223,48 @@ public class Sounds{
             else if(clipType == "BuildCreep"){
                 clipBuildCreep.open(clipBuildCreepaudioInputStream);
                 clipBuildCreep.start();
+            }
+
+
+            else if(clipType == "WalkingFull"){
+                clipWalkingFull.open(clipWalkingFullaudioInputStream);
+                clipWalkingFull.start();
+            }
+            else if(clipType == "Walking1"){
+                clipWalking1.open(clipWalking1audioInputStream);
+                clipWalking1.start();
+            }
+            else if(clipType == "Walking2"){
+                clipWalking2.open(clipWalking2audioInputStream);
+                clipWalking2.start();
+            }
+            else if(clipType == "Walking3"){
+                clipWalking3.open(clipWalking3audioInputStream);
+                clipWalking3.start();
+            }
+            else if(clipType == "Walking4"){
+                clipWalking4.open(clipWalking4audioInputStream);
+                clipWalking4.start();
+            }
+            else if(clipType == "Walking5"){
+                clipWalking5.open(clipWalking5audioInputStream);
+                clipWalking5.start();
+            }
+            else if(clipType == "Walking6"){
+                clipWalking6.open(clipWalking6audioInputStream);
+                clipWalking6.start();
+            }
+            else if(clipType == "Walking7"){
+                clipWalking7.open(clipWalking7audioInputStream);
+                clipWalking7.start();
+            }
+            else if(clipType == "Walking8"){
+                clipWalking8.open(clipWalking8audioInputStream);
+                clipWalking8.start();
+            }
+            else if(clipType == "Walking9"){
+                clipWalking9.open(clipWalking9audioInputStream);
+                clipWalking9.start();
             }
         }
         
@@ -253,10 +329,6 @@ public class Sounds{
             clipTrumpOliver.flush();
             clipTrumpOliver.stop();
         }
-        else if(clipType == "Walking"){
-            clipWalking.flush();
-            clipWalking.stop();
-        }
         else if(clipType == "SlimeAttack"){
             clipSlimeAttack.flush();
             clipSlimeAttack.stop();
@@ -276,6 +348,47 @@ public class Sounds{
         else if(clipType == "BuildCreep"){
             clipBuildCreep.flush();
             clipBuildCreep.stop();
+        }
+
+        else if(clipType == "WalkingFull"){
+            clipWalkingFull.flush();
+            clipWalkingFull.stop();
+        }
+        else if(clipType == "Walking1"){
+            clipWalking1.flush();
+            clipWalking1.stop();
+        }
+        else if(clipType == "Walking2"){
+            clipWalking2.flush();
+            clipWalking2.stop();
+        }
+        else if(clipType == "Walking3"){
+            clipWalking3.flush();
+            clipWalking3.stop();
+        }
+        else if(clipType == "Walking4"){
+            clipWalking4.flush();
+            clipWalking4.stop();
+        }
+        else if(clipType == "Walking5"){
+            clipWalking5.flush();
+            clipWalking5.stop();
+        }
+        else if(clipType == "Walking6"){
+            clipWalking6.flush();
+            clipWalking6.stop();
+        }
+        else if(clipType == "Walking7"){
+            clipWalking7.flush();
+            clipWalking7.stop();
+        }
+        else if(clipType == "Walking8"){
+            clipWalking8.flush();
+            clipWalking8.stop();
+        }
+        else if(clipType == "Walking9"){
+            clipWalking9.flush();
+            clipWalking9.stop();
         }
     }
 }
