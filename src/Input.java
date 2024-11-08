@@ -29,6 +29,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     boolean mouseLocked;
     boolean[] keys = new boolean[90];
     Player player;
+    int latestInput; // last pressed key
     int pressed; 
     int released;
     ///////////////
@@ -142,6 +143,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
              //checks to see if this input was a new input
             if(getKey(e.getKeyCode()) == false){
                 keys[e.getKeyCode()] = true;
+                latestInput = e.getKeyCode();
                 checkDash(e);
                 pressed = (int) System.currentTimeMillis();
             }else{
@@ -219,7 +221,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
         //released is short clicks release
         //system.currentmillis is the next inputs pressed
         if((Math.abs(pressed) - Math.abs(released)) > 25 && (Math.abs(pressed) - Math.abs(released)) < 100 && (Math.abs(released) - Math.abs( (int) System.currentTimeMillis())) > 50 && (Math.abs(released) - Math.abs( (int) System.currentTimeMillis())) < 200){
-            System.out.println("dash " + e.getKeyCode());
+            player.playerDash(e.getKeyCode());
         }
 
     }
