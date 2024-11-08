@@ -2,7 +2,7 @@ package src;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
-
+import java.awt.event.*;
 //-------------------------------------------------//
 //                    Player                       //
 //-------------------------------------------------// 
@@ -116,8 +116,9 @@ public class Player {
     }
     
     //given the direction (key code) dash in that direction
-    public void playerDash(int keycode){
-        System.out.println("Player dashed! " + keycode);
+    public void playerDash(int key){
+        //find out direction
+        System.out.println("player dash " + key);
     }
 
     public void teleport(int x, int y){
