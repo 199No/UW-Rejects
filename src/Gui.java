@@ -106,18 +106,14 @@ public class Gui extends JPanel{
     public void background(int r, int g, int b){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                try {
-                    g2d.setColor(new Color(r, g, b));
-                    g2d.fillRect(0, 0, width, height);
-                    for(int y = 13; y < 12; y++){
-                        for(int x = 0; x < 24; x++){
-                            AffineTransform a = AffineTransform.getScaleInstance(0.4, 0.4);
-                            a.translate(x* 38.4 * 2.5, y * 38.4 * 2.5);
-                            g2d.drawImage(envImages[0], a, null);
-                        }
+                g2d.setColor(new Color(r, g, b));
+                g2d.fillRect(0, 0, width, height);
+                for(int y = 13; y < 12; y++){
+                    for(int x = 0; x < 24; x++){
+                        AffineTransform a = AffineTransform.getScaleInstance(0.4, 0.4);
+                        a.translate(x* 38.4 * 2.5, y * 38.4 * 2.5);
+                        g2d.drawImage(envImages[0], a, null);
                     }
-                } catch (Exception e){
-                    e.printStackTrace();
                 }
             }
         });
@@ -170,18 +166,13 @@ public class Gui extends JPanel{
         double now = System.currentTimeMillis();
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                try {
-                    for(int i = 0; i < enemies.size(); i ++){
-                        BufferedImage slimeImage = images.getImage("slimeSheet").getSubimage(
-                            (slimeStep % 3) * 72, (int)Math.floor(slimeStep / 3) * 72, 72, 72);
-                        AffineTransform a = AffineTransform.getScaleInstance(3, 3);
-                        a.translate((enemies.get(i).getxPos()) / 3, (enemies.get(i).getyPos() - 10) / 3);
-                        a.scale(0.2, 0.2);
-                        g2d.drawImage(slimeImage, a, null);
-                    }
-                }
-                catch(Exception e){
-                    System.out.println("This shouldn't happen.");
+                for(int i = 0; i < enemies.size(); i ++){
+                    BufferedImage slimeImage = images.getImage("slimeSheet").getSubimage(
+                        (slimeStep % 3) * 72, (int)Math.floor(slimeStep / 3) * 72, 72, 72);
+                    AffineTransform a = AffineTransform.getScaleInstance(3, 3);
+                    a.translate((enemies.get(i).getxPos()) / 3, (enemies.get(i).getyPos() - 10) / 3);
+                    a.scale(0.2, 0.2);
+                    g2d.drawImage(slimeImage, a, null);
                 }
             }
         });
