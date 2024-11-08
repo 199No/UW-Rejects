@@ -18,7 +18,6 @@ public class Player {
     private int[] topLeft; //top left of the hitbox
     private final int width = 38;
     private final int height = 38;
-    private boolean[] direction = new boolean[4];
     private int xDir, yDir;
     ///////////////
     //Constuctor
@@ -29,9 +28,8 @@ public class Player {
         damage = 1;
         xPos = 0;
         yPos = 0;
-        this.direction[0] = true;
         this.topLeft = new int[]{xPos-this.getWidth(), yPos-this.getHeight()};
-        xDir = 1;
+        xDir = 2;
         yDir = 1;
     }
 
@@ -51,20 +49,6 @@ public class Player {
     }
     public int[] getHitboxTopLeft(){
         return new int[]{xPos-this.getWidth(), yPos-this.getHeight()};
-    }
-
-    public void setDirection(int direction){
-        this.direction = new boolean[4];
-        this.direction[direction] = true; // 1w 2a 3s 4d
-    }
-
-    public int getDirection(){
-        for(int i = 0; i < this.direction.length; i++){
-            if(this.direction[i] = true){
-                return i;
-            }
-        }
-        return -1;
     }
 
     // A
