@@ -32,8 +32,8 @@ public class Slime extends Enemies{
 
 
     private int[] lastPlayerPos = new int[]{this.getxPos(), this.getyPos()}; //start with the slimes positon cuz idk what else to do
-
-
+    private int[] dashTowards = new int[2]; // dash towards
+    private long lastDash;
     ///////////////
     //Constuctor
     //////////////
@@ -48,9 +48,6 @@ public class Slime extends Enemies{
         this.xPos = 500;
         this.yPos = 100;
         this.alert = false;
-
-
-        System.out.println("Enemies!");
     }
 
     //-------------------------------------------------//
@@ -62,22 +59,21 @@ public class Slime extends Enemies{
 
     //checks if the slimes position is close to player "alerts" slime when close to
     public void checkStatus(Player player){
-
         if(this.alert){
             //move towards last point saw player
             move(lastPlayerPos[0], lastPlayerPos[1], this.speed);
+        }
+        //inside eyesight radius, check to see if slime can see player with LOS
+        if(calcDistance(player) <= eyesight){
+            this.alert = checkAlert(player);
         }else{
-            //inside eyesight radius, check to see if slime can see player with LOS
-            if(calcLOS(player) <= eyesight){
-                this.alert = checkAlert(player);
-            }else{{
-                    if(this.getxPos() == lastPlayerPos[0] && this.getyPos() == lastPlayerPos[1] ){ // check if slime reached last point saw of LOS
-                        System.out.println("lost player LOS");
-                        this.alert = false;
-                    }
-                }
+            if(this.getxPos() == lastPlayerPos[0] && this.getyPos() == lastPlayerPos[1] ){ // check if slime reached last point saw of LOS
+                System.out.println("lost player LOS");
+                this.alert = false;
             }
         }
+    
+        
         this.angry = checkAnger();
 
 
@@ -90,27 +86,53 @@ public class Slime extends Enemies{
 
     //checks if the players position (with its width and height) is inside the radius of the eyesight of the slime
     public boolean checkAlert(Player player){
-        int slimeX = this.getxPos();
-        int slimeY = this.getyPos();
+        //pre condition player is insidde radius and alert wasnt already true
 
-        int eyesight = this.getEyesight();
+        Vector direction = new Vector(player.getxPos() - this.getxPos(), player.getyPos() - this.getyPos());
 
-        int playerX = player.getxPos();
-        int playerY = player.getyPos();
-        
-        int differenceX = slimeX - playerX;
-        int differenceY = slimeY - playerY;
+        // Normalize the direction vector (make it unit length)
+        direction = direction.normalize();
 
-        if(slimeX - playerX == 0){
-            differenceX = 1;
-        }
-
-        if((differenceY)/(differenceX) > eyesight){
-            System.out.println((differenceY)/(differenceX));
-            return true;
-        }else{
+        if(checkLOS(direction)){ //check if theres obstacles in the way of LOS
             return false;
+        }else{
+            lastPlayerPos = new int[]{(int) player.getxPos(), (int) player.getyPos()};
+            return true;
         }
+    }
+
+    public boolean checkLOS(Vector direction){
+        //at every point of vector check if there is an obstacle
+
+        //returns true if there is an obstacle
+        return false;
+    }
+
+    public double calcDistance(Player player) {
+        double dx = this.getxPos() - player.getxPos();
+        double dy = this.getyPos() - player.getyPos();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public void move(int x, int y, int speed){
+
+        int difference = (int) System.currentTimeMillis() - (int) this.lastDash;
+        
+        if(difference > 0 && difference >= 3000){
+            //do nothing
+        }else if(difference > 3000 && difference <= 5000){
+            //move towards player
+        }else if(difference > 5000 && difference <= 6000){
+            //do nothing
+        }else if(difference > 6000 && difference <= 10000){
+            //dashing (speed 3x)
+        }else if(difference > 10000) {
+            //do nothing
+            System.out.println("reset attack!");
+            lastDash = System.currentTimeMillis();
+        }
+
+
     }
 
     public boolean checkAnger(){
@@ -121,8 +143,4 @@ public class Slime extends Enemies{
         }
     }
 
-    public void update(Player player){
-        //give now
-        //update tick
-    }
 }

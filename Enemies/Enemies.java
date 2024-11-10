@@ -30,16 +30,12 @@ public abstract class Enemies {
     //Constuctor
     //////////////
     public Enemies(){
-        System.out.println("Enemies!");
+
     }
     
     //-------------------------------------------------//
     //                    Methods                      //
     //-------------------------------------------------// 
-
-    public void checkStatus(Player player){
-        //checks if the enemy is alert
-    }
 
      //return true if player is inside hitbox (got hit)
      public boolean checkHitbox(Player player){
@@ -59,6 +55,9 @@ public abstract class Enemies {
         }
         return false;
     }
+
+    public abstract void checkStatus(Player player);
+
 
     public void updateMovement(){
         //updates ticks positions
