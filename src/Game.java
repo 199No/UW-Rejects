@@ -42,6 +42,7 @@ public class Game implements ActionListener{
         gameTimer.start();
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
+        Images images = new Images();
     }
 
 //-------------------------------------------------//
@@ -62,10 +63,7 @@ public class Game implements ActionListener{
         input.playerAttack();
         this.player = input.getPlayer(); //updates player with the inputs copy of player
 
-
-
         for(int i = 0; i < this.enemies.size(); i++){
-            this.enemies.get(i).checkStatus(this.player);
         }
     
         gui.background((int)frameRate * 2, (int)frameRate, (int)frameRate * 2);
@@ -83,16 +81,7 @@ public class Game implements ActionListener{
     }
 
     public Slime createSlime(){
-        return new Slime();
+        return new Slime(); //make a slime given a x and y
     }
-
-    public void checkHitBoxes(){
-
-        //checks if any of the hitboxes are touching eachother
-        //use for loop with arraylist of enemies and the x & y values of the player (width and height)
-
-    }
-
-
 
 }

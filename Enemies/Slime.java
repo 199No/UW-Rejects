@@ -47,6 +47,8 @@ public class Slime extends Enemies{
         this.eyesight = 400;
         this.xPos = 500;
         this.yPos = 100;
+        this.alert = false;
+
 
         System.out.println("Enemies!");
     }
@@ -54,6 +56,8 @@ public class Slime extends Enemies{
     //-------------------------------------------------//
     //                    Methods                      //
     //-------------------------------------------------// 
+
+
 
 
     //checks if the slimes position is close to player "alerts" slime when close to
@@ -76,52 +80,37 @@ public class Slime extends Enemies{
         }
         this.angry = checkAnger();
 
-    }
 
-    //checks if the players is in the LOS of slime 
-    public boolean checkAlert(Player player){
-        //pre condition: slime is not already alerted
-
-        Vector LOS = getDirection(player); //line of sight direction
-
-        //check if theres no obstacles in the way of the line of sight
-        if(checkObstaclesLOS(LOS)){
-            return false;
-        }else{
-            this.lastPlayerPos = new int[]{player.getxPos(), player.getyPos()};
-            return true;
+        if(this.health < 5){
+            //slime is below half health
+            this.angry = true;
         }
+
     }
 
-    // Method to calculate the direction vector from slime to player
-    public Vector getDirection(Player player) {
-        // Subtract the slime's position from the player's position to get the direction
-        return new Vector(player.getxPos() - this.getxPos(), player.getyPos() - this.getyPos());
-    }
+    //checks if the players position (with its width and height) is inside the radius of the eyesight of the slime
+    public boolean checkAlert(Player player){
+        int slimeX = this.getxPos();
+        int slimeY = this.getyPos();
 
-    public boolean checkObstaclesLOS(Vector direction){
-        //pre condition: the player is already in the radius
+        int eyesight = this.getEyesight();
 
-        //given the direction check if there is any obstacles in the way
+        int playerX = player.getxPos();
+        int playerY = player.getyPos();
+        
+        int differenceX = slimeX - playerX;
+        int differenceY = slimeY - playerY;
 
-        return false;
-    }
+        if(slimeX - playerX == 0){
+            differenceX = 1;
+        }
 
-    public double calcLOS(Player player) {
-        int dx = (int)(this.getxPos() - player.getxPos());
-        int dy = (int)(this.getyPos() - player.getyPos());
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    public void move(int x, int y, double speed) {
-        // Calculate the direction vector from slime to target
-        Vector direction = new Vector(x - this.getxPos(), y - this.getyPos());
-
-        direction.normalize();
-
-        // Move the slime in the direction of the target by the given speed
-        this.xPos += (int) direction.getxPos() * this.speed;
-        this.yPos += (int) direction.getyPos() * this.speed;
+        if((differenceY)/(differenceX) > eyesight){
+            System.out.println((differenceY)/(differenceX));
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public boolean checkAnger(){
@@ -132,7 +121,7 @@ public class Slime extends Enemies{
         }
     }
 
-    public void update(){
+    public void update(Player player){
         //give now
         //update tick
     }

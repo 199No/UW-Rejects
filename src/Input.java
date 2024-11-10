@@ -1,11 +1,21 @@
 package src;
+
+
+//pressed -> released (check if short)  [100 - 350]
+//time inbetween
+//pressed2
+//check dash will check if released and pressed2 inputs have a short break (released was a short click)
+//if click1 and click2 short; dash
+
+
+
+
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
-import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.event.*;
-import java.awt.Robot;
+import java.util.Arrays;
 //-------------------------------------------------//
 //                    Input                        //
 //-------------------------------------------------// 
@@ -19,6 +29,9 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     boolean mouseLocked;
     boolean[] keys = new boolean[90];
     Player player;
+    int latestInput; // last pressed key
+    int pressed; 
+    int released;
     ///////////////
     //Comstuctor
     //////////////
@@ -109,14 +122,50 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     public void mouseExited(MouseEvent e) {
         // Empty
     }
+
+    @Override
+    public void mouseDragged(MouseEvent e){
+
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
     }
+
+
+
+
+
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() < keys.length){
-            keys[e.getKeyCode()] = true;
+             //checks to see if this input was a new input
+            if(getKey(e.getKeyCode()) == false){
+                keys[e.getKeyCode()] = true;
+                latestInput = e.getKeyCode();
+                checkDash(e);
+                pressed = (int) System.currentTimeMillis();
+            }else{
+                keys[e.getKeyCode()] = true;
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+        if(e.getKeyCode() == 27){
+            mouseLocked = !mouseLocked;
+            lastX = MouseInfo.getPointerInfo().getLocation().getX();
+            lastY = MouseInfo.getPointerInfo().getLocation().getY();
+            mouseX = lastX;
+            mouseY = lastY;
+        }
+
+        if(e.getKeyCode() < keys.length){
+                keys[e.getKeyCode()] = false;
+                released = (int) System.currentTimeMillis(); 
         }
     }
 
@@ -125,57 +174,59 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
 
         if(getKey(KeyEvent.VK_W) == true){
             if(getKey(KeyEvent.VK_SHIFT) == true){
-            //shift is pressed
-            player.moveUpRun();
-        }else{
-            player.moveUpWalk();
-        }
+                //shift and W is pressed
+                player.moveUpRun();
+            }else{
+                //W pressed
+                player.moveUpWalk();
+            }
         }if(getKey(KeyEvent.VK_A) == true){
             if(getKey(KeyEvent.VK_SHIFT) == true){
+                //shift and A pressed
                 player.moveLeftRun();
             }else{
+                //A pressed
                 player.moveLeftWalk();
             }
         }if(getKey(KeyEvent.VK_S) == true){
             if(getKey(KeyEvent.VK_SHIFT) == true){
+                // Shift and S is pressed
                 player.moveDownRun();
             }else{
+                //S is pressed
                 player.moveDownWalk();
             }
         }if(getKey(KeyEvent.VK_D) == true){
             if(getKey(KeyEvent.VK_SHIFT) == true){
+                //Shift and D is pressed
                 player.moveRightRun();
             }else{
+                //D is pressed
                 player.moveRightWalk();
             }
         }
     }
-    
+
     public void playerAttack(){
         if(getKey(KeyEvent.VK_SPACE) == true){
             player.attack();
         }
     }
 
+    public void checkDash(KeyEvent e){
+
+        //checks if short click is inbetween [25 - 100] (basically makes sure that it was a purposeful short click)
+        //checks if there is a pause inbetween [50 - 200]
+        //pressed is shortclicks first pressed
+        //released is short clicks release
+        //system.currentmillis is the next inputs pressed
+        if((Math.abs(pressed) - Math.abs(released)) > 25 && (Math.abs(pressed) - Math.abs(released)) < 100 && (Math.abs(released) - Math.abs( (int) System.currentTimeMillis())) > 50 && (Math.abs(released) - Math.abs( (int) System.currentTimeMillis())) < 200){
+            player.playerDash(e.getKeyCode());
+        }
+
+    }
+
     public Player getPlayer(){
         return this.player;
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        if(e.getKeyCode() == 27){
-            mouseLocked = !mouseLocked;
-            lastX = MouseInfo.getPointerInfo().getLocation().getX();
-            lastY = MouseInfo.getPointerInfo().getLocation().getY();
-            mouseX = lastX;
-            mouseY = lastY;
-        }
-        if(e.getKeyCode() < keys.length){
-            keys[e.getKeyCode()] = false;
-        }
-    }
-    @Override
-    public void mouseDragged(MouseEvent e){
-
     }
 }
