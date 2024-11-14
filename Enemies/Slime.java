@@ -55,8 +55,6 @@ public class Slime extends Enemies{
     //-------------------------------------------------// 
 
 
-
-
     public void checkStatus(Player player){
         if(this.alert){
             //move towards last point saw player
@@ -72,14 +70,6 @@ public class Slime extends Enemies{
             }
         }
     
-        
-        this.angry = checkAnger();
-
-
-        if(this.health < 5){
-            //slime is below half health
-            this.angry = true;
-        }
     }
 
     public void takeDamage(int dmg){

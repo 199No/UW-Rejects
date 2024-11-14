@@ -23,7 +23,6 @@ public abstract class Enemies {
     protected double xPos;
     protected double yPos;
     protected boolean alert;
-    protected boolean angry;
     ///////////////
     //Constuctor
     //////////////

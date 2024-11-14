@@ -16,6 +16,7 @@ public class Player {
     private int speed;
     private int xPos;
     private int yPos;
+    private int dashCooldown; // in miliseconds
     private int[] topLeft; //top left of the hitbox
     private final int width = 38;
     private final int height = 38;
@@ -32,6 +33,7 @@ public class Player {
         this.topLeft = new int[]{xPos-this.getWidth(), yPos-this.getHeight()};
         xDir = 2;
         yDir = 1;
+        dashCooldown = 3000;
     }
 
 //-------------------------------------------------//
@@ -101,7 +103,7 @@ public class Player {
     }
     
     //given the direction (key code) dash in that direction
-    public void playerDash(int key){
+    public void dash(int key){
         //find out direction
         System.out.println("player dash " + key);
     }
@@ -131,6 +133,10 @@ public class Player {
 
     public int getHeight(){
         return this.height;
+    }
+
+    public int getDashCooldown(){
+        return this.dashCooldown;
     }
 
 }

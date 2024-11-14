@@ -33,6 +33,8 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     int latestInput; // last pressed key
     int pressed; 
     int released;
+    int lastDash;
+    int INTERVAL = 350; //global time for gaps inbetween short clicks 
     ///////////////
     //Comstuctor
     //////////////
@@ -215,21 +217,19 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     }
 
     public void checkShortClick(KeyEvent e){
-
         //System.out.println(Math.abs(pressed - released)); // duration of input
-
-        if(Math.abs(pressed - released) < 350){
+        if(Math.abs(pressed - released) < INTERVAL){
             shortClick = true;
         }
         latestInput = e.getKeyCode();
     }
 
     public void checkDash(KeyEvent e){
-
-        //System.out.println(Math.abs(released - pressed)); // time inbetween end of last input and beginning of new input
-
-        if(Math.abs(released - pressed) < 350 && shortClick && latestInput == e.getKeyCode()){ // short click and dashing direction is same
+        //if last dash was longer than the dashcooldown, the time inbetween short click and this click is less than 350, there was a short click before and the lastinput is the same direction as the new input
+        if(Math.abs(lastDash - pressed) > getPlayer().getDashCooldown() && Math.abs(released - pressed) < INTERVAL && shortClick && latestInput == e.getKeyCode()){            
             System.out.println("Dash! " + e.getKeyCode());
+            getPlayer().dash(e.getKeyCode());
+            lastDash = (int) System.currentTimeMillis();
         }else{
             shortClick = false;
         }
