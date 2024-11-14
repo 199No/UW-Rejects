@@ -39,11 +39,14 @@ public class Gui extends JPanel{
     Images images;
     int slimeStep = 0;
     double lastSlimeStep = System.currentTimeMillis();
+    Animation slimeAnimation;
     ///////////////
     //Constuctor
     //////////////
     public Gui(int width, int height, Input input) {
         images = new Images();
+        slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
+        slimeAnimation.start();
         playerImages = new BufferedImage[5];
         try {
             // Load up all the player images (to be deprectated)
@@ -168,11 +171,7 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 for(int i = 0; i < enemies.size(); i ++){
                     //Get the slime sheet image
-                    BufferedImage slimeImage = images.getImage("slimeSheet").getSubimage(
-                        // Get the right frame converting step to x and y
-                        // X = (step mod 3)
-                        // Y = (step / 3)
-                        (slimeStep % 3) * 72, (int)Math.floor(slimeStep / 3) * 72, 72, 72);
+                    BufferedImage slimeImage = slimeAnimation.getFrame();
                     // Scale the sheet up to the right size
                     AffineTransform a = AffineTransform.getScaleInstance(3, 3);
                     // Move the image to where the slime is and shrink it a bit
