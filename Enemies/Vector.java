@@ -1,11 +1,9 @@
 package Enemies;
 
 
-// Class to represent a Vector (for direction and movement)
 class Vector {
     double x, y;
 
-    // Constructor to initialize vector components
     public Vector(double x, double y) {
         this.x = x;
         this.y = y;
