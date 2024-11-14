@@ -69,8 +69,23 @@ public class Sounds{
     AudioInputStream clipWalking9audioInputStream;
     Clip clipWalking9; 
 
-    AudioInputStream clipTemp1audioInputStream;
-    Clip clipTemp1; 
+    /*
+     * RandomBeat
+     * FlowerDance
+     * DogBark
+     * CricketsAmbient
+     * KeyboardTyping
+     * MouseClick
+     * FallAmbient
+     * SummerAmbient
+     * SnowyStep
+     * SwordSwipe
+     */
+
+
+
+    AudioInputStream clipRandomBeataudioInputStream;
+    Clip clipRandomBeat; 
     AudioInputStream clipTemp2audioInputStream;
     Clip clipTemp2; 
     AudioInputStream clipTemp3audioInputStream;
@@ -151,8 +166,8 @@ public class Sounds{
             clipWalking9 = AudioSystem.getClip();
 
 
-            clipTemp1audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
-            clipTemp1 = AudioSystem.getClip();
+            clipRandomBeataudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\RandomBeat.wav"));
+            clipRandomBeat = AudioSystem.getClip();
             clipTemp2audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
             clipTemp2 = AudioSystem.getClip();
             clipTemp3audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
@@ -308,8 +323,8 @@ public class Sounds{
 
 
             else if(clipType == "Temp1"){
-                clipTemp1.open(clipTemp1audioInputStream);
-                clipTemp1.start();
+                clipRandomBeat.open(clipRandomBeataudioInputStream);
+                clipRandomBeat.start();
             }
             else if(clipType == "Temp2"){
                 clipTemp2.open(clipTemp2audioInputStream);
@@ -473,8 +488,8 @@ public class Sounds{
 
 
         else if(clipType == "Temp1"){
-            clipTemp1.flush();
-            clipTemp1.stop();
+            clipRandomBeat.flush();
+            clipRandomBeat.stop();
         }
         else if(clipType == "Temp2"){
             clipTemp2.flush();
