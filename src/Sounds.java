@@ -48,7 +48,6 @@ public class Sounds{
     Clip clipRoll;
     AudioInputStream clipBuildCreepaudioInputStream;
     Clip clipBuildCreep;
-
     AudioInputStream clipWalkingFullaudioInputStream;
     Clip clipWalkingFull; 
     AudioInputStream clipWalking1audioInputStream;
@@ -69,6 +68,42 @@ public class Sounds{
     Clip clipWalking8; 
     AudioInputStream clipWalking9audioInputStream;
     Clip clipWalking9; 
+
+    /*
+     * RandomBeat
+     * FlowerDance
+     * DogBark
+     * CricketsAmbient
+     * KeyboardTyping
+     * MouseClick
+     * FallAmbient
+     * SummerAmbient
+     * SnowyStep
+     * SwordSwipe
+     */
+
+
+
+    AudioInputStream clipRandomBeataudioInputStream;
+    Clip clipRandomBeat; 
+    AudioInputStream clipTemp2audioInputStream;
+    Clip clipTemp2; 
+    AudioInputStream clipTemp3audioInputStream;
+    Clip clipTemp3; 
+    AudioInputStream clipTemp4audioInputStream;
+    Clip clipTemp4; 
+    AudioInputStream clipTemp5audioInputStream;
+    Clip clipTemp5; 
+    AudioInputStream clipTemp6audioInputStream;
+    Clip clipTemp6; 
+    AudioInputStream clipTemp7audioInputStream;
+    Clip clipTemp7; 
+    AudioInputStream clipTemp8audioInputStream;
+    Clip clipTemp8; 
+    AudioInputStream clipTemp9audioInputStream;
+    Clip clipTemp9; 
+    AudioInputStream clipTemp10audioInputStream;
+    Clip clipTemp10; 
 
     //When Sound is created define all Sounds 
     public Sounds(){
@@ -109,8 +144,6 @@ public class Sounds{
             clipRoll = AudioSystem.getClip();
             clipBuildCreepaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\BuildCreep.wav"));
             clipBuildCreep = AudioSystem.getClip();
-
-
             clipWalkingFullaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\FullWalking.wav"));
             clipWalkingFull = AudioSystem.getClip();
             clipWalking1audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking1.wav"));
@@ -131,6 +164,29 @@ public class Sounds{
             clipWalking8 = AudioSystem.getClip();
             clipWalking9audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
             clipWalking9 = AudioSystem.getClip();
+
+
+            clipRandomBeataudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\RandomBeat.wav"));
+            clipRandomBeat = AudioSystem.getClip();
+            clipTemp2audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
+            clipTemp2 = AudioSystem.getClip();
+            clipTemp3audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
+            clipTemp3 = AudioSystem.getClip();
+            clipTemp4audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
+            clipTemp4 = AudioSystem.getClip();
+            clipTemp5audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
+            clipTemp5 = AudioSystem.getClip();
+            clipTemp6audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
+            clipTemp6 = AudioSystem.getClip();
+            clipTemp7audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
+            clipTemp7 = AudioSystem.getClip();
+            clipTemp8audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
+            clipTemp8 = AudioSystem.getClip();
+            clipTemp9audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
+            clipTemp9 = AudioSystem.getClip();
+            clipTemp10audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking9.wav"));
+            clipTemp10 = AudioSystem.getClip();
+            
         }  
 
         //Cacth for the program
@@ -264,6 +320,48 @@ public class Sounds{
                 clipWalking9.open(clipWalking9audioInputStream);
                 clipWalking9.start();
             }
+
+
+            else if(clipType == "Temp1"){
+                clipRandomBeat.open(clipRandomBeataudioInputStream);
+                clipRandomBeat.start();
+            }
+            else if(clipType == "Temp2"){
+                clipTemp2.open(clipTemp2audioInputStream);
+                clipTemp2.start();
+            }
+            else if(clipType == "Temp3"){
+                clipTemp3.open(clipTemp3audioInputStream);
+                clipTemp3.start();
+            }
+            else if(clipType == "Temp4"){
+                clipTemp4.open(clipTemp4audioInputStream);
+                clipTemp4.start();
+            }
+            else if(clipType == "Temp5"){
+                clipTemp5.open(clipTemp5audioInputStream);
+                clipTemp5.start();
+            }
+            else if(clipType == "Temp6"){
+                clipTemp6.open(clipTemp6audioInputStream);
+                clipTemp6.start();
+            }
+            else if(clipType == "Temp7"){
+                clipTemp7.open(clipTemp7audioInputStream);
+                clipTemp7.start();
+            }
+            else if(clipType == "Temp8"){
+                clipTemp8.open(clipTemp8audioInputStream);
+                clipTemp8.start();
+            }
+            else if(clipType == "Temp9"){
+                clipTemp9.open(clipTemp9audioInputStream);
+                clipTemp9.start();
+            }
+            else if(clipType == "Temp10"){
+                clipTemp10.open(clipTemp10audioInputStream);
+                clipTemp10.start();
+            }
         }
         
         //Cacth for the program
@@ -386,6 +484,48 @@ public class Sounds{
         else if(clipType == "Walking9"){
             clipWalking9.flush();
             clipWalking9.stop();
+        }
+
+
+        else if(clipType == "Temp1"){
+            clipRandomBeat.flush();
+            clipRandomBeat.stop();
+        }
+        else if(clipType == "Temp2"){
+            clipTemp2.flush();
+            clipTemp2.stop();
+        }
+        else if(clipType == "Temp3"){
+            clipTemp3.flush();
+            clipTemp3.stop();
+        }
+        else if(clipType == "Temp4"){
+            clipTemp4.flush();
+            clipTemp4.stop();
+        }
+        else if(clipType == "Temp5"){
+            clipTemp5.flush();
+            clipTemp5.stop();
+        }
+        else if(clipType == "Temp6"){
+            clipTemp6.flush();
+            clipTemp6.stop();
+        }
+        else if(clipType == "Temp7"){
+            clipTemp7.flush();
+            clipTemp7.stop();
+        }
+        else if(clipType == "Temp8"){
+            clipTemp8.flush();
+            clipTemp8.stop();
+        }
+        else if(clipType == "Temp9"){
+            clipTemp9.flush();
+            clipTemp9.stop();
+        }
+        else if(clipType == "Temp10"){
+            clipTemp10.flush();
+            clipTemp10.stop();
         }
     }
 }
