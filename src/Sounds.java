@@ -224,8 +224,6 @@ public class Sounds{
                 clipBuildCreep.open(clipBuildCreepaudioInputStream);
                 clipBuildCreep.start();
             }
-
-
             else if(clipType == "WalkingFull"){
                 clipWalkingFull.open(clipWalkingFullaudioInputStream);
                 clipWalkingFull.start();
@@ -349,7 +347,6 @@ public class Sounds{
             clipBuildCreep.flush();
             clipBuildCreep.stop();
         }
-
         else if(clipType == "WalkingFull"){
             clipWalkingFull.flush();
             clipWalkingFull.stop();
