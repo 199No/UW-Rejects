@@ -48,7 +48,6 @@ public class Sounds{
     Clip clipRoll;
     AudioInputStream clipBuildCreepaudioInputStream;
     Clip clipBuildCreep;
-
     AudioInputStream clipWalkingFullaudioInputStream;
     Clip clipWalkingFull; 
     AudioInputStream clipWalking1audioInputStream;
@@ -109,8 +108,6 @@ public class Sounds{
             clipRoll = AudioSystem.getClip();
             clipBuildCreepaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Background Music\\BuildCreep.wav"));
             clipBuildCreep = AudioSystem.getClip();
-
-
             clipWalkingFullaudioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\FullWalking.wav"));
             clipWalkingFull = AudioSystem.getClip();
             clipWalking1audioInputStream = AudioSystem.getAudioInputStream(new File("Sounds\\Player Sounds\\Walking\\Walking1.wav"));
