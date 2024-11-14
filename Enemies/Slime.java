@@ -31,8 +31,8 @@ public class Slime extends Enemies{
 // slime reaches point and doesnt find player set to not alert
 
 
-    private int[] lastPlayerPos = new int[]{this.getxPos(), this.getyPos()}; //start with the slimes positon cuz idk what else to do
-    private int[] dashTowards = new int[2]; // dash towards
+    private double[] lastPlayerPos = new double[]{this.getxPos(), this.getyPos()}; //start with the slimes positon cuz idk what else to do
+    private double[] dashTowards = new double[2]; // dash towards
     private long lastDash;
     ///////////////
     //Constuctor
@@ -57,7 +57,6 @@ public class Slime extends Enemies{
 
 
 
-    //checks if the slimes position is close to player "alerts" slime when close to
     public void checkStatus(Player player){
         if(this.alert){
             //move towards last point saw player
@@ -81,7 +80,30 @@ public class Slime extends Enemies{
             //slime is below half health
             this.angry = true;
         }
+    }
 
+    public void takeDamage(int dmg){
+
+    }
+
+    public void idleMove(){
+
+    }
+
+    public void attack(){
+
+    }
+
+    public void die(){
+
+    }
+
+    public void spawn(){
+
+    }
+
+    public boolean isAlive(){
+        return false;
     }
 
     //checks if the players position (with its width and height) is inside the radius of the eyesight of the slime
@@ -91,15 +113,74 @@ public class Slime extends Enemies{
         Vector direction = new Vector(player.getxPos() - this.getxPos(), player.getyPos() - this.getyPos());
 
         // Normalize the direction vector (make it unit length)
-        direction = direction.normalize();
+        //direction = direction.normalize();
 
         if(checkLOS(direction)){ //check if theres obstacles in the way of LOS
             return false;
         }else{
-            lastPlayerPos = new int[]{(int) player.getxPos(), (int) player.getyPos()};
+            lastPlayerPos = new double[]{(int) player.getxPos(), (int) player.getyPos()};
             return true;
         }
     }
+
+    public void update(){  // sets and checks all parts of the enemy (ran every frame)
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
     public boolean checkLOS(Vector direction){
         //at every point of vector check if there is an obstacle
@@ -114,7 +195,7 @@ public class Slime extends Enemies{
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    public void move(int x, int y, int speed){
+    public void move(double x, double y, int speed){
 
         int difference = (int) System.currentTimeMillis() - (int) this.lastDash;
         

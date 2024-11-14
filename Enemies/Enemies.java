@@ -5,6 +5,7 @@ package Enemies;
 //-------------------------------------------------// 
 
 import src.Player;
+import java.awt.Rectangle;
 
 //-------------------------------------------------//
 //                   Enemies                       //
@@ -16,16 +17,13 @@ public abstract class Enemies {
     protected int health;
     protected int damage;
     protected int speed;
-    protected int xPos;
-    protected int yPos;
     protected int width;
     protected int height;
     protected int eyesight;
-    protected boolean alert = false;
-    protected boolean angry = false;
-    protected int now;
-    protected int nextMovement; //random number
-    protected int lastMovement;
+    protected double xPos;
+    protected double yPos;
+    protected boolean alert;
+    protected boolean angry;
     ///////////////
     //Constuctor
     //////////////
@@ -39,37 +37,31 @@ public abstract class Enemies {
 
      //return true if player is inside hitbox (got hit)
      public boolean checkHitbox(Player player){
-
-        int playx = player.getxPos();
-        int playy = player.getyPos();
-
-        int y = this.getyPos();
-        int x = this.getxPos();
-
-        // x    play   +this.getwidth         x - this.getwidth playx x    
-        if(x <= playx && playx <= x + this.getWidth() || x - this.getWidth() <= playx && playx <= x){
-            if(y <= playy && playy <= y + this.getHeight() || y - this.getHeight() <= playy && playy <= y ){
-                //System.out.println("slime hit player");
-                return true;
-            }
-        }
         return false;
+    }
+
+    public Rectangle getHitbox(){
+        return new Rectangle((int)this.xPos, (int) this.yPos, this.width, this.height);
     }
 
     public abstract void checkStatus(Player player);
 
+    public abstract void takeDamage(int dmg);
 
-    public void updateMovement(){
-        //updates ticks positions
-    }
+    public abstract void idleMove();
 
-    public void updateTimer(){
-        //update the ingame timer
-    }
+    public abstract void attack();
 
-    public void update(){
-        // up date the status (?)
-    }
+    public abstract void die();
+
+    public abstract void spawn();
+
+    public abstract boolean isAlive();
+
+    public abstract boolean checkAlert(Player player);
+
+    public abstract void update(); // sets and checks all parts of the enemy (ran every frame)
+
 
     public int getHealth() {
         return health;
@@ -83,11 +75,11 @@ public abstract class Enemies {
         return speed;
     }
 
-    public int getxPos() {
+    public double getxPos() {
         return xPos;
     }
 
-    public int getyPos() {
+    public double getyPos() {
         return yPos;
     }
 
@@ -103,8 +95,8 @@ public abstract class Enemies {
         return eyesight;
     }
     
-    public int[] getLocation() {
-        return new int[]{getxPos(), getyPos()};
+    public double[] getLocation() {
+        return new double[]{getxPos(), getyPos()};
     }
 
 }
