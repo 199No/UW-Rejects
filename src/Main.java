@@ -19,8 +19,8 @@ public class Main{
         new Game();
 
         Sounds SirMixALot = new Sounds();
-        SirMixALot.Play("AnvilHit");
-        SirMixALot.Stop("AnvilHit");
+        //SirMixALot.Play("AnvilHit");
+        //SirMixALot.Stop("AnvilHit");
         
     }
 //-------------------------------------------------//

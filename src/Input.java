@@ -29,9 +29,12 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     boolean mouseLocked;
     boolean[] keys = new boolean[90];
     Player player;
+    boolean shortClick;
     int latestInput; // last pressed key
     int pressed; 
     int released;
+    int lastDash;
+    int INTERVAL = 350; //global time for gaps inbetween short clicks 
     ///////////////
     //Comstuctor
     //////////////
@@ -143,9 +146,8 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
              //checks to see if this input was a new input
             if(getKey(e.getKeyCode()) == false){
                 keys[e.getKeyCode()] = true;
-                latestInput = e.getKeyCode();
-                checkDash(e);
                 pressed = (int) System.currentTimeMillis();
+                checkDash(e);
             }else{
                 keys[e.getKeyCode()] = true;
             }
@@ -165,7 +167,8 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
 
         if(e.getKeyCode() < keys.length){
                 keys[e.getKeyCode()] = false;
-                released = (int) System.currentTimeMillis(); 
+                released = (int) System.currentTimeMillis();
+                checkShortClick(e);
         }
     }
 
@@ -213,17 +216,24 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
         }
     }
 
-    public void checkDash(KeyEvent e){
-
-        //checks if short click is inbetween [25 - 100] (basically makes sure that it was a purposeful short click)
-        //checks if there is a pause inbetween [50 - 200]
-        //pressed is shortclicks first pressed
-        //released is short clicks release
-        //system.currentmillis is the next inputs pressed
-        if((Math.abs(pressed) - Math.abs(released)) > 25 && (Math.abs(pressed) - Math.abs(released)) < 100 && (Math.abs(released) - Math.abs( (int) System.currentTimeMillis())) > 50 && (Math.abs(released) - Math.abs( (int) System.currentTimeMillis())) < 200){
-            player.playerDash(e.getKeyCode());
+    public void checkShortClick(KeyEvent e){
+        //System.out.println(Math.abs(pressed - released)); // duration of input
+        if(Math.abs(pressed - released) < INTERVAL){
+            shortClick = true;
         }
+        latestInput = e.getKeyCode();
+    }
 
+    public void checkDash(KeyEvent e){
+        //if last dash was longer than the dashcooldown, the time inbetween short click and this click is less than 350, there was a short click before and the lastinput is the same direction as the new input
+        if(Math.abs(lastDash - pressed) > getPlayer().getDashCooldown() && Math.abs(released - pressed) < INTERVAL && shortClick && latestInput == e.getKeyCode()){            
+            System.out.println("Dash! " + e.getKeyCode());
+            getPlayer().dash(e.getKeyCode());
+            lastDash = (int) System.currentTimeMillis();
+        }else{
+            shortClick = false;
+        }
+        latestInput = e.getKeyCode();
     }
 
     public Player getPlayer(){
