@@ -13,10 +13,13 @@ public class Player {
     //////////////
     private int health;
     private int damage;
+    private boolean active; //the player is able to be hit if true
     private int speed;
     private int xPos;
     private int yPos;
     private int dashCooldown; // in miliseconds
+    private int dashLength; // in miliseconds
+    private boolean isDashing;
     private int[] topLeft; //top left of the hitbox
     private final int width = 38;
     private final int height = 38;
@@ -33,7 +36,10 @@ public class Player {
         this.topLeft = new int[]{xPos-this.getWidth(), yPos-this.getHeight()};
         xDir = 2;
         yDir = 1;
+        speed = 5;
         dashCooldown = 3000;
+        dashLength = 2000;
+        isDashing = false;
     }
 
 //-------------------------------------------------//
@@ -56,56 +62,83 @@ public class Player {
 
     // A
     public void moveLeftWalk(){
+        xPos -= speed;
         xDir = -1;
-        xPos -= 2;
     }
 
     // D
     public void moveRightWalk(){
+        xPos += (speed);
         xDir = 1;
-        xPos += 2;
     }
 
     // shift + A
     public void moveLeftRun(){
+        xPos -= (speed * 2);
         xDir = -1;
-        xPos -= 4;
     }
 
     //shift + D
     public void moveRightRun(){
+        xPos += (speed * 2);
         xDir = 1;
-        xPos += 4;
     }
 
     // W
     public void moveUpWalk(){
-        yPos -= 2;
+        yPos -= speed;
         yDir = 1;
     }
 
     // S
     public void moveDownWalk(){
-        yPos += 2;
+        yPos += speed;
         yDir = -1;
     }
 
     // shift + W
     public void moveUpRun(){
-        yPos -= 4;
+        yPos -= (speed * 2);
         yDir = 1;
     }
     
     // shift + S
     public void moveDownRun(){
-        yPos += 4;
+        yPos += (speed * 2);
         yDir = -1;
+    }
+
+    public void dash(int direction){
+        //given a direction move the direction they watned make speed 3* the speed and then keep moving
     }
     
     //given the direction (key code) dash in that direction
-    public void dash(int key){
+    public void setDash(int key){
         //find out direction
+        boolean temp = false;
+        if(key == 87){
+            //W
+            temp = true;
+        }else if(key == 68){
+            //D
+            temp = true;
+        }else if(key == 83){
+            //S
+            temp = true;
+        }else if(key == 65){
+            //A
+            temp = true;
+        }
+
+        if(temp){
+            isDashing = true;
+            //direction??
+            active = false;
+            speed = 10; 
+        }
+
         System.out.println("player dash " + key);
+
     }
 
     public void teleport(int x, int y){
@@ -137,6 +170,22 @@ public class Player {
 
     public int getDashCooldown(){
         return this.dashCooldown;
+    }
+
+    public boolean getIsDashing(){
+        return this.isDashing;
+    }
+
+    public void setIsDashing(boolean temp){
+        this.isDashing = temp;
+    }
+
+    public boolean getActive(){
+        return this.active;
+    }
+
+    public int getDashLength(){
+        return this.dashLength;
     }
 
 }

@@ -136,10 +136,6 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
 
     }
 
-
-
-
-
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() < keys.length){
@@ -175,37 +171,50 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     //players movements WASD run/walk (with shift): Calls Player methods
     public void playerMove(){
 
-        if(getKey(KeyEvent.VK_W) == true){
-            if(getKey(KeyEvent.VK_SHIFT) == true){
-                //shift and W is pressed
-                player.moveUpRun();
+        if(getPlayer().getIsDashing()){
+            //the player is in a dashing state
+            //lastDash; // this is the time there was a last dash
+            if(System.currentTimeMillis() > lastDash + getPlayer().getDashLength()){
+                
             }else{
-                //W pressed
-                player.moveUpWalk();
+                //the time is after the length of the dash
+                getPlayer().setIsDashing(false);
             }
-        }if(getKey(KeyEvent.VK_A) == true){
-            if(getKey(KeyEvent.VK_SHIFT) == true){
-                //shift and A pressed
-                player.moveLeftRun();
-            }else{
-                //A pressed
-                player.moveLeftWalk();
-            }
-        }if(getKey(KeyEvent.VK_S) == true){
-            if(getKey(KeyEvent.VK_SHIFT) == true){
-                // Shift and S is pressed
-                player.moveDownRun();
-            }else{
-                //S is pressed
-                player.moveDownWalk();
-            }
-        }if(getKey(KeyEvent.VK_D) == true){
-            if(getKey(KeyEvent.VK_SHIFT) == true){
-                //Shift and D is pressed
-                player.moveRightRun();
-            }else{
-                //D is pressed
-                player.moveRightWalk();
+        }else{
+            //makes sure they cant input anything if they are dashing
+        
+            if(getKey(KeyEvent.VK_W) == true){
+                if(getKey(KeyEvent.VK_SHIFT) == true){
+                    //shift and W is pressed
+                    player.moveUpRun();
+                }else{
+                    //W pressed
+                    player.moveUpWalk();
+                }
+            }if(getKey(KeyEvent.VK_A) == true){
+                if(getKey(KeyEvent.VK_SHIFT) == true){
+                    //shift and A pressed
+                    player.moveLeftRun();
+                }else{
+                    //A pressed
+                    player.moveLeftWalk();
+                }
+            }if(getKey(KeyEvent.VK_S) == true){
+                if(getKey(KeyEvent.VK_SHIFT) == true){
+                    // Shift and S is pressed
+                    player.moveDownRun();
+                }else{
+                    //S is pressed
+                    player.moveDownWalk();
+                }
+            }if(getKey(KeyEvent.VK_D) == true){
+                if(getKey(KeyEvent.VK_SHIFT) == true){
+                    //Shift and D is pressed
+                    player.moveRightRun();
+                }else{
+                    //D is pressed
+                    player.moveRightWalk();
+                }
             }
         }
     }
@@ -228,7 +237,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
         //if last dash was longer than the dashcooldown, the time inbetween short click and this click is less than 350, there was a short click before and the lastinput is the same direction as the new input
         if(Math.abs(lastDash - pressed) > getPlayer().getDashCooldown() && Math.abs(released - pressed) < INTERVAL && shortClick && latestInput == e.getKeyCode()){            
             System.out.println("Dash! " + e.getKeyCode());
-            getPlayer().dash(e.getKeyCode());
+            getPlayer().setDash(e.getKeyCode());
             lastDash = (int) System.currentTimeMillis();
         }else{
             shortClick = false;
