@@ -1,0 +1,21 @@
+//// HOW TO MAKE A MAP ////
+{} separates individual chunks
+; signals the end of a row within a chunk
+Chunks HAVE to be 10x10
+Chunks are arranged in the file the way that they will appear in the map. Use the squashy brackets.
+E.g.
+{chunk at 0, 0}{chunk at 1, 0}
+{chunk at 0, 1}{chunk at 1, 1}
+When making a map, pull up this file so that you can see it.
+1 - Grass
+2 - Sand
+3 - Snow
+4 - Stone
+5 - Water (wip)
+To make a new chunk:
+Copy all the text from map_template. Do NOT overwrite the template.
+Paste it into the map.
+Edit the tiles to your liking.
+Delete all the whitespace so that it looks something like this:
+{row1;row2;row3;row4;row5;row6;row7;row8;row9;row10}
+Move the chunk to where it needs to be.
