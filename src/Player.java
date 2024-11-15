@@ -13,13 +13,20 @@ public class Player {
     //////////////
     private int health;
     private int damage;
-    private boolean active; //the player is able to be hit if true
-    private int speed;
+    private double speed;
     private int xPos;
     private int yPos;
-    private int dashCooldown; // in miliseconds
-    private int dashLength; // in miliseconds
+    private int INTERVAL = 350;
+
+
+    private int dashCooldown = 3000; // in miliseconds
+    private int dashLength   = 2000; // in miliseconds
     private boolean isDashing;
+    private double dashTimer;
+    private int dashDirection;
+
+
+    private boolean active; //the player is able to be hit if true
     private int[] topLeft; //top left of the hitbox
     private final int width = 38;
     private final int height = 38;
@@ -29,37 +36,18 @@ public class Player {
     //////////////
     public Player() {
         System.out.println("Player!");
-        health = 100;
-        damage = 1;
         xPos = 0;
         yPos = 0;
         this.topLeft = new int[]{xPos-this.getWidth(), yPos-this.getHeight()};
         xDir = 2;
         yDir = 1;
         speed = 5;
-        dashCooldown = 3000;
-        dashLength = 2000;
         isDashing = false;
     }
 
 //-------------------------------------------------//
 //                    Methods                      //
 //-------------------------------------------------// 
-    public int getxPos(){
-        return this.xPos;
-    }
-
-    public int getyPos(){
-        return this.yPos;
-    }
-
-    public int[] getLocation(){
-        return new int[] {this.xPos,this.yPos};
-    }
-    public int[] getHitboxTopLeft(){
-        return new int[]{xPos-this.getWidth(), yPos-this.getHeight()};
-    }
-
     // A
     public void moveLeftWalk(){
         xPos -= speed;
@@ -74,13 +62,13 @@ public class Player {
 
     // shift + A
     public void moveLeftRun(){
-        xPos -= (speed * 2);
+        xPos -= (speed * 1.25);
         xDir = -1;
     }
 
     //shift + D
     public void moveRightRun(){
-        xPos += (speed * 2);
+        xPos += (speed * 1.25);
         xDir = 1;
     }
 
@@ -98,47 +86,88 @@ public class Player {
 
     // shift + W
     public void moveUpRun(){
-        yPos -= (speed * 2);
+        yPos -= (speed * 1.25);
         yDir = 1;
     }
     
     // shift + S
     public void moveDownRun(){
-        yPos += (speed * 2);
+        yPos += (speed * 1.25);
         yDir = -1;
     }
 
-    public void dash(int direction){
-        //given a direction move the direction they watned make speed 3* the speed and then keep moving
+    // A
+    public void dashLeft(double speed){
+        xPos -= speed;
+        xDir = -1;
+    }
+
+    // D
+    public void dashRight(double speed){
+        xPos += speed;
+        xDir = 1;
+    }
+
+    // W
+    public void dashUp(double speed){
+        yPos -= speed;
+        yDir = 1;
+    }
+
+    // S
+    public void dashDown(double speed){
+        yPos += speed;
+        yDir = -1;
+    }
+
+    //movement when the player is dashing
+    public void dash(){
+        int dir = getDashDirection();
+        if(Math.abs(System.currentTimeMillis() - dashTimer) < (INTERVAL/2)){
+            //lil pause
+        }else if(Math.abs(System.currentTimeMillis() - dashTimer) >= (INTERVAL/2) && Math.abs(System.currentTimeMillis() - dashTimer) < dashLength - (INTERVAL/2)){
+            //actually dashing (can still take input)
+        }else if(Math.abs(System.currentTimeMillis() - dashTimer) >= dashLength - (INTERVAL/2) && Math.abs(System.currentTimeMillis() - dashTimer) < dashLength){
+            //lil pause
+        }else if(Math.abs(System.currentTimeMillis() - dashTimer) >= dashLength){
+            //after the dash
+            //set everything back to normal
+            isDashing = false;
+            active = true;
+            
+            //idk how to set dashtimer and dashdirection back to normal
+        }
     }
     
+    //basically tells the player when it first dashes
     //given the direction (key code) dash in that direction
     public void setDash(int key){
-        //find out direction
-        boolean temp = false;
-        if(key == 87){
-            //W
-            temp = true;
-        }else if(key == 68){
-            //D
-            temp = true;
-        }else if(key == 83){
-            //S
-            temp = true;
-        }else if(key == 65){
-            //A
-            temp = true;
-        }
 
-        if(temp){
-            isDashing = true;
-            //direction??
-            active = false;
-            speed = 10; 
-        }
+        // set the direction
+        // set is dashing
+
+        isDashing = true;
+        active = false;
+
+        dashTimer = System.currentTimeMillis();
+        this.dashDirection = key;
 
         System.out.println("player dash " + key);
 
+    }
+
+    // space
+    public void attack(){
+        //use damage variable
+        //System.out.println("Space Pressed: Attack! " + this.damage);
+    }
+
+    public int getxPos(){
+        return this.xPos;
+    }
+
+    public int getyPos(){
+        return this.yPos;
     }
 
     public void teleport(int x, int y){
@@ -146,10 +175,12 @@ public class Player {
         yPos = y;
     }
 
-    // space
-    public void attack(){
-        //use damage variable
-        System.out.println("Space Pressed: Attack! " + this.damage);
+    public int[] getLocation(){
+        return new int[] {this.xPos,this.yPos};
+    }
+
+    public int[] getHitboxTopLeft(){
+        return new int[]{xPos-this.getWidth(), yPos-this.getHeight()};
     }
 
     public int getXDir(){
@@ -186,6 +217,13 @@ public class Player {
 
     public int getDashLength(){
         return this.dashLength;
+    }
+
+    public int getDashDirection(){
+        return dashDirection;
+    }
+    public double getSpeed(){
+        return speed;
     }
 
 }

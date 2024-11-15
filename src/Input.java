@@ -171,15 +171,17 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     //players movements WASD run/walk (with shift): Calls Player methods
     public void playerMove(){
 
-        if(getPlayer().getIsDashing()){
-            //the player is in a dashing state
-            //lastDash; // this is the time there was a last dash
-            if(System.currentTimeMillis() > lastDash + getPlayer().getDashLength()){
-                
-            }else{
-                //the time is after the length of the dash
-                getPlayer().setIsDashing(false);
-            }
+        if(player.getIsDashing()){
+            double speed = player.getSpeed();
+            if(getKey(KeyEvent.VK_W) == true){ //w
+                player.dashUp(speed * 0.25);
+            }else if(getKey(KeyEvent.VK_A) == true){ //d
+                player.dashRight(speed* 0.25);
+            }else if(getKey(KeyEvent.VK_S) == true){ //s
+                player.dashDown(speed * 0.25);
+            }else if(getKey(KeyEvent.VK_S) == true){ //a
+                player.dashLeft(speed * 0.25);
+            } 
         }else{
             //makes sure they cant input anything if they are dashing
         
