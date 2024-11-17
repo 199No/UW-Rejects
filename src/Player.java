@@ -16,14 +16,12 @@ public class Player {
     private double speed;
     private int xPos;
     private int yPos;
-    private int INTERVAL = 350;
 
 
     private int dashCooldown = 5000; // in miliseconds
     private int dashLength   = 350 + 500 + 350; // in miliseconds
     private int dashSpeed    = 3; // factor to multiply the speed when dashing
     private boolean isDashing;
-    private double dashTimer;
 
 
     private boolean active; //the player is able to be hit if true

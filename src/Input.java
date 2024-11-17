@@ -178,21 +178,19 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
                 //lil pause
             }else if(lastDash + INTERVAL <= (int) System.currentTimeMillis() && (int) System.currentTimeMillis() < lastDash + getPlayer().getDashLength() - INTERVAL){
                 //actaully dashing
-                System.out.println("dashing");
                 int dir = dashDirection;
-                if(dir == 87){ // w
+                if(dir == KeyEvent.VK_W){ // w
                     getPlayer().dashUp(getPlayer().getSpeed());
-                }else if(dir == 65){ // a
+                }else if(dir == KeyEvent.VK_A){ // a
                     getPlayer().dashLeft(getPlayer().getSpeed());
-                }else if(dir == 83){ // s
+                }else if(dir == KeyEvent.VK_S){ // s
                     getPlayer().dashDown(getPlayer().getSpeed());
-                }else if(dir == 68){ // d
+                }else if(dir == KeyEvent.VK_D){ // d
                     getPlayer().dashRight(getPlayer().getSpeed());
                 }
             }else if(lastDash + getPlayer().getDashLength() - INTERVAL <= (int) System.currentTimeMillis() && (int) System.currentTimeMillis() < lastDash + getPlayer().getDashLength()){
                 //lil pause
             }else if(lastDash + getPlayer().getDashLength() <= (int) System.currentTimeMillis()){
-                System.out.println("stop dashing");
                 getPlayer().setIsDashing(false);
                 getPlayer().setSpeed(5);
             }
