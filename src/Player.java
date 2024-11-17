@@ -19,11 +19,11 @@ public class Player {
     private int INTERVAL = 350;
 
 
-    private int dashCooldown = 3000; // in miliseconds
-    private int dashLength   = 2000; // in miliseconds
+    private int dashCooldown = 5000; // in miliseconds
+    private int dashLength   = 350 + 500 + 350; // in miliseconds
+    private int dashSpeed    = 3; // factor to multiply the speed when dashing
     private boolean isDashing;
     private double dashTimer;
-    private int dashDirection;
 
 
     private boolean active; //the player is able to be hit if true
@@ -50,111 +50,104 @@ public class Player {
 //-------------------------------------------------// 
     // A
     public void moveLeftWalk(){
-        xPos -= speed;
+        if(isDashing){
+            xPos -= speed * 0.1;
+        }else{
+            xPos -= speed;
+        }
         xDir = -1;
     }
 
     // D
     public void moveRightWalk(){
-        xPos += (speed);
+        if(isDashing){
+            xPos += speed * 0.1;
+        }else{
+            xPos += speed;
+        }
         xDir = 1;
     }
 
     // shift + A
     public void moveLeftRun(){
-        xPos -= (speed * 1.25);
+        if(isDashing){
+            xPos -= speed * 0.2;
+        }else{
+            xPos -= (speed * 1.25);
+        }
         xDir = -1;
     }
 
     //shift + D
     public void moveRightRun(){
-        xPos += (speed * 1.25);
+        if(isDashing){
+            xPos += speed * 0.2;
+        }else{
+            xPos += (speed * 1.25);
+        }
         xDir = 1;
     }
 
     // W
     public void moveUpWalk(){
-        yPos -= speed;
+        if(isDashing){
+            yPos -= speed * 0.1;
+        }else{
+            yPos -= speed;
+        }
         yDir = 1;
     }
 
     // S
     public void moveDownWalk(){
-        yPos += speed;
+        if(isDashing){
+            yPos += speed * 0.1;
+        }else{
+            yPos += speed;
+        }
         yDir = -1;
     }
 
     // shift + W
     public void moveUpRun(){
-        yPos -= (speed * 1.25);
+        if(isDashing){
+            yPos -= speed * 0.2;
+        }else{
+            yPos -= (speed * 1.25);
+        }
         yDir = 1;
     }
     
     // shift + S
     public void moveDownRun(){
-        yPos += (speed * 1.25);
+        if(isDashing){
+            yPos += speed * 0.2;
+        }else{
+            yPos += (speed * 1.25);
+        }
         yDir = -1;
     }
 
-    // A
-    public void dashLeft(double speed){
-        xPos -= speed;
-        xDir = -1;
-    }
-
-    // D
     public void dashRight(double speed){
         xPos += speed;
         xDir = 1;
     }
 
-    // W
+    public void dashLeft(double speed){
+        xPos -= speed;
+        xDir = -1;
+    }
+
     public void dashUp(double speed){
         yPos -= speed;
         yDir = 1;
     }
 
-    // S
     public void dashDown(double speed){
         yPos += speed;
         yDir = -1;
     }
 
-    //movement when the player is dashing
-    public void dash(){
-        int dir = getDashDirection();
-        if(Math.abs(System.currentTimeMillis() - dashTimer) < (INTERVAL/2)){
-            //lil pause
-        }else if(Math.abs(System.currentTimeMillis() - dashTimer) >= (INTERVAL/2) && Math.abs(System.currentTimeMillis() - dashTimer) < dashLength - (INTERVAL/2)){
-            //actually dashing (can still take input)
-        }else if(Math.abs(System.currentTimeMillis() - dashTimer) >= dashLength - (INTERVAL/2) && Math.abs(System.currentTimeMillis() - dashTimer) < dashLength){
-            //lil pause
-        }else if(Math.abs(System.currentTimeMillis() - dashTimer) >= dashLength){
-            //after the dash
-            //set everything back to normal
-            isDashing = false;
-            active = true;
-            
-            //idk how to set dashtimer and dashdirection back to normal
-        }
-    }
-    
-    //basically tells the player when it first dashes
-    //given the direction (key code) dash in that direction
-    public void setDash(int key){
-
-        // set the direction
-        // set is dashing
-
-        isDashing = true;
-        active = false;
-
-        dashTimer = System.currentTimeMillis();
-        this.dashDirection = key;
-
-        System.out.println("player dash " + key);
-
-    }
 
     // space
     public void attack(){
@@ -219,11 +212,15 @@ public class Player {
         return this.dashLength;
     }
 
-    public int getDashDirection(){
-        return dashDirection;
-    }
     public double getSpeed(){
         return speed;
+    }
+
+    public void setSpeed(double speed){
+        this.speed = speed;
+    }
+    public int getDashSpeed(){
+        return this.dashSpeed;
     }
 
 }

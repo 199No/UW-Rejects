@@ -98,7 +98,7 @@ public class Slime extends Enemies{
 
     //checks if the players position (with its width and height) is inside the radius of the eyesight of the slime
     public boolean checkAlert(Player player){
-        //pre condition player is insidde radius and alert wasnt already true
+        //pre condition player is inside radius and alert wasnt already true
 
         Vector direction = new Vector(player.getxPos() - this.getxPos(), player.getyPos() - this.getyPos());
 
@@ -116,61 +116,6 @@ public class Slime extends Enemies{
     public void update(){  // sets and checks all parts of the enemy (ran every frame)
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
 
     public boolean checkLOS(Vector direction){
         //at every point of vector check if there is an obstacle
