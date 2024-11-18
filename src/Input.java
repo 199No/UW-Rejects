@@ -192,7 +192,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
                 //lil pause
             }else if(lastDash + getPlayer().getDashLength() <= (int) System.currentTimeMillis()){
                 getPlayer().setIsDashing(false);
-                getPlayer().setSpeed(5);
+                getPlayer().setSpeed(5.0);
             }
         }
     
