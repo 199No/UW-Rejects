@@ -263,4 +263,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     public Player getPlayer(){
         return this.player;
     }
+    public int getLastDash(){
+        return lastDash;
+    }
 }

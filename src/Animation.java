@@ -38,7 +38,7 @@ public class Animation {
                 startTime = (int)System.currentTimeMillis();
                 step = 0;
             } else {
-                step = numFrames;
+                step = numFrames - 1;
             }
         }
         // Determine which frame to draw
