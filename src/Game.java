@@ -83,9 +83,10 @@ public class Game implements ActionListener{
         gui.background((int)frameRate * 2, (int)frameRate, (int)frameRate * 2);
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                g2d.drawImage(image.getScaledInstance(120, 120, 0), 114, 347, null);
+                g2d.drawImage(image.getScaledInstance(Gui.WIDTH, Gui.HEIGHT, 0), 0, 0, null);
             }
         });
+        // Dash bar
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g){
                 double height = (((double)(int)System.currentTimeMillis() - (double)input.getLastDash()) / 5000) * Gui.HEIGHT;
