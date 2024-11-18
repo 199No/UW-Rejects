@@ -16,13 +16,14 @@ public abstract class Enemies {
     ///////////////
     protected int health;
     protected int damage;
-    protected int speed;
+    protected double speed;
     protected int width;
     protected int height;
     protected int eyesight;
     protected double xPos;
     protected double yPos;
     protected boolean alert;
+    protected double[] lastSeen; // the x and y pos of the last time the enemy saw the player
     ///////////////
     //Constuctor
     //////////////
@@ -43,21 +44,19 @@ public abstract class Enemies {
         return new Rectangle((int)this.xPos, (int) this.yPos, this.width, this.height);
     }
 
-    public abstract void checkStatus(Player player);
-
     public abstract void takeDamage(int dmg);
 
     public abstract void idleMove();
 
-    public abstract void attack();
+    public abstract void attack(Vector direction);
 
     public abstract void die();
 
-    public abstract void spawn();
-
     public abstract boolean isAlive();
 
-    public abstract boolean checkAlert(Player player);
+    public abstract boolean scanArea(Player player);
+
+    public abstract void moveToward(double[] lastSeen);
 
     public abstract void update(); // sets and checks all parts of the enemy (ran every frame)
 
@@ -70,7 +69,7 @@ public abstract class Enemies {
         return damage;
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 
@@ -80,6 +79,14 @@ public abstract class Enemies {
 
     public double getyPos() {
         return yPos;
+    }
+
+    public void setxPos(double x) {
+        this.xPos = x;
+    }
+
+    public void setyPos(double y) {
+        this.yPos = y;
     }
 
     public int getWidth() {
@@ -93,9 +100,18 @@ public abstract class Enemies {
     public int getEyesight() {
         return eyesight;
     }
+
+    public boolean getIsAlert(){
+        return this.alert;
+    }
+
     
     public double[] getLocation() {
         return new double[]{getxPos(), getyPos()};
+    }
+
+    public double[] getLastSeen() {
+        return this.lastSeen;
     }
 
 }

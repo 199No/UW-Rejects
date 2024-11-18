@@ -59,12 +59,21 @@ public class Game implements ActionListener{
         } else {
             framesLastSecond ++;
         }
+
+        ////////////////
+        /// Input
+        ///////////////
         input.playerMove();
         input.playerAttack();
         this.player = input.getPlayer(); //updates player with the inputs copy of player
         
         for(int i = 0; i < this.enemies.size(); i++){
-            enemies.get(i).checkStatus(this.player);
+            enemies.get(i).scanArea(this.player);
+            if(enemies.get(i).getIsAlert()){
+                enemies.get(i).moveToward(enemies.get(i).getLastSeen());
+            }else{
+                enemies.get(i).idleMove();
+            }
         }
     
         gui.background((int)frameRate * 2, (int)frameRate, (int)frameRate * 2);
