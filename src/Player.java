@@ -20,7 +20,7 @@ public class Player {
 
     private int dashCooldown = 5000; // in miliseconds
     private int dashLength   = 350 + 500 + 350; // in miliseconds
-    private int dashSpeed    = 3; // factor to multiply the speed when dashing
+    private double dashSpeed    = 2.5; // factor to multiply the speed when dashing
     private boolean isDashing;
 
 
@@ -217,7 +217,7 @@ public class Player {
     public void setSpeed(double speed){
         this.speed = speed;
     }
-    public int getDashSpeed(){
+    public double getDashSpeed(){
         return this.dashSpeed;
     }
 
