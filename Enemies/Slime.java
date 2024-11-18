@@ -58,7 +58,6 @@ public class Slime extends Enemies{
 
     public void idleMove(){
         //move randomly, in random way
-        setxPos(getxPos() + 1);
     }
 
     public void attack(Vector direction){

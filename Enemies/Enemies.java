@@ -23,6 +23,7 @@ public abstract class Enemies {
     protected double xPos;
     protected double yPos;
     protected boolean alert;
+    protected boolean idleMovement;
     protected double[] lastSeen; // the x and y pos of the last time the enemy saw the player
     ///////////////
     //Constuctor
@@ -103,6 +104,10 @@ public abstract class Enemies {
 
     public boolean getIsAlert(){
         return this.alert;
+    }
+
+    public boolean getIdleMovement(){
+        return this.idleMovement;
     }
 
     
