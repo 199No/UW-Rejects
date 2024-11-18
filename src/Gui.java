@@ -45,7 +45,7 @@ public class Gui extends JPanel{
     //////////////
     public Gui(int width, int height, Input input) {
         images = new Images();
-        slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, false);
+        slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
         slimeAnimation.start();
         playerImages = new BufferedImage[5];
         try {
@@ -111,7 +111,7 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 g2d.setColor(new Color(r, g, b));
                 g2d.fillRect(0, 0, width, height);
-                for(int y = 25; y < 24; y++){
+                for(int y = 0; y < 24; y++){
                     for(int x = 0; x < 48; x++){
                         AffineTransform a = AffineTransform.getScaleInstance(0.4, 0.4);
                         a.translate(x* 38.4 * 2.5, y * 38.4 * 2.5);

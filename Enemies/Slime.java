@@ -36,8 +36,8 @@ public class Slime extends Enemies{
         this.width = 5;
         this.height = 5;
         this.eyesight = 400;
-        this.xPos = 500;
-        this.yPos = 100;
+        this.xPos = 700;
+        this.yPos = 500;
         this.alert = false;
         this.idleMovement = true;
     }
