@@ -16,10 +16,10 @@ public class Slime extends Enemies{
     //Properties
     ///////////////
 
-    double dashLength = 1.5; // dash speed factor
+    double dashLength = 2.0; // dash speed factor
     int maxDistance = 100; //max distance a slime would hop idle-ly
     int MAX = 3000; // + 2000 in miliseconds
-    int dashAt;
+    int lastDash;
     Random rnd = new Random();
     int rndLength;
     int startDash;
@@ -54,36 +54,23 @@ public class Slime extends Enemies{
 
     }
 
-
-
-    /*
-     * idle = true && isDashing true == hopping to random location
-     * idle = false && isDashing true == hopping towards player
-     * idle = true && isDashing false == still
-     */
     public void idleMove(){
         //move randomly, in random way
-        int doesMove = rnd.nextInt(100) + 1;
-
-        //figure out if it can dash
+        int doesMove = rnd.nextInt(100) + 1; // 1 in 100 if slime does an idle movement
 
         if(this.idleMovement && !isDashing){ // looking for when it should move
-            if(doesMove == 5){ // 1 in 100 chance
+            if(doesMove == 1){ // 1 in 100 chance
                 isDashing = true;
-                            // Generate random offsets for x and y within the max distance
-            double offsetX = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
-            double offsetY = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
+                lastDash = (int) System.currentTimeMillis();
+                double offsetX = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
+                double offsetY = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
 
-            // Calculate the new target coordinates
-            double targetX = this.getxPos() + offsetX;
-            double targetY = this.getyPos() + offsetY;
-            this.randomLoc = new double[]{targetX,targetY};
-
+                // Calculate the target coordinates
+                double targetX = this.getxPos() + offsetX;
+                double targetY = this.getyPos() + offsetY;
+                this.randomLoc = new double[]{targetX,targetY};
             }
         }else if(this.idleMovement && isDashing){
-            //find a random location next to slime and jump towards it
-
-            //System.out.println("(" + (int) targetX + "," + (int) targetY + ")");
             dashToward(randomLoc);
         }
     }
