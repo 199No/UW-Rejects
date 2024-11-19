@@ -47,7 +47,7 @@ public abstract class Enemies {
 
     public abstract void takeDamage(int dmg);
 
-    public abstract void idleMove();
+    public abstract boolean idleMove();
 
     public abstract void attack(Vector direction);
 
@@ -59,7 +59,7 @@ public abstract class Enemies {
 
     public abstract void moveToward(double[] lastSeen);
 
-    public abstract void update(); // sets and checks all parts of the enemy (ran every frame)
+    public abstract void update(Player player); // sets and checks all parts of the enemy (ran every frame)
 
 
     public int getHealth() {

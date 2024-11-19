@@ -54,25 +54,50 @@ public class Slime extends Enemies{
 
     }
 
-    public void idleMove(){
+    public boolean scanArea(Player player){
+        //check to see if player is even inside the radius of the eyesight of the slime
+        if(calcDistance(player) < eyesight){
+            //the player is inside the circle
+            Vector direction = new Vector(player.getxPos() - this.getxPos(), player.getyPos() - this.getyPos());
+            
+            //Normalize the direction vector (make it unit length)
+            direction = direction.normalize();
+
+            if(!checkObstaclesLOS(direction)){ //check if theres obstacles in the way of LOS // returns true is there is an obstacle
+                this.lastSeen = new double[]{player.getxPos(), player.getyPos()};
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean idleMove(){
         //move randomly, in random way
         int doesMove = rnd.nextInt(100) + 1; // 1 in 100 if slime does an idle movement
 
-        if(this.idleMovement && !isDashing){ // looking for when it should move
+        double offsetX = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
+        double offsetY = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
+
+        // Calculate the target coordinates
+        double targetX = this.getxPos() + offsetX;
+        double targetY = this.getyPos() + offsetY;
+        this.randomLoc = new double[]{targetX,targetY};
+        
+        if(!isDashing){ // looking for when it should move
             if(doesMove == 1){ // 1 in 100 chance
                 isDashing = true;
                 lastDash = (int) System.currentTimeMillis();
-                double offsetX = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
-                double offsetY = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
-
-                // Calculate the target coordinates
-                double targetX = this.getxPos() + offsetX;
-                double targetY = this.getyPos() + offsetY;
-                this.randomLoc = new double[]{targetX,targetY};
+                return true;
             }
-        }else if(this.idleMovement && isDashing){
-            dashToward(randomLoc);
         }
+
+        dashToward(randomLoc);
+        if(reached(randomLoc)){
+            this.setIsDashing(false);
+            return false;
+        }
+        return false;
+
     }
 
     public void attack(Vector direction){
@@ -89,34 +114,19 @@ public class Slime extends Enemies{
 
     public boolean isAlive(){
         if(this.health <= 0){
-        
             return false;
         }else{
             return true;
         }
     }
 
-    //checks to see if the slime can see the player, LOS of player with obstacles, if it can sets the alert to true
-    public boolean scanArea(Player player){ // scans for player around slime, returns true if slime can see the player
-        //check to see if player is even inside the radius of the eyesight of the slime
-        if(calcDistance(player) < eyesight){
-            //the player is inside the circle
-            Vector direction = new Vector(player.getxPos() - this.getxPos(), player.getyPos() - this.getyPos());
-            //Normalize the direction vector (make it unit length)
-            //direction = direction.normalize();
-            if(!checkObstaclesLOS(direction)){ //check if theres obstacles in the way of LOS // returns true is there is an obstacle
-                if(!idleMovement){
-                    this.alert = true;
-                }
-                this.lastSeen = new double[]{player.getxPos(), player.getyPos()};
-                return true;
-            }
+    public void update(Player player){  // sets and checks all parts of the enemy (ran every frame)
+        this.alert = scanArea(player);
+        if(getIsAlert() && !getIdleMovement()){
+            //move towards player
+        }else{
+            this.idleMovement = idleMove();
         }
-        return false;
-    }
-
-    public void update(){  // sets and checks all parts of the enemy (ran every frame)
-
     }
 
     public boolean checkObstaclesLOS(Vector direction){
@@ -152,7 +162,7 @@ public class Slime extends Enemies{
          this.setxPos(getxPos() + deltaX);
          this.setyPos(getyPos() + deltaY);
 
-         if( (int) this.getxPos() - speed <= (int) lastSeen[0] && (int) lastSeen[0] <= (int) this.getxPos() + speed && (int) this.getyPos() - speed <= (int) lastSeen[1] && (int) lastSeen[1] <= this.getyPos() + speed){ // check if slime reached last point saw of LOS
+         if(reached(new double[]{getxPos() + deltaX, getyPos() + deltaY})){ // check if slime reached last point saw of LOS
             System.out.println("lost player LOS");
             this.alert = false;
         }
@@ -177,13 +187,28 @@ public class Slime extends Enemies{
          // Update current position
          this.setxPos(getxPos() + deltaX);
          this.setyPos(getyPos() + deltaY);
-         if(isNumberInRange((int) xPos, (int) speed * (int) dashLength, (int) lastSeen[0]) && isNumberInRange((int) yPos, (int) speed * (int) dashLength, (int) lastSeen[1])){
-            System.out.println("Slime reached target!");
-            this.isDashing = false;
-         }
     }
 
-    public static boolean isNumberInRange(int number, int range, int target) {
+    public double getDashLength(){
+        return this.dashLength;
+    }
+
+    public boolean getIsDashing(){
+        return this.isDashing;
+    }
+    public void setIsDashing(boolean bool){
+        this.isDashing = bool;
+    }
+
+    public boolean reached(double[] target){
+        if(isNumberInRange((int) xPos, (int) this.getSpeed(), (int) target[0]) && isNumberInRange((int) yPos, (int) this.getSpeed(), (int) target[1])){
+            System.out.println("Slime reached target!");
+            return true;
+         }
+         return false; // it did not reach the target
+    }
+
+    public boolean isNumberInRange(int number, int range, int target) {
         return target >= (number - range) && target <= (number + range);
     }
 }
