@@ -16,7 +16,8 @@ public class Slime extends Enemies{
     //Properties
     ///////////////
 
-    int dashLength = 15;
+    double dashLength = 1.5; // dash speed factor
+    int maxDistance = 100; //max distance a slime would hop idle-ly
     int MAX = 3000; // + 2000 in miliseconds
     int dashAt;
     Random rnd = new Random();
@@ -40,6 +41,7 @@ public class Slime extends Enemies{
         this.yPos = 500;
         this.alert = false;
         this.idleMovement = true;
+        this.isDashing = false;
     }
 
     //-------------------------------------------------//
@@ -61,22 +63,27 @@ public class Slime extends Enemies{
      */
     public void idleMove(){
         //move randomly, in random way
-        int doesMove = rnd.nextInt(20) + 1;
+        int doesMove = rnd.nextInt(100) + 1;
 
         //figure out if it can dash
 
         if(this.idleMovement && !isDashing){ // looking for when it should move
-            if(doesMove == 20){ // 1 in 5 chance
+            if(doesMove == 5){ // 1 in 100 chance
                 isDashing = true;
-                this.rndLength = rnd.nextInt(MAX) + 2000;
-                this.startDash = (int) System.currentTimeMillis();
-                this.dashAt = startDash + rndLength;
+                            // Generate random offsets for x and y within the max distance
+            double offsetX = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
+            double offsetY = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
+
+            // Calculate the new target coordinates
+            double targetX = this.getxPos() + offsetX;
+            double targetY = this.getyPos() + offsetY;
+            this.randomLoc = new double[]{targetX,targetY};
+
             }
         }else if(this.idleMovement && isDashing){
             //find a random location next to slime and jump towards it
-            double rndX = this.xPos + rnd.nextInt(200) - 200 + 1;
-            double rndY = this.yPos + rnd.nextInt(200) - 200 + 1;
-            this.randomLoc = new double[]{rndX, rndY};
+
+            //System.out.println("(" + (int) targetX + "," + (int) targetY + ")");
             dashToward(randomLoc);
         }
     }
@@ -177,17 +184,19 @@ public class Slime extends Enemies{
          Vector normalizedDirection = direction.normalize();
  
          // Scale the normalized vector by the speed
-         double deltaX = normalizedDirection.getxPos() * speed;
-         double deltaY = normalizedDirection.getyPos() * speed;
+         double deltaX = normalizedDirection.getxPos() * speed * dashLength;
+         double deltaY = normalizedDirection.getyPos() * speed * dashLength;
  
          // Update current position
          this.setxPos(getxPos() + deltaX);
          this.setyPos(getyPos() + deltaY);
-
-         if( (int) this.getxPos() - speed <= (int) lastSeen[0] && (int) lastSeen[0] <= (int) this.getxPos() + speed && (int) this.getyPos() - speed <= (int) lastSeen[1] && (int) lastSeen[1] <= this.getyPos() + speed){ // check if slime reached last point saw of LOS
-            System.out.println("stopped idle hop");
+         if(isNumberInRange((int) xPos, (int) speed * (int) dashLength, (int) lastSeen[0]) && isNumberInRange((int) yPos, (int) speed * (int) dashLength, (int) lastSeen[1])){
+            System.out.println("Slime reached target!");
             this.isDashing = false;
-        }
+         }
     }
 
+    public static boolean isNumberInRange(int number, int range, int target) {
+        return target >= (number - range) && target <= (number + range);
+    }
 }
