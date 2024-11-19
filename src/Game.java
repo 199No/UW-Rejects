@@ -81,11 +81,11 @@ public class Game implements ActionListener{
         }
     
         gui.background((int)frameRate, (int)frameRate, (int)frameRate / 2);
-        gui.addToQueue(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
-                g2d.drawImage(image.getScaledInstance(Gui.WIDTH, Gui.HEIGHT, 0), 0, 0, null);
-            }
-        });
+        //gui.addToQueue(new GraphicsRunnable() {
+        //    public void draw(Graphics2D g2d){
+        //        g2d.drawImage(image.getScaledInstance(Gui.WIDTH, Gui.HEIGHT, 0), 0, 0, null);
+        //    }
+        //});
         // Dash bar
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g){
