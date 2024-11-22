@@ -15,6 +15,9 @@ public class Main{
     ///////////////
     //Constuctor
     /////////////
+
+//   |
+//   V 
     public static void main(String[] args) throws AWTException, IOException{
         String s = "[5, 5, 5, 5, 5][6, 6, 6, 6, 6]";
         new Game();
