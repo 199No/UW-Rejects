@@ -28,14 +28,16 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     double movedX, movedY;
     boolean mouseLocked;
     boolean[] keys = new boolean[90];
+    Tool tool;
     ///////////////
     //Comstuctor
     //////////////
-    public Input(){
+    public Input(Tool t){
         lastX = MouseInfo.getPointerInfo().getLocation().getX();
         lastY = MouseInfo.getPointerInfo().getLocation().getY();
         mouseX = MouseInfo.getPointerInfo().getLocation().getX();
         mouseY = MouseInfo.getPointerInfo().getLocation().getY();
+        tool = t;
     }
     public double mouseX(){
         return mouseX;
@@ -70,7 +72,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     }
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        tool.handleMouseClick(e.getX(), e.getY());
     }
 
     @Override

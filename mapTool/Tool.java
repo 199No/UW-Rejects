@@ -4,25 +4,31 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.Scanner;
 import java.io.File;
+import java.awt.Rectangle;
 public class Tool implements ActionListener {
     Input input;
     Gui gui;
     Timer timer;
     int[][] chunk = new int[10][10];
+    int selectedType;
+    Rectangle chunkRectangle = new Rectangle(100, 100, 500, 500);
+    Rectangle palletRectangle = new Rectangle(600, 100, 200, 500);
     public Tool(){
         chunk = new int[10][10];
+        selectedType = 1;
         Scanner s = new Scanner(System.in);
         System.out.println("Which chunk do you want to load? (x,y)");
         String[] userInput = s.nextLine().split(",");
         loadChunk(Integer.parseInt(userInput[0]), Integer.parseInt(userInput[1]));
         s.close();
         // Classes
-        input = new Input();
+        input = new Input(this);
         gui = new Gui(1080, 720, input, chunk);
         timer = new Timer(17, this);
         timer.start();
     }
     public void actionPerformed(ActionEvent e){
+        gui.updateChunk(chunk);
         gui.drawTiles();
         gui.drawGrid();
         gui.repaint();
@@ -56,4 +62,20 @@ public class Tool implements ActionListener {
         }catch(Exception e){e.printStackTrace();}
 
     }
+    public void handleMouseClick(double mouseX, double mouseY){
+        System.out.println("Clicked! " + mouseX + " " + mouseY);
+        // Click on chunk
+        if(chunkRectangle.contains(mouseX, mouseY)){
+            System.out.println("chunk");
+            int x = (int)Math.floor((mouseX - 100) / 50);
+            int y = (int)Math.floor((mouseY - 100) / 50);
+            chunk[y][x] = selectedType;
+        }  
+        if(palletRectangle.contains(mouseX, mouseY)){
+            int x = (int)Math.floor((mouseX - 800) / 50);
+            int y = (int)Math.floor((mouseY - 100) / 50);
+            selectedType = (int)(x + (y * 4));
+        }
+
+    } 
 }

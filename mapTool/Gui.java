@@ -58,7 +58,7 @@ public class Gui extends JPanel{
         frame.setVisible(true);
         this.setVisible(true);
 
-        frame.addMouseMotionListener(input);
+        frame.addMouseListener(input);
         frame.addKeyListener(input);
         frame.setFocusable(true);
 
@@ -103,7 +103,14 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
-                        g2d.drawImage(tileImages[chunk[y][x] - 1], x * 50 + 100, y * 50 + 110, 50, 50, null);
+                        g2d.drawImage(tileImages[chunk[y][x] - 1], x * 50 + 100, y * 50 + 100, 50, 50, null);
+                    }
+                }
+                for(int y = 0; y < 10; y++){
+                    for(int x = 0; x < 4; x++){
+                        if(x + (y * 4) < tileImages.length){
+                            g2d.drawImage(tileImages[x + (y * 4)], x * 50 + 800, y * 50 + 100, 50, 50, null);
+                        }
                     }
                 }
             }
@@ -114,14 +121,26 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 g2d.setColor(Color.BLACK);
                 for(int y = 0; y < 11; y ++){ 
-                    g2d.drawLine(100, y * 50 + 110, 600, y * 50 + 110);
+                    g2d.drawLine(100, y * 50 + 100, 600, y * 50 + 100);
                 }
                 
                 for(int x = 0; x < 11; x ++){ 
-                    g2d.drawLine(x * 50 + 100, 110, x * 50 + 100, 610);
+                    g2d.drawLine(x * 50 + 100, 100, x * 50 + 100, 600);
                 }
+                
+                for(int y = 0; y < 11; y ++){ 
+                    g2d.drawLine(800, y * 50 + 100, 1000, y * 50 + 100);
+                }
+                
+                for(int x = 0; x < 4; x ++){ 
+                    g2d.drawLine(x * 50 + 800, 100, x * 50 + 800, 600);
+                }
+                g2d.drawRect(800, 100, 200, 500);
             }
         });
+    }
+    public void updateChunk(int[][] c){
+        chunk = c;
     }
     // Return the width and height of the 
     public double width() { return width; }
