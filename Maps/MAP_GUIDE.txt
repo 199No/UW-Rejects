@@ -11,11 +11,11 @@ When making a map, pull up this file so that you can see it.
 2 - Sand
 3 - Snow
 4 - Stone
-5 - Water (wip)
-To make a new chunk:
-Copy all the text from map_template. Do NOT overwrite the template.
-Paste it into the map.
-Edit the tiles to your liking.
-Delete all the whitespace so that it looks something like this:
-{row1;row2;row3;row4;row5;row6;row7;row8;row9;row10}
-Move the chunk to where it needs to be.
+5 - Dirt
+To edit the map:
+1. Open the tool.
+2. Select a chunk.
+3. Edit and save the chunk.
+4. The tool will save your chunk to toolOutput.
+5. Make sure that the tool didn't mess up the entire file.
+6. Paste the contents of it into map1.map.

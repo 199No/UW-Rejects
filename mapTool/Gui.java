@@ -32,19 +32,23 @@ public class Gui extends JPanel{
     // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
     ArrayList<GraphicsRunnable> drawQueue;
     // You need a frame to draw things on.
-    JFrame frame = new JFrame("The Divided Realms INDEV");
-    // Preloading. To be deprecated
-    BufferedImage[] playerImages;
-    BufferedImage[] envImages;
+    JFrame frame = new JFrame("The Divided Realms Map Tool");
     Images images;
-    int slimeStep = 0;
-    double lastSlimeStep = System.currentTimeMillis();
+    BufferedImage[] tileImages;
+    int[][] chunk = new int[10][10];
     ///////////////
     //Constuctor
     //////////////
-    public Gui(int width, int height, Input input) {
+    public Gui(int width, int height, Input input, int[][] chunk) {
         images = new Images();
-
+        this.chunk = chunk;
+        tileImages = new BufferedImage[]{
+            images.getImage("tile_grass"),
+            images.getImage("tile_sand"),
+            images.getImage("tile_snow"),
+            images.getImage("tile_stone"),
+            images.getImage("tile_dirt"),
+        };
         this.width = WIDTH;
         this.height = HEIGHT;
         // JFrame setup
@@ -91,13 +95,6 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 g2d.setColor(new Color(r, g, b));
                 g2d.fillRect(0, 0, width, height);
-                for(int y = 0; y < 24; y++){
-                    for(int x = 0; x < 48; x++){
-                        AffineTransform a = AffineTransform.getScaleInstance(0.4, 0.4);
-                        a.translate(x* 38.4 * 2.5, y * 38.4 * 2.5);
-                        g2d.drawImage(envImages[0], a, null);
-                    }
-                }
             }
         });
     }
@@ -106,7 +103,7 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
-                        g2d.drawOval(x * 50 + 100, y * 50 + 110, 50, 50);
+                        g2d.drawImage(tileImages[chunk[y][x] - 1], x * 50 + 100, y * 50 + 110, 50, 50, null);
                     }
                 }
             }
