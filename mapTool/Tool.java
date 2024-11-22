@@ -70,6 +70,7 @@ public class Tool implements ActionListener {
             int x = (int)Math.floor((mouseX - 100) / 50);
             int y = (int)Math.floor((mouseY - 100) / 50);
             chunk[y][x] = selectedType;
+            System.out.println(chunk[y][x]);
         }  
         if(palletRectangle.contains(mouseX, mouseY)){
             int x = (int)Math.floor((mouseX - 800) / 50);
