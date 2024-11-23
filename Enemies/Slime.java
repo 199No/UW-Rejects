@@ -79,6 +79,10 @@ public class Slime extends Enemies{
 
     }
 
+    public void runAway(Vector direction){
+        
+    }
+
     public void die(){
         //play death animation
         //remove from list of enemies
