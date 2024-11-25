@@ -169,15 +169,11 @@ public class Gui extends JPanel{
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 for(int i = 0; i < enemies.size(); i ++){
-                    //Get the slime sheet image
+
                     BufferedImage slimeImage = slimeAnimation.getFrame();
-                    // Scale the sheet up to the right size
-                    AffineTransform a = AffineTransform.getScaleInstance(3, 3);
-                    // Move the image to where the slime is and shrink it a bit
-                    a.translate((enemies.get(i).getxPos()) / 3, (enemies.get(i).getyPos() - 10) / 3);
-                    a.scale(0.2, 0.2);
-                    // Draw the final result
-                    g2d.drawImage(slimeImage, a, null);
+                    Rectangle slimeHitbox = enemies.get(i).getHitbox();
+                    g2d.drawImage(slimeImage, (int)enemies.get(i).getxPos(), (int)enemies.get(i).getyPos(), 50, 50, null);
+                    g2d.drawRect((int)slimeHitbox.getX(),(int)slimeHitbox.getY(),(int)slimeHitbox.getWidth(),(int)slimeHitbox.getHeight());
                 }
             }
         });
