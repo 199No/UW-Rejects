@@ -72,12 +72,9 @@ public class Game implements ActionListener{
         this.player = input.getPlayer(); // Game gets the newly updated copy
         
         for(int i = 0; i < this.enemies.size(); i++){
-            enemies.get(i).scanArea(this.player);
-            if(enemies.get(i).getIsAlert()){
-                enemies.get(i).moveToward(enemies.get(i).getLastSeen());
-            }else{
-                enemies.get(i).idleMove();
-            }
+
+            enemies.get(i).update(this.player);
+
         }
     
         gui.background((int)frameRate, (int)frameRate, (int)frameRate / 2);
