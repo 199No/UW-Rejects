@@ -42,7 +42,7 @@ public abstract class Enemies {
     }
 
     public Rectangle getHitbox(){
-        return new Rectangle((int)this.xPos, (int) this.yPos, this.width, this.height);
+        return new Rectangle((int)this.xPos + getWidth()/4, (int) this.yPos + getHeight()/4, this.width, this.height);
     }
 
     public abstract void takeDamage(int dmg);
