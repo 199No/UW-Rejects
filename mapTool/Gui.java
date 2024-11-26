@@ -36,7 +36,7 @@ public class Gui extends JPanel{
     Images images;
     BufferedImage[] tileImages;
     int[][] chunk = new int[10][10];
-    int selectedType = 0;
+    int selectedType = 1;
     ///////////////
     //Constuctor
     //////////////
@@ -138,6 +138,7 @@ public class Gui extends JPanel{
                 }
                 g2d.drawRect(800, 100, 200, 500);
                 g2d.setColor(Color.RED);
+                g2d.setStroke(new BasicStroke(3));
                 g2d.drawRect(800 + (((selectedType - 1) % 4) * 50), 100 + (int)(Math.floor((selectedType - 1) / 4) * 50), 50, 50);
             }
         });
