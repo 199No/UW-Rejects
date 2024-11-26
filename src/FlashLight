@@ -1,0 +1,6 @@
+package src;
+public class Flashlight extends Item {
+    public Flashlight(){
+        super();
+    }
+}

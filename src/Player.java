@@ -1,13 +1,10 @@
 package src;
-//-------------------------------------------------//
-//                    Imports                      //
-//-------------------------------------------------// 
-import java.awt.event.*;
-import java.awt.Rectangle;
+import java.util.ArrayList;
+
 //-------------------------------------------------//
 //                    Player                       //
 //-------------------------------------------------// 
-public class Player {
+public abstract class Player {
     ///////////////
     //Properties
     //////////////
@@ -26,9 +23,12 @@ public class Player {
 
     private boolean active; //the player is able to be hit if true
     private int[] topLeft; //top left of the hitbox
-    private final int width = 38;
-    private final int height = 38;
+    private final int width = 24;
+    private final int height = 24;
+    //TODO: use only 1 type of direction.
     private int xDir, yDir;
+
+    private ArrayList<Item> inventory;
     ///////////////
     //Constuctor
     //////////////
@@ -41,11 +41,15 @@ public class Player {
         yDir = 1;
         speed = 5;
         isDashing = false;
+        inventory = new ArrayList<Item>();
     }
 
 //-------------------------------------------------//
 //                    Methods                      //
 //-------------------------------------------------// 
+
+
+    // TODO: Remove these useless move___walk/spint, and dash methods and make 1 move method
     // A
     public void moveLeftWalk(){
         if(isDashing){
@@ -147,11 +151,13 @@ public class Player {
     }
 
 
-    // space
-    public void attack(){
-        //use damage variable
-        //System.out.println("Space Pressed: Attack! " + this.damage);
-    }
+    public abstract void attack();
+
+    public abstract void moveX(); //given a speed?
+
+    public abstract void moveY(); //given a speed?
+
+    public abstract void dash(); //given a direction?
 
     public int getxPos(){
         return this.xPos;
@@ -171,7 +177,7 @@ public class Player {
     }
 
     public int[] getHitboxTopLeft(){
-        return new int[]{xPos-this.getWidth(), yPos-this.getHeight()};
+        return new int[]{xPos+this.getWidth()/4, yPos+this.getHeight()/4};
     }
 
     public int getXDir(){

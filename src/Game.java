@@ -25,7 +25,8 @@ public class Game implements ActionListener{
     ///////////////
     Timer gameTimer;
     Gui gui;
-    Player player;
+    Player player1;
+    Player player2;
     double now, lastSecond, frameRate, framesLastSecond;
     Input input;
     BufferedImage image;
@@ -38,8 +39,9 @@ public class Game implements ActionListener{
     public Game() throws AWTException, IOException{
         Images images = new Images();
         image = images.getImage("tree1");
-        player = new Player();
-        input = new Input(player);
+        player1 = new Swordsmen();
+        player2 = new Wizard();
+        input = new Input(player1,player2);
         enemies.add(createSlime());
         gui = new Gui(1280, 720, input);
         gameTimer = new Timer(5, this);
@@ -67,14 +69,23 @@ public class Game implements ActionListener{
         /// Input
         ///////////////
         // Input updates its copy of the player
-        input.playerMove();
-        input.playerAttack();
-        this.player = input.getPlayer(); // Game gets the newly updated copy
-        
-        for(int i = 0; i < this.enemies.size(); i++){
-
-            enemies.get(i).update(this.player);
-
+        input.playerMove(player1);
+        input.playerMove(player2);
+        input.playerAttack(player1);
+        input.playerAttack(player2);
+        this.player1 = input.getPlayer1(); // Game gets the newly updated copy
+        this.player2 = input.getPlayer2(); // Game gets the newly updated copy
+        Player tempPlayer;
+        //TODO: FIX THIS
+        for(int p = 1; p <= 2; p++){
+            if(p == 1){
+                tempPlayer = player1;
+            }else{
+                tempPlayer = player2;
+            }
+            for(int i = 0; i < this.enemies.size(); i++){
+                enemies.get(i).update(tempPlayer);
+            }
         }
     
         gui.background((int)frameRate, (int)frameRate, (int)frameRate / 2);
@@ -95,7 +106,8 @@ public class Game implements ActionListener{
             }
         });
         gui.displayFPS((int)frameRate);
-        gui.drawPlayer(player);
+        gui.drawPlayer(player1);
+        gui.drawPlayer(player2);
         gui.drawEnemies(enemies);
         gui.repaint();
         now = System.currentTimeMillis();
