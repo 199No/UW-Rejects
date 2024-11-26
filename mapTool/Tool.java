@@ -12,7 +12,7 @@ public class Tool implements ActionListener {
     int[][] chunk = new int[10][10];
     int selectedType;
     Rectangle chunkRectangle = new Rectangle(100, 100, 500, 500);
-    Rectangle palletRectangle = new Rectangle(600, 100, 200, 500);
+    Rectangle palletRectangle = new Rectangle(800, 100, 200, 500);
     public Tool(){
         chunk = new int[10][10];
         selectedType = 1;
@@ -68,15 +68,16 @@ public class Tool implements ActionListener {
         if(chunkRectangle.contains(mouseX, mouseY)){
             System.out.println("chunk");
             int x = (int)Math.floor((mouseX - 100) / 50);
-            int y = (int)Math.floor((mouseY - 100) / 50);
+            int y = (int)Math.floor((mouseY - 125) / 50);
             chunk[y][x] = selectedType;
             System.out.println(chunk[y][x]);
         }  
         if(palletRectangle.contains(mouseX, mouseY)){
             int x = (int)Math.floor((mouseX - 800) / 50);
-            int y = (int)Math.floor((mouseY - 100) / 50);
-            selectedType = (int)(x + (y * 4));
+            int y = (int)Math.floor((mouseY - 125) / 50);
+            selectedType = (int)(x + (y * 4)) + 1;
+            System.out.println(selectedType);
         }
-
+        gui.setSelectedType(selectedType);
     } 
 }
