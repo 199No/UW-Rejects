@@ -15,6 +15,7 @@ public class Tool implements ActionListener {
     int selectedType;
     Rectangle chunkRectangle = new Rectangle(100, 100, 500, 500);
     Rectangle palletRectangle = new Rectangle(800, 100, 200, 500);
+    Rectangle saveButtonRectangle = new Rectangle(20, 20, 70, 30);
     int chunkX, chunkY;
     public Tool(){
         chunk = new int[10][10];
@@ -25,7 +26,6 @@ public class Tool implements ActionListener {
         String[] userInput = s.nextLine().split(",");
         loadChunk(Integer.parseInt(userInput[0]), Integer.parseInt(userInput[1]));
         s.close();
-        saveChunk();
         // Classes
         input = new Input(this);
         gui = new Gui(1080, 720, input, chunk);
@@ -37,6 +37,7 @@ public class Tool implements ActionListener {
         gui.background(255, 255, 255);
         gui.drawTiles();
         gui.drawGrid();
+        gui.drawSaveButton(saveButtonRectangle);
         gui.repaint();
     }
     public void loadChunk(int x, int y){
@@ -71,6 +72,7 @@ public class Tool implements ActionListener {
 
     }
     public void saveChunk(){
+        System.out.println("Bruh");
         try {
             // File for the output
             File outputFile = new File("Maps/toolOutput.map");
@@ -112,11 +114,17 @@ public class Tool implements ActionListener {
             // The ";}" will get added back when we write to the file.
 
             fw.close();
+            s.close();
         }catch(IOException e){e.printStackTrace();}
     }
     public void handleMouseClick(double mouseX, double mouseY){
         System.out.println("Clicked! " + mouseX + " " + mouseY);
         // Click on chunk
+        System.out.println(saveButtonRectangle.contains(mouseX, mouseY));
+        if(saveButtonRectangle.contains(mouseX, mouseY)){
+            System.out.println("Saved");
+            saveChunk();
+        }
         if(chunkRectangle.contains(mouseX, mouseY)){
             System.out.println("chunk");
             int x = (int)Math.floor((mouseX - 100) / 50);

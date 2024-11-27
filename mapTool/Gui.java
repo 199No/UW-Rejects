@@ -143,6 +143,15 @@ public class Gui extends JPanel{
             }
         });
     }
+    public void drawSaveButton(Rectangle button){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                g2d.drawRect((int)button.getX(), (int)button.getY(), (int)button.getWidth(), (int)button.getHeight());
+                g2d.drawString("Save", (int)button.getX() + 20, (int)button.getY() + 20);
+            }     
+        });
+    }
+
     public void updateChunk(int[][] c){
         chunk = c;
     }
