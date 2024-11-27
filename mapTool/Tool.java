@@ -16,16 +16,16 @@ public class Tool implements ActionListener {
     Rectangle chunkRectangle = new Rectangle(100, 100, 500, 500);
     Rectangle palletRectangle = new Rectangle(800, 100, 200, 500);
     Rectangle saveButtonRectangle = new Rectangle(20, 20, 70, 30);
+    Rectangle loadNewButtonRectangle = new Rectangle(110, 20, 70, 30);
     int chunkX, chunkY;
+    Scanner consoleInput;
     public Tool(){
+        consoleInput = new Scanner(System.in);
         chunk = new int[10][10];
         selectedType = 1;
+        
+        loadChunk();
 
-        Scanner s = new Scanner(System.in);
-        System.out.println("Which chunk do you want to load? (x,y)");
-        String[] userInput = s.nextLine().split(",");
-        loadChunk(Integer.parseInt(userInput[0]), Integer.parseInt(userInput[1]));
-        s.close();
         // Classes
         input = new Input(this);
         gui = new Gui(1080, 720, input, chunk);
@@ -37,20 +37,34 @@ public class Tool implements ActionListener {
         gui.background(255, 255, 255);
         gui.drawTiles();
         gui.drawGrid();
-        gui.drawSaveButton(saveButtonRectangle);
+        gui.drawButton(saveButtonRectangle, "Save");
+        gui.drawButton(loadNewButtonRectangle, "Load");
         gui.repaint();
     }
-    public void loadChunk(int x, int y){
+    public void loadChunk(){
         String line;
         String[] row;
         String[] rawChunk;
-        chunkX = x;
-        chunkY = y;
+        System.out.println("Which chunk do you want to load? (x,y)");
+        String[] userInput = consoleInput.nextLine().split(",");
+        if(userInput[0].equals("cancel")){
+            // If chunk has not been loaded yet; there is no tile with id 0
+            if(chunk[0][0] == 0){
+                consoleInput.close();
+                System.exit(0);
+            }
+            else {
+                return;
+            }
+        }
+        chunkX = Integer.parseInt(userInput[0]);
+        chunkY = Integer.parseInt(userInput[1]);
+
         try {
             File f = new File("Maps\\map1.map");
             Scanner s = new Scanner(f);
             // Skip lines until one before the line at y...
-            for(int i = 0; i < y; i++){
+            for(int i = 0; i < chunkY; i++){
                 s.nextLine();
             }
             // so that the next line will be the one we want.
@@ -58,7 +72,7 @@ public class Tool implements ActionListener {
             
             row = line.split(";\\}");
             
-            rawChunk = row[x].substring(1).split(";");
+            rawChunk = row[chunkX].substring(1).split(";");
             System.out.println(rawChunk.length);
             for(int i = 0; i < 10; i++){
                 row = rawChunk[i].split(",");
@@ -67,7 +81,7 @@ public class Tool implements ActionListener {
                 }
                 
             }
-
+            s.close();
         }catch(Exception e){e.printStackTrace();}
 
     }
@@ -87,9 +101,11 @@ public class Tool implements ActionListener {
             fw.write("");
             fw.close();
             fw = new FileWriter(outputFile, true);
+            // Skip lines until reaching our desired line
             for(int i = 0; i < chunkY; i++){
                 fw.write(s.nextLine() + "\n");
             }
+            // Get the desired line and split it into 
             outputLine = s.nextLine().split(";\\}");
             for(int y = 0; y < 10; y++){
                 for(int x = 0; x < 10; x++){
@@ -104,9 +120,13 @@ public class Tool implements ActionListener {
             }
             System.out.println(chunkString);
             outputLine[chunkX] = chunkString;
+            // Write outputLine to a file
             for(int i = 0; i < outputLine.length; i++){
                 fw.write(outputLine[i] + ";}"); 
             }
+            // New line so that the next line actually starts on the next line
+            fw.write("\n");
+            // Write the rest of the file
             while(s.hasNextLine()){
                 fw.write(s.nextLine() + "\n");
             }
@@ -118,17 +138,18 @@ public class Tool implements ActionListener {
         }catch(IOException e){e.printStackTrace();}
     }
     public void handleMouseClick(double mouseX, double mouseY){
-        System.out.println("Clicked! " + mouseX + " " + mouseY);
-        // Click on chunk
-        System.out.println(saveButtonRectangle.contains(mouseX, mouseY));
-        if(saveButtonRectangle.contains(mouseX, mouseY)){
+        System.out.println("Clicked! " + mouseX + " " + (mouseY - 32));
+        if(saveButtonRectangle.contains(mouseX, mouseY - 32)){
             System.out.println("Saved");
             saveChunk();
         }
-        if(chunkRectangle.contains(mouseX, mouseY)){
+        if(loadNewButtonRectangle.contains(mouseX, mouseY - 32)){
+            loadChunk();
+        }
+        if(chunkRectangle.contains(mouseX, mouseY - 32)){
             System.out.println("chunk");
             int x = (int)Math.floor((mouseX - 100) / 50);
-            int y = (int)Math.floor((mouseY - 125) / 50);
+            int y = (int)Math.floor((mouseY - 132) / 50);
             chunk[y][x] = selectedType;
             System.out.println(chunk[y][x]);
         }  

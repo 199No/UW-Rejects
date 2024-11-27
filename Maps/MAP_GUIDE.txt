@@ -1,21 +1,28 @@
-//// HOW TO MAKE A MAP ////
-{} separates individual chunks
-; signals the end of a row within a chunk
-Chunks HAVE to be 10x10
-Chunks are arranged in the file the way that they will appear in the map. Use the squashy brackets.
-E.g.
-{chunk at 0, 0}{chunk at 1, 0}
-{chunk at 0, 1}{chunk at 1, 1}
-When making a map, pull up this file so that you can see it.
-1 - Grass
-2 - Sand
-3 - Snow
-4 - Stone
-5 - Dirt
-To edit the map:
-1. Open the tool.
-2. Select a chunk.
-3. Edit and save the chunk.
-4. The tool will save your chunk to toolOutput.
-5. Make sure that the tool didn't mess up the entire file.
-6. Paste the contents of it into map1.map.
+MAP GUIDE:
+
+Each chunk is encapsulated within curly brackets. A chunk's location in the file is representative of its location on the map.
+Chunks are arranged like so:
+{data for chunk (0,0) goes in here}{data for chunk (1,0) goes in here}
+{data for chunk (0,1) goes in here}{data for chunk (1,1) goes in here}
+
+Each row of tiles within a chunk is seperated by a semicolon, like so:
+{data for row 1;data for row 2;data for row 3;data for row 4;}
+There should be a semicolon after the last row.             ⬆
+
+In each row, tiles are seperated by commas.
+For example, a 3x3 chunk would look like this:
+{1,2,1;2,2,2;1,2,2;}
+
+TO EDIT THE MAP:
+Go to the mapTool Main.java file.
+Click the "Run" button above its main method.
+This will set VSCode's default "main" to the MapTool main, so you will have to do this again on the game's Main.java file.
+Enter your selected chunk x and y seperated by a comma with no spaces.
+Pick a tile to "draw" with using the pallet on the right. The red square indicates the selected tile type.
+Click (drag coming soon) on a tile to draw over it.
+Once you are happy click "Save" and close the window.
+Your newly edited map will show up in the toolOutput.map file.
+Give it a quick glance to make sure the tool didn't corrupt anything.
+Copy everything and go to the map1.map file.
+Hit Ctrl+A and Ctrl+V to replace all.
+Congrats! Your newly edited chunk is saved in the map.

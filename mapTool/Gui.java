@@ -2,18 +2,11 @@ package mapTool;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-
-import Enemies.Enemies;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.awt.event.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 //-------------------------------------------------//
 //                      Gui                        //
 //-------------------------------------------------// 
@@ -143,11 +136,12 @@ public class Gui extends JPanel{
             }
         });
     }
-    public void drawSaveButton(Rectangle button){
+    public void drawButton(Rectangle button, String text){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
+                g2d.setColor(Color.BLACK);
                 g2d.drawRect((int)button.getX(), (int)button.getY(), (int)button.getWidth(), (int)button.getHeight());
-                g2d.drawString("Save", (int)button.getX() + 20, (int)button.getY() + 20);
+                g2d.drawString(text, (int)button.getX() + 20, (int)button.getY() + 20);
             }     
         });
     }
