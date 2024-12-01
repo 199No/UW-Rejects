@@ -6,13 +6,13 @@ public class Animation {
     private int startTime; // Animation start time
     private int widthFrames; // How many frames horizontally the sheet is wide
     private int heightFrames; // How many frames vertically the sheet is tall
-    private int frameWidth;
-    private int frameHeight;
-    private int numFrames;
-    private int frameTime;
-    private boolean isLooping;
-    private int step;
-    private BufferedImage sheet;
+    private int frameWidth; // How wide each frame is
+    private int frameHeight;// Take a wild guess
+    private int numFrames; // How many frames in the animation
+    private int frameTime; // How long each frame is
+    private boolean isLooping; // Does the animation loop?
+    private int step; // Which step are we on?
+    private BufferedImage sheet; // The sprite sheet
 
     public Animation(BufferedImage sheet, int widthFrames, int heightFrames, int numFrames, int frameTime, boolean isLooping){ 
         this.widthFrames = widthFrames;
@@ -23,7 +23,7 @@ public class Animation {
         this.isLooping = isLooping;
         this.frameTime = frameTime;
         this.sheet = sheet;
-        startTime = (int)System.currentTimeMillis();
+        startTime = (int)System.currentTimeMillis(); // = now
         step = 0;
     }
     public void start(){

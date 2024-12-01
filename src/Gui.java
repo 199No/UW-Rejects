@@ -30,23 +30,31 @@ public class Gui extends JPanel{
     public static final int HEIGHT = 720;
     // Where things get queued up to be drawn. 
     // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
+    // Fixes timing issues.
     ArrayList<GraphicsRunnable> drawQueue;
     // You need a frame to draw things on.
     JFrame frame = new JFrame("The Divided Realms INDEV");
     // Preloading. To be deprecated
     BufferedImage[] playerImages;
     BufferedImage[] envImages;
+    // The guy she tells you not to worry about (better image loading)
     Images images;
+    // Why the fuck is this still here
     int slimeStep = 0;
     double lastSlimeStep = System.currentTimeMillis();
     Animation slimeAnimation;
+
     ///////////////
     //Constuctor
     //////////////
     public Gui(int width, int height, Input input) {
+        // Guess what this does.
         images = new Images();
+        // Define a constantly running Animation for the slime (soon to be better)
         slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
         slimeAnimation.start();
+        // Honestly this could be a stateful animation.
+        // TODO: fix.
         playerImages = new BufferedImage[5];
         try {
             // Load up all the player images (to be deprectated)
@@ -59,6 +67,7 @@ public class Gui extends JPanel{
 
         } catch (Exception e){e.printStackTrace();}
         // Load environment images
+        // TODO: Fix this too.
         envImages = new BufferedImage[5];
         try{
             envImages[0] = images.getImage("tile_grass");
@@ -97,7 +106,7 @@ public class Gui extends JPanel{
         for(int i = 0; i < drawQueue.size(); i++){
             drawQueue.get(i).draw(g2d);
         }
-        // Prevent memory leaks
+        // Prevent memory leaks (turns out adding 10-50 items to an ArrayList every frame gets slow fast)
         drawQueue.clear();
     }
     // Allows other classes to run custom draw code.
@@ -120,7 +129,7 @@ public class Gui extends JPanel{
             }
         });
     }
-    // Draws a number to the screen, usually the FPS.
+    // Draws a number to the screen, usually the FPS. Could really be anything.
     public void displayFPS(int n){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
@@ -136,6 +145,7 @@ public class Gui extends JPanel{
                 Image playerImage = playerImages[0];
                 AffineTransform f = AffineTransform.getScaleInstance(0.5, 0.5);
                 f.translate(p.getxPos() * 2, p.getyPos() * 2);
+                // TODO: Get a single direction int from player and use that + an array index instead.
                 if(p.getXDir() == 1){
                     if(p.getYDir() == 1){
                         playerImage = playerImages[2];
@@ -153,12 +163,13 @@ public class Gui extends JPanel{
                         
                     }
                 }
+                // TODO: Make this not an AffineTransform.
                 g2d.drawImage(playerImage, f, null);
             }
         });
     }
 
-    // Return the width and height of the 
+    // Return the width and height of the GUI
     public double width() { return width; }
     public double height() { return height; }
 
@@ -177,13 +188,6 @@ public class Gui extends JPanel{
                 }
             }
         });
-        if(now - lastSlimeStep > 150){
-            slimeStep ++;
-            lastSlimeStep = now;
-            if(slimeStep >= 7){
-                slimeStep = 0;
-            }
-        }
 
     }
 }
