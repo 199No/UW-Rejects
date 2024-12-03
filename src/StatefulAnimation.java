@@ -32,8 +32,10 @@ public class StatefulAnimation {
         }
         int curFrame = states[state][step];
         return spriteSheet.getSubimage(
-            (curFrame % widthFrames) * ,
-
-        )
+            (curFrame % widthFrames) * frameWidth,
+            (curFrame / heightFrames) * frameHeight,
+            frameWidth,
+            frameHeight
+        );
     }
 }
