@@ -73,6 +73,7 @@ public class Game implements ActionListener{
         input.playerMove(player2);
         input.playerAttack(player1);
         input.playerAttack(player2);
+        // if(getKey(W){ doPlayerMove(); }
         this.player1 = input.getPlayer1(); // Game gets the newly updated copy
         this.player2 = input.getPlayer2(); // Game gets the newly updated copy
         Player tempPlayer;
