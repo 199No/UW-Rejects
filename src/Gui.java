@@ -117,13 +117,9 @@ public class Gui extends JPanel{
     public void background(int r, int g, int b){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                g2d.setColor(new Color(r, g, b));
-                g2d.fillRect(0, 0, width, height);
-                for(int y = 0; y < 24; y++){
-                    for(int x = 0; x < 48; x++){
-                        AffineTransform a = AffineTransform.getScaleInstance(0.4, 0.4);
-                        a.translate(x* 38.4 * 2.5, y * 38.4 * 2.5);
-                        g2d.drawImage(envImages[0], a, null);
+                for(int y = 0; y < 18; y++){
+                    for(int x = 0; x < 34; x++){
+                        g2d.drawImage(images.getImage("small"), x * 38, y * 38, 38, 38, null);
                     }
                 }
             }
@@ -133,7 +129,7 @@ public class Gui extends JPanel{
     public void displayFPS(int n){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                g2d.setColor(new Color(0, 0, 0));
+                g2d.setColor(new Color(255, 255, 255));
                 g2d.drawString(String.valueOf(n), 40, 60);
             }
         });

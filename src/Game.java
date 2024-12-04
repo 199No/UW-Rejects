@@ -44,7 +44,7 @@ public class Game implements ActionListener{
         input = new Input(player1,player2);
         enemies.add(createSlime());
         gui = new Gui(1280, 720, input);
-        gameTimer = new Timer(5, this);
+        gameTimer = new Timer(2, this);
         gameTimer.start();
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
@@ -69,6 +69,7 @@ public class Game implements ActionListener{
         /// Input
         ///////////////
         // Input updates its copy of the player
+        // If we are keeping this make the playerMove method return a player
         input.playerMove(player1);
         input.playerMove(player2);
         input.playerAttack(player1);
@@ -90,11 +91,6 @@ public class Game implements ActionListener{
         }
     
         gui.background((int)frameRate, (int)frameRate, (int)frameRate / 2);
-        //gui.addToQueue(new GraphicsRunnable() {
-        //    public void draw(Graphics2D g2d){
-        //        g2d.drawImage(image.getScaledInstance(Gui.WIDTH, Gui.HEIGHT, 0), 0, 0, null);
-        //    }
-        //});
         // Dash bar
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g){
