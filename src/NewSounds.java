@@ -8,6 +8,17 @@ import java.io.IOException;
 import javax.sound.sampled.*;
 
 
+/*
+ * When u remake a clip even if its the exact same it still wont work (AKA u cant refernce the same clip)
+ * This is why stop sound isnt working because u redifne the clip
+ * A fix Ive tought of is to make to more List
+ * One list is all the clips and another being all the audiostreams
+ * This way when u call a play sound instead of finding the name and make a clip var
+ * U find the name and just play sound stright from the array
+ */
+
+
+
 //-------------------------------------------------//
 //                    Sounds                       //
 //-------------------------------------------------// 
@@ -70,23 +81,25 @@ public class NewSounds {
     public void playSound(String name){
         try{
 
+            //Define the Audio and Clip
+            AudioInputStream PlayclipAudio;
+            Clip Playclip; 
+
             //For every SoundName
             for(int i = 0; i < soundNames.length; i++){
 
                 //If the SoundName equal the Given Soundname
                 if(soundNames[i].equals(name)){
 
-                    //Define the Audio and Clip
-                    AudioInputStream clipAudio;
-                    Clip clip; 
+
 
                     //Give the Vars Data
-                    clipAudio = AudioSystem.getAudioInputStream(soundFiles[i]);
-                    clip = AudioSystem.getClip();
+                    PlayclipAudio = AudioSystem.getAudioInputStream(soundFiles[i]);
+                    Playclip = AudioSystem.getClip();
 
                     //Play the Clip
-                    clip.open(clipAudio);
-                    clip.start();
+                    Playclip.open(PlayclipAudio);
+                    Playclip.start();
                 }
             }
         }
@@ -101,31 +114,34 @@ public class NewSounds {
     
     //Play Sound Method
     public void stopSound(String name){
+        try{
 
-        //For every SoundName
-        for(int i = 0; i < soundNames.length; i++){
+            //Define the Audio and Clip
+            AudioInputStream StopClipAudio;
+            Clip Stopclip; 
 
-            
-            //If the SoundName equal the Given Soundname
-            if(soundNames[i].equals(name)){
-                try{
-                    //Define the Clip
-                    Clip clip; 
+            //For every SoundName
+            for(int i = 0; i < soundNames.length; i++){
 
-                    //Give the clip Data
-                    clip = AudioSystem.getClip();
+                //If the SoundName equal the Given Soundname
+                if(soundNames[i].equals(name)){
+
+                    //Give the Vars Data
+                    StopClipAudio = AudioSystem.getAudioInputStream(soundFiles[i]);
+                    Stopclip = AudioSystem.getClip();
 
                     //Stop the Clip
-                    clip.flush();
-                    clip.stop();
-                }
-                //Cacth for the program
-                catch (LineUnavailableException error) {
-
-                    //If something hapeens print it out
-                    error.printStackTrace();
+                    Stopclip.flush();
+                    Stopclip.stop();
                 }
             }
+        }
+
+        //Cacth for the program
+        catch (IOException | LineUnavailableException | UnsupportedAudioFileException error) {
+
+            //If something hapeens print it out
+            error.printStackTrace();
         }
     }
 }
