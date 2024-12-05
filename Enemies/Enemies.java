@@ -16,38 +16,31 @@ public abstract class Enemies {
     ///////////////
     protected int health;
     protected int damage;
+    protected double damageMultiplier;
     protected double speed;
-    protected int width;
-    protected int height;
+    protected int width;        // pixels
+    protected int height;       // pixels
     protected int eyesight;
     protected double xPos;
     protected double yPos;
-    protected boolean alert;
-    protected boolean idleMovement;
     protected double[] lastSeen; // the x and y pos of the last time the enemy saw the player
+    protected boolean alert;
+    protected boolean chasing;
+    protected boolean idle;
     ///////////////
     //Constuctor
     //////////////
     public Enemies(){
-
+        
     }
     
     //-------------------------------------------------//
     //                    Methods                      //
     //-------------------------------------------------// 
 
-     //return true if player is inside hitbox (got hit)
-     public boolean checkHitbox(Player player){
-        return false;
-    }
-
-    public Rectangle getHitbox(){
-        return new Rectangle((int)this.xPos + getWidth()/4, (int) this.yPos + getHeight()/4, this.width, this.height);
-    }
-
     public abstract void takeDamage(int dmg);
 
-    public abstract boolean idleMove();
+    public abstract void idleMove();
 
     public abstract void attack(Vector direction);
 
@@ -59,7 +52,7 @@ public abstract class Enemies {
 
     public abstract void moveToward(double[] lastSeen);
 
-    public abstract void update(Player player); // sets and checks all parts of the enemy (ran every frame)
+    public abstract void update(); // sets and checks all parts of the enemy (ran every frame)
 
 
     public int getHealth() {
@@ -102,21 +95,33 @@ public abstract class Enemies {
         return eyesight;
     }
 
-    public boolean getIsAlert(){
+    public boolean getAlert(){
         return this.alert;
     }
 
-    public boolean getIdleMovement(){
-        return this.idleMovement;
+    public boolean getChasing(){
+        return this.alert;
     }
 
-    
+    public boolean getIdle(){
+        return this.idle;
+    }
+
     public double[] getLocation() {
         return new double[]{getxPos(), getyPos()};
     }
 
     public double[] getLastSeen() {
         return this.lastSeen;
+    }
+
+    //return true if player is inside hitbox (got hit)
+    public boolean checkHitbox(Player player){
+        return false;
+    }
+    
+    public Rectangle getHitbox(){
+        return new Rectangle((int)this.xPos - this.width/2, (int) this.yPos - this.height/2, this.width, this.height);
     }
 
 }

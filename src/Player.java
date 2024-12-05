@@ -29,8 +29,6 @@ public class Player {
     private int temperature;
     private int score;
 
-    private ArrayList<Item> inventory;
-
     //XP
     private int level;
     private int XP;
@@ -112,7 +110,6 @@ public class Player {
         this.isDashing = false;
         this.isBlocking = false;
         this.isAttacking = false;
-        this.inventory = new ArrayList<Item>();
     }
 
 //-------------------------------------------------//
@@ -221,15 +218,23 @@ public class Player {
         yDir = -1;
     }
 
-/* 
-    public abstract void attack();
 
-    public abstract void moveX(); //given a speed?
+    public  void attack(){
 
-    public abstract void moveY(); //given a speed?
+    }
 
-    public abstract void dash(); //given a direction?
-*/
+    public  void moveX(){
+       //given a speed? 
+    }
+
+    public  void moveY(){
+        //given a speed?
+    }
+
+    public  void dash(){
+         //given a direction?
+    }
+
     public double getxPos(){
         return this.xPos;
     }

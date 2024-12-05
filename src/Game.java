@@ -6,6 +6,7 @@ import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Timer;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import Enemies.*;
 //-------------------------------------------------//
@@ -32,19 +34,35 @@ public class Game implements ActionListener{
     BufferedImage image;
     int pDashing;
     int dashing;
+
+    // all keys used, besides shift for player 1
+    int[] player1Keys = {
+        KeyEvent.VK_W, KeyEvent.VK_A, KeyEvent.VK_S, KeyEvent.VK_D,
+        KeyEvent.VK_X, KeyEvent.VK_C
+    };
+        
+    // all key codes used, besides shift for player 2
+    int[] player2Keys = {
+        KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_K, KeyEvent.VK_L,
+        KeyEvent.VK_N, KeyEvent.VK_M
+    };
+
     private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
+    private ArrayList<Player>  players = new ArrayList<Player>();
     ///////////////
     //Constuctor
     //////////////
     public Game() throws AWTException, IOException{
         Images images = new Images();
         image = images.getImage("tree1");
-        player1 = new Swordsmen();
-        player2 = new Wizard();
-        input = new Input(player1,player2);
-        enemies.add(createSlime());
+        this.player1 = new Player(0.0,0.0,100,10,10,5);
+        this.player2 = new Player(500.0, 500.0, 100, 10, 10, 5);
+        players.add(player1);
+        players.add(player2);
+        this.input = new Input();
+        enemies.add(createSlime(500, 700));
         gui = new Gui(1280, 720, input);
-        gameTimer = new Timer(2, this);
+        gameTimer = new Timer(5, this);
         gameTimer.start();
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
@@ -69,28 +87,28 @@ public class Game implements ActionListener{
         /// Input
         ///////////////
         // Input updates its copy of the player
-        // If we are keeping this make the playerMove method return a player
-        input.playerMove(player1);
-        input.playerMove(player2);
-        input.playerAttack(player1);
-        input.playerAttack(player2);
-        // if(getKey(W){ doPlayerMove(); }
-        this.player1 = input.getPlayer1(); // Game gets the newly updated copy
-        this.player2 = input.getPlayer2(); // Game gets the newly updated copy
-        Player tempPlayer;
-        //TODO: FIX THIS
-        for(int p = 1; p <= 2; p++){
-            if(p == 1){
-                tempPlayer = player1;
-            }else{
-                tempPlayer = player2;
+        //update Player based on Input Information
+        updatePlayer();
+        
+        for(int i = 0; i < this.enemies.size(); i++){
+
+            for(int j = 0; j < this.players.size(); j++){
+                enemies.get(i).scanArea(players.get(j));
             }
-            for(int i = 0; i < this.enemies.size(); i++){
-                enemies.get(i).update(tempPlayer);
+
+            if(enemies.get(i).getAlert()){
+                enemies.get(i).moveToward(enemies.get(i).getLastSeen());
+            }else{
+                enemies.get(i).idleMove();
             }
         }
     
         gui.background((int)frameRate, (int)frameRate, (int)frameRate / 2);
+        //gui.addToQueue(new GraphicsRunnable() {
+        //    public void draw(Graphics2D g2d){
+        //        g2d.drawImage(image.getScaledInstance(Gui.WIDTH, Gui.HEIGHT, 0), 0, 0, null);
+        //    }
+        //});
         // Dash bar
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g){
@@ -103,15 +121,65 @@ public class Game implements ActionListener{
             }
         });
         gui.displayFPS((int)frameRate);
-        gui.drawPlayer(player1);
-        gui.drawPlayer(player2);
+        gui.drawPlayers(players);
         gui.drawEnemies(enemies);
         gui.repaint();
         now = System.currentTimeMillis();
     }
 
-    public Slime createSlime(){
-        return new Slime(); //make a slime given a x and y
+    public Slime createSlime(double x, double y){
+        return new Slime(x,y); //make a slime given a x and y
+    }
+
+    public Player getPlayer1(){
+        return this.player1;
+    }
+
+    public Player getPlayer2(){
+        return this.player2;
+    }
+
+    public ArrayList<Integer> getPressed(){
+        ArrayList<Integer> movements = new ArrayList<Integer>();
+        boolean[] keys = this.input.getKeys();
+        for(int i = 0; i < keys.length; i++){
+            if(keys[i] == true){
+                movements.add(i);
+            }
+        }
+        return movements;
+    }
+
+    public void updatePlayer(){
+        //get input information
+        boolean[] keys = input.getKeys();
+        boolean[] shifts = input.getShifts();
+        ArrayList<Integer> PressedKeys = getPressed();
+        input.getShifts(); // shifts that are pressed //left 0; right 1
+        //move player based on shift and 
+
+        //get input isAttacking, if true, set players to true
+        if(keys[67]){ // C
+            //player1 attack
+        }else if(keys[78]){ // N
+            //player2 attack
+        }
+        //to get timed event, get "pressed" boolean array of the key event (67 C // 78 N) and attack for pressed -> end of attack set IsAttacking to player false afterward
+
+
+        //get input isBlocking, if true, set players to true
+        //when blocking player is locked and forced to block, after blocking period, set isblocking in player to false
+        //set is active false
+        //use pressed boolean list & system.currentmilis
+        if(keys[88]){ // X
+            //player1 block
+        }else if(keys[77]){ // M
+            //player2 block
+        }
+
+
+        //get input isDashing, if true, set players to true, set input to false
+        input.getIsDashing();
     }
 
 }

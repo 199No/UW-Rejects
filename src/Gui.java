@@ -135,32 +135,34 @@ public class Gui extends JPanel{
         });
     }
     // Draw the player based on animations and current state.
-    public void drawPlayer(Player p){
+    public void drawPlayers(ArrayList<Player> players){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                Image playerImage = playerImages[0];
-                AffineTransform f = AffineTransform.getScaleInstance(0.5, 0.5);
-                f.translate(p.getxPos() * 2, p.getyPos() * 2);
-                // TODO: Get a single direction int from player and use that + an array index instead.
-                if(p.getXDir() == 1){
-                    if(p.getYDir() == 1){
-                        playerImage = playerImages[2];
+                    for(int i = 0; i < players.size(); i++){
+                    Image playerImage = playerImages[0];
+                    AffineTransform f = AffineTransform.getScaleInstance(0.5, 0.5);
+                    f.translate(players.get(i).getxPos() * 2, players.get(i).getyPos() * 2);
+                    // TODO: Get a single direction int from player and use that + an array index instead.
+                    if(players.get(i).getXDir() == 1){
+                        if(players.get(i).getYDir() == 1){
+                            playerImage = playerImages[2];
+                        }
+                        if(players.get(i).getYDir() == -1){
+                            playerImage = playerImages[0];
+                        }
                     }
-                    if(p.getYDir() == -1){
-                        playerImage = playerImages[0];
+                    if(players.get(i).getXDir() == -1){
+                        if(players.get(i).getYDir() == 1){
+                            playerImage = playerImages[3];
+                        }
+                        if(players.get(i).getYDir() == -1){
+                            playerImage = playerImages[1];
+                            
+                        }
                     }
+                    // TODO: Make this not an AffineTransform.
+                    g2d.drawImage(playerImage, f, null);
                 }
-                if(p.getXDir() == -1){
-                    if(p.getYDir() == 1){
-                        playerImage = playerImages[3];
-                    }
-                    if(p.getYDir() == -1){
-                        playerImage = playerImages[1];
-                        
-                    }
-                }
-                // TODO: Make this not an AffineTransform.
-                g2d.drawImage(playerImage, f, null);
             }
         });
     }
