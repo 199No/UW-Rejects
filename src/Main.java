@@ -21,7 +21,10 @@ public class Main{
     public static void main(String[] args) throws AWTException, IOException{
         new Game();
 
-        Sounds SirMixALot = new Sounds();
+        NewSounds SirMixALot = new NewSounds();
+        SirMixALot.playSound("BuildCreep");
+        SirMixALot.playSound("FlowerDance");
+        SirMixALot.stopSound("FlowerDance");
         //SirMixALot.Play("AnvilHit");
         //SirMixALot.Stop("AnvilHit");
         
