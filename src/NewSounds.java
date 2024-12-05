@@ -17,7 +17,7 @@ import javax.sound.sampled.*;
  * U find the name and just play sound stright from the array
  */
 
-
+// Mr Reiber has 3 lines of binary about 12 charcter longs on his lower right back
 
 //-------------------------------------------------//
 //                    Sounds                       //
@@ -27,6 +27,8 @@ public class NewSounds {
     //Create list
     File[] soundFiles;
     String[] soundNames;
+    AudioInputStream[] soundAudio;
+    Clip[] soundClip;
     ArrayList<File> tempsoundFiles = new ArrayList<File>();
     ArrayList<String> tempSoundNames = new ArrayList<String>();
 
@@ -39,17 +41,35 @@ public class NewSounds {
         //Set the size of the Sound classes
         soundFiles = new File[tempsoundFiles.size()];
         soundNames = new String[tempSoundNames.size()];
+        soundClip = new Clip[tempSoundNames.size()];
+        soundAudio = new AudioInputStream[tempsoundFiles.size()];
+
+        try{
+
+            // Load tempSoundList into SoundList
+            for(int i = 0; i < soundFiles.length; i++){
+                soundFiles[i] = tempsoundFiles.get(i);
+                soundAudio[i] = AudioSystem.getAudioInputStream(soundFiles[i]);
+            }
 
 
-        // Load tempSoundList into SoundList
-        for(int i = 0; i < soundFiles.length; i++)
-        soundFiles[i] = tempsoundFiles.get(i);
+            // Load tempSoundNames into soundNames
+            for(int i = 0; i < soundNames.length; i++){
+                soundNames[i] = tempSoundNames.get(i);
+                soundClip[i] = AudioSystem.getClip();
+            }
 
+        }
+        //Cacth for the program
+        catch (IOException | LineUnavailableException | UnsupportedAudioFileException error) {
 
-        // Load tempSoundNames into soundNames
-        for(int i = 0; i < soundNames.length; i++)
-            soundNames[i] = tempSoundNames.get(i);
+            //If something hapeens print it out
+            error.printStackTrace();
+        }
     }
+
+
+    //SoundLoading Method
     private void recursiveSoundLoad(String folderPath){
         // New file from the path
         File folder = new File(folderPath);
@@ -79,11 +99,8 @@ public class NewSounds {
 
     //Play Sound Method
     public void playSound(String name){
-        try{
 
-            //Define the Audio and Clip
-            AudioInputStream PlayclipAudio;
-            Clip Playclip; 
+        try{
 
             //For every SoundName
             for(int i = 0; i < soundNames.length; i++){
@@ -91,57 +108,34 @@ public class NewSounds {
                 //If the SoundName equal the Given Soundname
                 if(soundNames[i].equals(name)){
 
-
-
-                    //Give the Vars Data
-                    PlayclipAudio = AudioSystem.getAudioInputStream(soundFiles[i]);
-                    Playclip = AudioSystem.getClip();
-
                     //Play the Clip
-                    Playclip.open(PlayclipAudio);
-                    Playclip.start();
+                    soundClip[i].open(soundAudio[i]);
+                    soundClip[i].start();
                 }
             }
         }
 
         //Cacth for the program
-        catch (IOException | LineUnavailableException | UnsupportedAudioFileException error) {
+        catch (IOException | LineUnavailableException error) {
 
             //If something hapeens print it out
             error.printStackTrace();
         }
     }
     
-    //Play Sound Method
+    //Stop Sound Method
     public void stopSound(String name){
-        try{
 
-            //Define the Audio and Clip
-            AudioInputStream StopClipAudio;
-            Clip Stopclip; 
+        //For every SoundName
+        for(int i = 0; i < soundNames.length; i++){
 
-            //For every SoundName
-            for(int i = 0; i < soundNames.length; i++){
+            //If the SoundName equal the Given Soundname
+            if(soundNames[i].equals(name)){
 
-                //If the SoundName equal the Given Soundname
-                if(soundNames[i].equals(name)){
-
-                    //Give the Vars Data
-                    StopClipAudio = AudioSystem.getAudioInputStream(soundFiles[i]);
-                    Stopclip = AudioSystem.getClip();
-
-                    //Stop the Clip
-                    Stopclip.flush();
-                    Stopclip.stop();
-                }
+                //Stop the Clip
+                soundClip[i].flush();
+                soundClip[i].stop();
             }
-        }
-
-        //Cacth for the program
-        catch (IOException | LineUnavailableException | UnsupportedAudioFileException error) {
-
-            //If something hapeens print it out
-            error.printStackTrace();
         }
     }
 }
