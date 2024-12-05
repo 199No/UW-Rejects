@@ -117,110 +117,35 @@ public class Player {
 //-------------------------------------------------// 
 
 
-    // TODO: Remove these useless move___walk/spint, and dash methods and make 1 move method
-    // A
-    public void moveLeftWalk(){
-        if(isDashing){
-            xPos -= speed * 0.1;
-        }else{
-            xPos -= speed;
-        }
-        xDir = -1;
-    }
+   public void move(boolean[] movement){
+        //0 W || I
+        //1 A || J
+        //2 S || K
+        //3 D || L
 
-    // D
-    public void moveRightWalk(){
-        if(isDashing){
-            xPos += speed * 0.1;
-        }else{
-            xPos += speed;
-        }
-        xDir = 1;
-    }
+        xDir = 0;
+        yDir = 0;
 
-    // shift + A
-    public void moveLeftRun(){
-        if(isDashing){
-            xPos -= speed * 0.2;
-        }else{
-            xPos -= (speed * 1.25);
-        }
-        xDir = -1;
-    }
+        if(movement[0]) yDir -= 1;
+        if(movement[1]) xDir -= 1;
+        if(movement[2]) yDir += 1;
+        if(movement[3]) xDir += 1;
 
-    //shift + D
-    public void moveRightRun(){
-        if(isDashing){
-            xPos += speed * 0.2;
-        }else{
-            xPos += (speed * 1.25);
-        }
-        xDir = 1;
-    }
+        this.xPos = xPos + (xDir * speed);
+        this.yPos = yPos + (yDir * speed);
 
-    // W
-    public void moveUpWalk(){
-        if(isDashing){
-            yPos -= speed * 0.1;
-        }else{
-            yPos -= speed;
-        }
-        yDir = 1;
-    }
-
-    // S
-    public void moveDownWalk(){
-        if(isDashing){
-            yPos += speed * 0.1;
-        }else{
-            yPos += speed;
-        }
-        yDir = -1;
-    }
-
-    // shift + W
-    public void moveUpRun(){
-        if(isDashing){
-            yPos -= speed * 0.2;
-        }else{
-            yPos -= (speed * 1.25);
-        }
-        yDir = 1;
-    }
-    
-    // shift + S
-    public void moveDownRun(){
-        if(isDashing){
-            yPos += speed * 0.2;
-        }else{
-            yPos += (speed * 1.25);
-        }
-        yDir = -1;
-    }
-
-    public void dashRight(double speed){
-        xPos += speed;
-        xDir = 1;
-    }
-
-    public void dashLeft(double speed){
-        xPos -= speed;
-        xDir = -1;
-    }
-
-    public void dashUp(double speed){
-        yPos -= speed;
-        yDir = 1;
-    }
-
-    public void dashDown(double speed){
-        yPos += speed;
-        yDir = -1;
-    }
-
+   }
 
     public  void attack(){
+        System.out.println("attack!");
+    }
 
+    public void block(){
+        System.out.println("block!");
+    }
+
+    public void dash(){
+        System.out.println("dash! (player)");
     }
 
     public  void moveX(){
@@ -229,10 +154,6 @@ public class Player {
 
     public  void moveY(){
         //given a speed?
-    }
-
-    public  void dash(){
-         //given a direction?
     }
 
     public double getxPos(){

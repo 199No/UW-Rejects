@@ -33,8 +33,8 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     int[] pressed = new int[90];
     int[] released = new int[90];
     
-    boolean isDashing;
-    int lastDash;
+    int dash; // keyevent used to distinguish which key was pressed
+    int lastDash = (int) System.currentTimeMillis(); // in mili
     ///////////////
     //Comstuctor
     //////////////
@@ -128,11 +128,11 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
             if(getKey(e.getKeyCode()) == false){
                 keys[e.getKeyCode()] = true;
                 //checkDash
-                if(released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 200 && (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 200){
-                    this.lastDash = (int) System.currentTimeMillis();
-                    System.out.println("Dash!");
-                    //TODO: SEND GAME INFORMATION
-                    this.isDashing = true;
+                if(released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 350 && (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 350){
+                    if((int) System.currentTimeMillis() - this.lastDash > 5000){
+                        this.lastDash = (int) System.currentTimeMillis();
+                        this.dash = e.getKeyCode();
+                    }
                 }
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     int location = e.getKeyLocation();
@@ -173,15 +173,9 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
             released[e.getKeyCode()] = (int) System.currentTimeMillis();
         }
     }
-
-    public void playerAttack(){
-        System.out.println("attack");
+    public int getDash(){
+        return this.dash;
     }
-
-    public boolean getIsDashing(){
-        return this.isDashing;
-    }
-
     public int getLastDash(){
         return this.lastDash;
     }
@@ -190,6 +184,9 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     }
     public boolean[] getShifts(){
         return this.shifts;
+    }
+    public int[] getPressed(){
+        return this.pressed;
     }
 
 }
