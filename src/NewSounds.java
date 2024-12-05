@@ -8,17 +8,6 @@ import java.io.IOException;
 import javax.sound.sampled.*;
 
 
-/*
- * When u remake a clip even if its the exact same it still wont work (AKA u cant refernce the same clip)
- * This is why stop sound isnt working because u redifne the clip
- * A fix Ive tought of is to make to more List
- * One list is all the clips and another being all the audiostreams
- * This way when u call a play sound instead of finding the name and make a clip var
- * U find the name and just play sound stright from the array
- */
-
-// Mr Reiber has 3 lines of binary about 12 charcter longs on his lower right back
-
 //-------------------------------------------------//
 //                    Sounds                       //
 //-------------------------------------------------// 
