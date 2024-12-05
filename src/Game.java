@@ -120,9 +120,9 @@ public class Game implements ActionListener{
 
             }
         });
-        gui.displayFPS((int)frameRate);
         gui.drawPlayers(players);
         gui.drawEnemies(enemies);
+        gui.displayFPS((int)frameRate);
         gui.repaint();
         now = System.currentTimeMillis();
     }

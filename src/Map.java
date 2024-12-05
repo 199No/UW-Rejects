@@ -4,11 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class MapLoader {
+public class Map {
     ArrayList<int[][]> loadedChunks = new ArrayList<int[][]>();
     File mapFile;
-    public MapLoader(String filePath){
+
+    public Map(String filePath){
         mapFile = new File(filePath);
+    }
+    public void unloadChunks(){
+        
     }
     public int[][] loadChunk(int chunkX, int chunkY){
         // A single line of text in the file
