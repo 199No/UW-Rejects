@@ -5,14 +5,19 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Map {
-    ArrayList<int[][]> loadedChunks = new ArrayList<int[][]>();
+    ArrayList<Chunk> loadedChunks = new ArrayList<Chunk>();
     File mapFile;
 
     public Map(String filePath){
         mapFile = new File(filePath);
     }
     public void unloadChunks(double cameraX, double cameraY){
-        
+        for(int i = 0; i < loadedChunks; i++){
+             if(!loadedChunks.get(i).isVisible()){
+                 //chunk.doUnload();
+                 loadedChunks.remove(i);
+             }
+        }
     }
     public int[][] loadChunk(int chunkX, int chunkY){
         // A single line of text in the file
