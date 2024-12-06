@@ -1,18 +1,25 @@
 package Enemies;
 
-
 class Vector {
-    double x, y;
+    double x;
+    double y;
+    double magnitude; // length
 
     public Vector(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    // Normalize the vector (make it a unit vector)
-    public Vector normalize() {
-        double magnitude = Math.sqrt(x * x + y * y);  // Calculate the magnitude (length)
-        return new Vector(x / magnitude, y / magnitude);  // Return normalized vector
+    public Vector normalize(double speed) {
+        double magnitude = Math.sqrt(x * x + y * y);
+        if (magnitude == 0) {
+            // Return a zero vector if the magnitude is zero
+            return new Vector(0, 0);
+        }
+        // Normalize and scale the vector
+        double normalizedX = (x / magnitude) * speed;
+        double normalizedY = (y / magnitude) * speed;
+        return new Vector(normalizedX, normalizedY);
     }
     
     public double getxPos(){
@@ -21,6 +28,10 @@ class Vector {
 
     public double getyPos(){
         return this.y;
+    }
+
+    public double getMagnitude(){
+        return this.magnitude;
     }
 
 }

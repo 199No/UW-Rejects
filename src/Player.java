@@ -1,47 +1,115 @@
 package src;
 import java.util.ArrayList;
+import java.awt.Rectangle;
 
 //-------------------------------------------------//
 //                    Player                       //
 //-------------------------------------------------// 
-public abstract class Player {
+public class Player {
     ///////////////
     //Properties
     //////////////
     private int health;
+    private int armor;
+    private int defence;
     private int damage;
     private double speed;
-    private int xPos;
-    private int yPos;
 
+    //multipliers
+    private double damageMultiplier;
+    private double speedMultiplier;
 
-    private int dashCooldown = 5000; // in miliseconds
-    private int dashLength   = 350 + 500 + 350; // in miliseconds
-    private double dashSpeed    = 2.5; // factor to multiply the speed when dashing
-    private boolean isDashing;
-
-
-    private boolean active; //the player is able to be hit if true
-    private int[] topLeft; //top left of the hitbox
+    //positioning
+    private double xPos;
+    private double yPos;
     private final int width = 24;
     private final int height = 24;
-    //TODO: use only 1 type of direction.
-    private int xDir, yDir;
 
-    private ArrayList<Item> inventory;
+    //misc
+    private int temperature;
+    private int score;
+
+    //XP
+    private int level;
+    private int XP;
+    private double XPMultiplier;
+    private int XPToNextLevel;
+
+    //Attack
+    private int attackCooldown; // in miliseconds
+    private int attackLength; // in miliseconds
+    private boolean isAttacking; //is swinging
+
+    //Block
+    private int blockCooldown; // in miliseconds
+    private int blockLength; // in miliseconds
+    private boolean isBlocking;
+
+    //Dash
+    private int dashCooldown; // in miliseconds
+    private int dashLength   = 350 + 500 + 350; // in miliseconds
+    private boolean isDashing;
+    
+    //Hitbox
+    private boolean active; //the player is able to be hit if true
+    private int[] topLeft; //top left of the hitbox
+    private Rectangle hitbox;
+
+    //Mage
+    private int mana;
+    private int maxMana;
+    private double manaRegenRate;
+
+    //Animation
+
+    /*         xDir     yDir
+     UP	        0	    -1
+
+     UP-RIGHT	1	    -1
+
+     RIGHT	    1	     0
+
+     DOWN-RIGHT	1	     1
+
+     DOWN	    0	     1
+
+     DOWN-LEFT -1	     1 
+
+     LEFT	   -1	     0
+
+     UP-LEFT   -1	    -1 
+     */
+
+    private int xDir; // -1 (left), 0 (neutral), 1 (right)
+    private int yDir; // -1 (Up),   0 (neutral), 1 (down)
     ///////////////
     //Constuctor
     //////////////
-    public Player() {
+    public Player(double x, double y, int hp, int d, int dmg, double s) {
         System.out.println("Player!");
-        xPos = 0;
-        yPos = 0;
-        this.topLeft = new int[]{xPos-this.getWidth(), yPos-this.getHeight()};
-        xDir = 2;
-        yDir = 1;
-        speed = 5;
-        isDashing = false;
-        inventory = new ArrayList<Item>();
+
+        this.xPos = x;
+        this.yPos = y;
+        this.health = hp;
+        this.defence = d;
+        this.damage = dmg;
+        this.speed = s;
+
+        this.level = 0;
+        this.XP = 0;
+
+        this.maxMana = 1000;
+        this.XPToNextLevel = 20; //levels increase by xpnextlevel *= 1.2
+        this.attackCooldown = 500; // ↓↓ in miliseconds
+        this.dashCooldown = 5000;
+        this.blockCooldown = 5000;
+
+        this.xDir = 0;
+        this.yDir = 0;
+
+        this.isDashing = false;
+        this.isBlocking = false;
+        this.isAttacking = false;
     }
 
 //-------------------------------------------------//
@@ -151,19 +219,27 @@ public abstract class Player {
     }
 
 
-    public abstract void attack();
+    public  void attack(){
 
-    public abstract void moveX(); //given a speed?
+    }
 
-    public abstract void moveY(); //given a speed?
+    public  void moveX(){
+       //given a speed? 
+    }
 
-    public abstract void dash(); //given a direction?
+    public  void moveY(){
+        //given a speed?
+    }
 
-    public int getxPos(){
+    public  void dash(){
+         //given a direction?
+    }
+
+    public double getxPos(){
         return this.xPos;
     }
 
-    public int getyPos(){
+    public double getyPos(){
         return this.yPos;
     }
 
@@ -172,12 +248,17 @@ public abstract class Player {
         yPos = y;
     }
 
-    public int[] getLocation(){
-        return new int[] {this.xPos,this.yPos};
+    public double[] getLocation(){
+        return new double[] {this.xPos,this.yPos};
     }
 
-    public int[] getHitboxTopLeft(){
-        return new int[]{xPos+this.getWidth()/4, yPos+this.getHeight()/4};
+    public double[] getHitboxTopLeft(){
+        return new double[]{xPos+this.getWidth()/4, yPos+this.getHeight()/4};
+    }
+
+    public int[] getDirection(){
+        //0,2 for index when grabbing a image from a 2d array of player images
+        return new int[]{xDir + 1, yDir + 1};
     }
 
     public int getXDir(){
@@ -222,9 +303,6 @@ public abstract class Player {
 
     public void setSpeed(double speed){
         this.speed = speed;
-    }
-    public double getDashSpeed(){
-        return this.dashSpeed;
     }
 
 }

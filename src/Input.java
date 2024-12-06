@@ -27,22 +27,18 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     boolean automatedMove;
     double movedX, movedY;
     boolean mouseLocked;
+
     boolean[] keys = new boolean[90];
-    Player player1;
-    Player player2;
-    boolean shortClick;
-    int latestInput; // last pressed key
-    int dashDirection;
-    int pressed; 
-    int released;
+    boolean[] shifts = new boolean[2];
+    int[] pressed = new int[90];
+    int[] released = new int[90];
+    
+    boolean isDashing;
     int lastDash;
-    int INTERVAL = 350; //global time for gaps inbetween short clicks 
     ///////////////
     //Comstuctor
     //////////////
-    public Input(Player player1, Player player2){
-        this.player1 = player1;
-        this.player2 = player2;
+    public Input(){
         lastX = MouseInfo.getPointerInfo().getLocation().getX();
         lastY = MouseInfo.getPointerInfo().getLocation().getY();
         mouseX = MouseInfo.getPointerInfo().getLocation().getX();
@@ -87,9 +83,6 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
             automatedMove = false;
         }
     }
-//-------------------------------------------------//
-//                    Methods                      //
-//-------------------------------------------------// 
 
     public boolean getKey(int keyCode){
         return keys[keyCode];
@@ -100,44 +93,33 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     public double dMouseY(){
         return mouseY - lastY;
     }
-    @Override
-    public void mouseMoved(MouseEvent e){
-
-    }
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
+//-------------------------------------------------//
+//                    Methods                      //
+//-------------------------------------------------// 
 
     @Override
-    public void mousePressed(MouseEvent e) {
-        
-    }
+    public void mouseMoved(MouseEvent e){}
 
     @Override
-    public void mouseReleased(MouseEvent e) {
-        
-    }
+    public void mouseClicked(MouseEvent e) {}
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-        // Empty
-    }
+    public void mousePressed(MouseEvent e) {}
 
     @Override
-    public void mouseExited(MouseEvent e) {
-        // Empty
-    }
+    public void mouseReleased(MouseEvent e) {}
 
     @Override
-    public void mouseDragged(MouseEvent e){
-
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void mouseExited(MouseEvent e) {}
 
-    }
+    @Override
+    public void mouseDragged(MouseEvent e){}
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -145,8 +127,22 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
              //checks to see if this input was a new input
             if(getKey(e.getKeyCode()) == false){
                 keys[e.getKeyCode()] = true;
-                pressed = (int) System.currentTimeMillis();
-                //checkDash(e, player); TODO: FIX THIS!
+                //checkDash
+                if(released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 200 && (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 200){
+                    this.lastDash = (int) System.currentTimeMillis();
+                    System.out.println("Dash!");
+                    //TODO: SEND GAME INFORMATION
+                    this.isDashing = true;
+                }
+                if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+                    int location = e.getKeyLocation();
+                    if (location == KeyEvent.KEY_LOCATION_LEFT) {
+                        shifts[0] = true;
+                    } else if (location == KeyEvent.KEY_LOCATION_RIGHT) {
+                        shifts[1] = true;
+                    }
+                }
+                pressed[e.getKeyCode()] = (int) System.currentTimeMillis(); // new key pressed
             }else{
                 keys[e.getKeyCode()] = true;
             }
@@ -165,110 +161,35 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
         }
 
         if(e.getKeyCode() < keys.length){
-                keys[e.getKeyCode()] = false;
-                released = (int) System.currentTimeMillis();
-                checkShortClick(e);
-        }
-    }
-
-    //players movements WASD run/walk (with shift): Calls Player methods
-    public void playerMove(Player player){
-
-        //method to stop the player from dashing
-        if(player.getIsDashing()){
-            if(lastDash <= (int) System.currentTimeMillis() && (int) System.currentTimeMillis() < lastDash + INTERVAL){
-                //lil pause
-            }else if(lastDash + INTERVAL <= (int) System.currentTimeMillis() && (int) System.currentTimeMillis() < lastDash + player.getDashLength() - INTERVAL){
-                //actaully dashing
-                int dir = dashDirection;
-                if(dir == KeyEvent.VK_W){ // w
-                    player.dashUp(player.getSpeed());
-                }else if(dir == KeyEvent.VK_A){ // a
-                    player.dashLeft(player.getSpeed());
-                }else if(dir == KeyEvent.VK_S){ // s
-                    player.dashDown(player.getSpeed());
-                }else if(dir == KeyEvent.VK_D){ // d
-                    player.dashRight(player.getSpeed());
+            keys[e.getKeyCode()] = false;
+            if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+                int location = e.getKeyLocation();
+                if (location == KeyEvent.KEY_LOCATION_LEFT) {
+                    shifts[0] = false;
+                } else if (location == KeyEvent.KEY_LOCATION_RIGHT) {
+                    shifts[1] = false;
                 }
-            }else if(lastDash + player.getDashLength() - INTERVAL <= (int) System.currentTimeMillis() && (int) System.currentTimeMillis() < lastDash + player.getDashLength()){
-                //lil pause
-            }else if(lastDash + player.getDashLength() <= (int) System.currentTimeMillis()){
-                player.setIsDashing(false);
-                player.setSpeed(5.0);
             }
-        }
-    
-        //they can still input, but it will be less because the boolean isDashing will be true
-        if(getKey(KeyEvent.VK_W) == true){
-            if(getKey(KeyEvent.VK_SHIFT) == true){
-                //shift and W is pressed
-                player.moveUpRun();
-            }else{
-                //W pressed
-                player.moveUpWalk();
-            }
-        }if(getKey(KeyEvent.VK_A) == true){
-            if(getKey(KeyEvent.VK_SHIFT) == true){
-                //shift and A pressed
-                player.moveLeftRun();
-            }else{
-                //A pressed
-                player.moveLeftWalk();
-            }
-        }if(getKey(KeyEvent.VK_S) == true){
-            if(getKey(KeyEvent.VK_SHIFT) == true){
-                // Shift and S is pressed
-                player.moveDownRun();
-            }else{
-                //S is pressed
-                player.moveDownWalk();
-            }
-        }if(getKey(KeyEvent.VK_D) == true){
-            if(getKey(KeyEvent.VK_SHIFT) == true){
-                //Shift and D is pressed
-                player.moveRightRun();
-            }else{
-                //D is pressed
-                player.moveRightWalk();
-            }
+            released[e.getKeyCode()] = (int) System.currentTimeMillis();
         }
     }
 
-    public void playerAttack(Player player){
-        if(getKey(KeyEvent.VK_SPACE) == true){
-            player.attack();
-        }
+    public void playerAttack(){
+        System.out.println("attack");
     }
 
-    public void checkShortClick(KeyEvent e){
-        //System.out.println(Math.abs(pressed - released)); // duration of input
-        if(Math.abs(pressed - released) < INTERVAL){
-            shortClick = true;
-        }
-        latestInput = e.getKeyCode();
+    public boolean getIsDashing(){
+        return this.isDashing;
     }
 
-    public void checkDash(KeyEvent e, Player player){
-        //if last dash was longer than the dashcooldown, the time inbetween short click and this click is less than 350, there was a short click before and the lastinput is the same direction as the new input
-        if(Math.abs(lastDash - pressed) > player.getDashCooldown() && Math.abs(released - pressed) < INTERVAL && shortClick && latestInput == e.getKeyCode()){            
-            System.out.println("Dash! " + e.getKeyCode());
-            player.setIsDashing(true);
-            player.setSpeed(player.getSpeed() * player.getDashSpeed());
-            lastDash = (int) System.currentTimeMillis();
-            dashDirection = e.getKeyCode();
-        }else{
-            shortClick = false;
-        }
-        latestInput = e.getKeyCode();
-    }
-
-    public Player getPlayer1(){
-        return this.player1;
-    }
-    public Player getPlayer2(){
-        return this.player2;
-    }
     public int getLastDash(){
-        return lastDash;
+        return this.lastDash;
     }
+    public boolean[] getKeys(){
+        return this.keys;
+    }
+    public boolean[] getShifts(){
+        return this.shifts;
+    }
+
 }

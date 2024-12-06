@@ -11,7 +11,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 //-------------------------------------------------//
@@ -28,6 +27,7 @@ public class Gui extends JPanel{
     // Made public so that other classes can see them
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
+    public static final int TILE_SIZE = 38;
     // Where things get queued up to be drawn. 
     // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
     // Fixes timing issues.
@@ -39,10 +39,11 @@ public class Gui extends JPanel{
     BufferedImage[] envImages;
     // The guy she tells you not to worry about (better image loading)
     Images images;
-    // Why the fuck is this still here
-    int slimeStep = 0;
-    double lastSlimeStep = System.currentTimeMillis();
+    Rectangle chunkUnloadBoundary = new Rectangle(-(TILE_SIZE * 10), -(TILE_SIZE * 10), Gui.WIDTH + (TILE_SIZE * 20), Gui.HEIGHT + (TILE_SIZE * 20));
     Animation slimeAnimation;
+    ////////// CAMERA ///////////
+    double cameraX;
+    double cameraY;
 
     ///////////////
     //Constuctor
@@ -117,13 +118,9 @@ public class Gui extends JPanel{
     public void background(int r, int g, int b){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                g2d.setColor(new Color(r, g, b));
-                g2d.fillRect(0, 0, width, height);
-                for(int y = 0; y < 24; y++){
-                    for(int x = 0; x < 48; x++){
-                        AffineTransform a = AffineTransform.getScaleInstance(0.4, 0.4);
-                        a.translate(x* 38.4 * 2.5, y * 38.4 * 2.5);
-                        g2d.drawImage(envImages[0], a, null);
+                for(int y = 0; y < 18; y++){
+                    for(int x = 0; x < 34; x++){
+                        g2d.drawImage(envImages[0], x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
                     }
                 }
             }
@@ -133,38 +130,37 @@ public class Gui extends JPanel{
     public void displayFPS(int n){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                g2d.setColor(new Color(0, 0, 0));
+                g2d.setColor(new Color(255, 255, 255));
                 g2d.drawString(String.valueOf(n), 40, 60);
             }
         });
     }
     // Draw the player based on animations and current state.
-    public void drawPlayer(Player p){
+    public void drawPlayers(ArrayList<Player> players){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                Image playerImage = playerImages[0];
-                AffineTransform f = AffineTransform.getScaleInstance(0.5, 0.5);
-                f.translate(p.getxPos() * 2, p.getyPos() * 2);
-                // TODO: Get a single direction int from player and use that + an array index instead.
-                if(p.getXDir() == 1){
-                    if(p.getYDir() == 1){
-                        playerImage = playerImages[2];
+                    for(int i = 0; i < players.size(); i++){
+                    BufferedImage playerImage = playerImages[0];
+                    // TODO: Get a single direction int from player and use that + an array index instead.
+                    if(players.get(i).getXDir() == 1){
+                        if(players.get(i).getYDir() == 1){
+                            playerImage = playerImages[2];
+                        }
+                        if(players.get(i).getYDir() == -1){
+                            playerImage = playerImages[0];
+                        }
                     }
-                    if(p.getYDir() == -1){
-                        playerImage = playerImages[0];
+                    if(players.get(i).getXDir() == -1){
+                        if(players.get(i).getYDir() == 1){
+                            playerImage = playerImages[3];
+                        }
+                        if(players.get(i).getYDir() == -1){
+                            playerImage = playerImages[1];
+                            
+                        }
                     }
+                    g2d.drawImage(playerImage, (int)players.get(i).getxPos(), (int)players.get(i).getyPos(), 96, 96, null);
                 }
-                if(p.getXDir() == -1){
-                    if(p.getYDir() == 1){
-                        playerImage = playerImages[3];
-                    }
-                    if(p.getYDir() == -1){
-                        playerImage = playerImages[1];
-                        
-                    }
-                }
-                // TODO: Make this not an AffineTransform.
-                g2d.drawImage(playerImage, f, null);
             }
         });
     }
@@ -190,4 +186,5 @@ public class Gui extends JPanel{
         });
 
     }
+    /////////////// UTILITIES ///////////////
 }
