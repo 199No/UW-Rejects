@@ -16,8 +16,6 @@ public class NewSounds {
     //Create list
     File[] soundFiles;
     String[] soundNames;
-    AudioInputStream[] soundAudio;
-    Clip[] soundClip;
     ArrayList<File> tempsoundFiles = new ArrayList<File>();
     ArrayList<String> tempSoundNames = new ArrayList<String>();
 
@@ -30,35 +28,17 @@ public class NewSounds {
         //Set the size of the Sound classes
         soundFiles = new File[tempsoundFiles.size()];
         soundNames = new String[tempSoundNames.size()];
-        soundClip = new Clip[tempSoundNames.size()];
-        soundAudio = new AudioInputStream[tempsoundFiles.size()];
-
-        try{
-
-            // Load tempSoundList into SoundList
-            for(int i = 0; i < soundFiles.length; i++){
-                soundFiles[i] = tempsoundFiles.get(i);
-                soundAudio[i] = AudioSystem.getAudioInputStream(soundFiles[i]);
-            }
 
 
-            // Load tempSoundNames into soundNames
-            for(int i = 0; i < soundNames.length; i++){
-                soundNames[i] = tempSoundNames.get(i);
-                soundClip[i] = AudioSystem.getClip();
-            }
+        // Load tempSoundList into SoundList
+        for(int i = 0; i < soundFiles.length; i++)
+        soundFiles[i] = tempsoundFiles.get(i);
 
-        }
-        //Cacth for the program
-        catch (IOException | LineUnavailableException | UnsupportedAudioFileException error) {
 
-            //If something hapeens print it out
-            error.printStackTrace();
-        }
+        // Load tempSoundNames into soundNames
+        for(int i = 0; i < soundNames.length; i++)
+            soundNames[i] = tempSoundNames.get(i);
     }
-
-
-    //SoundLoading Method
     private void recursiveSoundLoad(String folderPath){
         // New file from the path
         File folder = new File(folderPath);
@@ -88,7 +68,6 @@ public class NewSounds {
 
     //Play Sound Method
     public void playSound(String name){
-
         try{
 
             //For every SoundName
@@ -97,33 +76,55 @@ public class NewSounds {
                 //If the SoundName equal the Given Soundname
                 if(soundNames[i].equals(name)){
 
+                    //Define the Audio and Clip
+                    AudioInputStream clipAudio;
+                    Clip clip; 
+
+                    //Give the Vars Data
+                    clipAudio = AudioSystem.getAudioInputStream(soundFiles[i]);
+                    clip = AudioSystem.getClip();
+
                     //Play the Clip
-                    soundClip[i].open(soundAudio[i]);
-                    soundClip[i].start();
+                    clip.open(clipAudio);
+                    clip.start();
                 }
             }
         }
 
         //Cacth for the program
-        catch (IOException | LineUnavailableException error) {
+        catch (IOException | LineUnavailableException | UnsupportedAudioFileException error) {
 
             //If something hapeens print it out
             error.printStackTrace();
         }
     }
     
-    //Stop Sound Method
+    //Play Sound Method
     public void stopSound(String name){
 
         //For every SoundName
         for(int i = 0; i < soundNames.length; i++){
 
+            
             //If the SoundName equal the Given Soundname
             if(soundNames[i].equals(name)){
+                try{
+                    //Define the Clip
+                    Clip clip; 
 
-                //Stop the Clip
-                soundClip[i].flush();
-                soundClip[i].stop();
+                    //Give the clip Data
+                    clip = AudioSystem.getClip();
+
+                    //Stop the Clip
+                    clip.flush();
+                    clip.stop();
+                }
+                //Cacth for the program
+                catch (LineUnavailableException error) {
+
+                    //If something hapeens print it out
+                    error.printStackTrace();
+                }
             }
         }
     }
