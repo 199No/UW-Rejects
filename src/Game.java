@@ -47,6 +47,8 @@ public class Game implements ActionListener{
         KeyEvent.VK_N, KeyEvent.VK_M
     };
 
+    boolean[] movement = new boolean[4];
+
     private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
     private ArrayList<Player>  players = new ArrayList<Player>();
     ///////////////
@@ -139,47 +141,51 @@ public class Game implements ActionListener{
         return this.player2;
     }
 
-    public ArrayList<Integer> getPressed(){
-        ArrayList<Integer> movements = new ArrayList<Integer>();
-        boolean[] keys = this.input.getKeys();
-        for(int i = 0; i < keys.length; i++){
-            if(keys[i] == true){
-                movements.add(i);
-            }
-        }
-        return movements;
-    }
-
     public void updatePlayer(){
         //get input information
-        boolean[] keys = input.getKeys();
+        boolean[] keys   = input.getKeys();
         boolean[] shifts = input.getShifts();
-        ArrayList<Integer> PressedKeys = getPressed();
-        input.getShifts(); // shifts that are pressed //left 0; right 1
-        //move player based on shift and 
+        //move player based on shift and keys pressed
 
-        //get input isAttacking, if true, set players to true
-        if(keys[67]){ // C
-            //player1 attack
-        }else if(keys[78]){ // N
-            //player2 attack
+        this.movement = new boolean[]{keys[player1Keys[0]], keys[player1Keys[1]], keys[player1Keys[2]], keys[player1Keys[3]]};  // W A S D
+        player1.move(movement);
+        this.movement = new boolean[]{keys[player2Keys[0]], keys[player2Keys[1]], keys[player2Keys[2]], keys[player2Keys[3]]};  // I J K L
+        player2.move(movement);
+
+        //ATTACK
+        if(keys[67]){
+            //C
+            this.player1.attack();
         }
-        //to get timed event, get "pressed" boolean array of the key event (67 C // 78 N) and attack for pressed -> end of attack set IsAttacking to player false afterward
-
-
-        //get input isBlocking, if true, set players to true
-        //when blocking player is locked and forced to block, after blocking period, set isblocking in player to false
-        //set is active false
-        //use pressed boolean list & system.currentmilis
-        if(keys[88]){ // X
-            //player1 block
-        }else if(keys[77]){ // M
-            //player2 block
+        if(keys[78]){
+            //N
+            this.player2.attack();
         }
-
-
-        //get input isDashing, if true, set players to true, set input to false
-        input.getIsDashing();
+        //BLOCK
+        if(keys[88]){
+            //X
+            this.player1.block();
+        }
+        if(keys[77]){
+            //M
+            this.player2.block();
+        }
+        //DASH
+        //can the player dash?
+        if((int) System.currentTimeMillis() - input.getLastDash() > 5000){
+            int key = input.getDash(); // key event of the dash
+            //was it pressed recently?
+            if((int) System.currentTimeMillis() - input.getPressed()[key] < 20){
+                for(int i = 0; i < player1Keys.length; i++){
+                    if(player1Keys[i] == key){
+                        player1.dash();
+                    }
+                    if(player2Keys[i] == key){
+                        player2.dash();
+                    }
+                }
+            }
+        }
     }
 
 }
