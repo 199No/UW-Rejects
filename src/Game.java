@@ -35,17 +35,6 @@ public class Game implements ActionListener{
     int pDashing;
     int dashing;
     Map map;
-    // all keys used, besides shift for player 1
-    int[] player1Keys = {
-        KeyEvent.VK_W, KeyEvent.VK_A, KeyEvent.VK_S, KeyEvent.VK_D,
-        KeyEvent.VK_X, KeyEvent.VK_C
-    };
-        
-    // all key codes used, besides shift for player 2
-    int[] player2Keys = {
-        KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_K, KeyEvent.VK_L,
-        KeyEvent.VK_N, KeyEvent.VK_M
-    };
 
     boolean[] movement = new boolean[4];
 
@@ -113,11 +102,17 @@ public class Game implements ActionListener{
         // Dash bar
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g){
-                double height = (((double)(int)System.currentTimeMillis() - (double)input.getLastDash()) / 5000) * Gui.HEIGHT;
+                double height1 = (((double)(int)System.currentTimeMillis() - (double)input.getLastp1Dash()) / 5000) * Gui.HEIGHT;
                 g.setColor(Color.BLACK);
                 g.fillRect(Gui.WIDTH - 30, 0, 30, Gui.HEIGHT);
                 g.setColor(new Color(3, 148, 252));
-                g.fillRect(Gui.WIDTH - 30, Gui.HEIGHT - (int)height, 30, (int)height);
+                g.fillRect(0, Gui.HEIGHT - (int)height1, 30, (int)height1);
+
+                double height2 = (((double)(int)System.currentTimeMillis() - (double)input.getLastp2Dash()) / 5000) * Gui.HEIGHT;
+                g.setColor(Color.BLACK);
+                g.fillRect(Gui.WIDTH - 30, 0, 30, Gui.HEIGHT);
+                g.setColor(new Color(3, 148, 252));
+                g.fillRect(Gui.WIDTH - 30, Gui.HEIGHT - (int)height2, 30, (int)height2);
 
             }
         });
@@ -147,9 +142,9 @@ public class Game implements ActionListener{
         boolean[] shifts = input.getShifts();
         //move player based on shift and keys pressed
 
-        this.movement = new boolean[]{keys[player1Keys[0]], keys[player1Keys[1]], keys[player1Keys[2]], keys[player1Keys[3]]};  // W A S D
+        this.movement = new boolean[]{keys[this.input.getPlayer1Keys()[0]], keys[this.input.getPlayer1Keys()[1]], keys[this.input.getPlayer1Keys()[2]], keys[this.input.getPlayer1Keys()[3]]};  // W A S D
         player1.move(movement);
-        this.movement = new boolean[]{keys[player2Keys[0]], keys[player2Keys[1]], keys[player2Keys[2]], keys[player2Keys[3]]};  // I J K L
+        this.movement = new boolean[]{keys[this.input.getPlayer2Keys()[0]], keys[this.input.getPlayer2Keys()[1]], keys[this.input.getPlayer2Keys()[2]], keys[this.input.getPlayer2Keys()[3]]};  // I J K L
         player2.move(movement);
 
         //ATTACK
@@ -172,20 +167,22 @@ public class Game implements ActionListener{
         }
         //DASH
         //can the player dash?
-        if((int) System.currentTimeMillis() - input.getLastDash() > 5000){
-            int key = input.getDash(); // key event of the dash
-            //was it pressed recently?
-            if((int) System.currentTimeMillis() - input.getPressed()[key] < 20){
-                for(int i = 0; i < player1Keys.length; i++){
-                    if(player1Keys[i] == key){
-                        player1.dash();
-                    }
-                    if(player2Keys[i] == key){
-                        player2.dash();
-                    }
+
+        if((int) System.currentTimeMillis() - input.getLastp1Dash() > 5000){
+            for(int i = 0; i < this.input.getPlayer1Keys().length; i++){
+                if(this.input.getPlayer1Keys()[i] == input.getDash()){
+                    player1.dash();
                 }
             }
         }
-    }
 
+        if((int) System.currentTimeMillis() - input.getLastp2Dash() > 5000){
+            for(int i = 0; i < this.input.getPlayer2Keys().length; i++){
+                if(this.input.getPlayer2Keys()[i] == input.getDash()){
+                    player2.dash();
+                }
+            }
+        }
+
+    }
 }

@@ -35,6 +35,21 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     
     int dash; // keyevent used to distinguish which key was pressed
     int lastDash = (int) System.currentTimeMillis(); // in mili
+    int lastp1Dash = (int) System.currentTimeMillis(); // in mili
+    int lastp2Dash = (int) System.currentTimeMillis(); // in mili
+
+    // all keys used, besides shift for player 1
+    int[] player1Keys = {
+        KeyEvent.VK_W, KeyEvent.VK_A, KeyEvent.VK_S, KeyEvent.VK_D,
+        KeyEvent.VK_X, KeyEvent.VK_C
+    };
+            
+    // all key codes used, besides shift for player 2
+    int[] player2Keys = {
+        KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_K, KeyEvent.VK_L,
+        KeyEvent.VK_N, KeyEvent.VK_M
+    };
+
     ///////////////
     //Comstuctor
     //////////////
@@ -128,12 +143,25 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
             if(getKey(e.getKeyCode()) == false){
                 keys[e.getKeyCode()] = true;
                 //checkDash
-                if(released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 350 && (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 350){
-                    if((int) System.currentTimeMillis() - this.lastDash > 5000){
-                        this.lastDash = (int) System.currentTimeMillis();
-                        this.dash = e.getKeyCode();
+
+                //check double click
+                if(released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 500 && (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 500){
+                    if(checkPlayer1Keys(e.getKeyCode())){
+                        //is it player1
+                        if((int) System.currentTimeMillis() - this.lastp1Dash > 5000){
+                            this.lastp1Dash = (int) System.currentTimeMillis();
+                        }
                     }
+                    if(checkPlayer2Keys(e.getKeyCode())){
+                        //is it player2
+                        if((int) System.currentTimeMillis() - this.lastp2Dash > 5000){
+                            this.lastp2Dash = (int) System.currentTimeMillis();
+                        }
+                    }
+                    this.lastDash = (int) System.currentTimeMillis();
+                    this.dash = e.getKeyCode();
                 }
+                
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     int location = e.getKeyLocation();
                     if (location == KeyEvent.KEY_LOCATION_LEFT) {
@@ -184,6 +212,34 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     }
     public boolean[] getShifts(){
         return this.shifts;
+    }
+    public int[] getPlayer1Keys(){
+        return this.player1Keys;
+    }
+    public int[] getPlayer2Keys(){
+        return this.player2Keys;
+    }
+    public boolean checkPlayer1Keys(int key){
+        for(int i = 0; i < this.player1Keys.length; i++){
+            if(key == player1Keys[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean checkPlayer2Keys(int key){
+        for(int i = 0; i < this.player2Keys.length; i++){
+            if(key == player2Keys[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+    public int getLastp1Dash(){
+        return this.lastp1Dash;
+    }
+    public int getLastp2Dash(){
+        return this.lastp2Dash;
     }
     public int[] getPressed(){
         return this.pressed;
