@@ -1,4 +1,7 @@
 package src;
+
+import java.awt.Rectangle;
+
 // Data type for the map
 // Stores a 10x10 area of tiles
 public class Chunk {
@@ -8,6 +11,7 @@ public class Chunk {
     private int absoluteY; // Y (in pixels)
     private int[][] tileData; // Ground data (what type of tile is the ground?)
     private int[][] envData; // Environment data (what is on the ground?) (trees, houses, chests, etc)
+    private Rectangle unloadBoundary = new Rectangle(-Gui.TILE_SIZE*10, -Gui.TILE_SIZE*10, Gui.WIDTH + 20*Gui.TILE_SIZE, Gui.HEIGHT + 20*Gui.TILE_SIZE); 
     public Chunk(int[][] tileData,/* int[][] envData, */ int x, int y){
         this.tileData = tileData;
         this.x = x;
@@ -17,5 +21,7 @@ public class Chunk {
         return tileData[y][x];
     }
     
-
+    public boolean isVisible(double cameraX, double cameraY){
+        return new Rectangle(-(int)cameraX, -(int)cameraY, Gui.TILE_SIZE*10, Gui.TILE_SIZE*10).contains(unloadBoundary);
+    }
 }

@@ -34,7 +34,7 @@ public class Game implements ActionListener{
     BufferedImage image;
     int pDashing;
     int dashing;
-
+    Map map;
     // all keys used, besides shift for player 1
     int[] player1Keys = {
         KeyEvent.VK_W, KeyEvent.VK_A, KeyEvent.VK_S, KeyEvent.VK_D,
@@ -55,8 +55,6 @@ public class Game implements ActionListener{
     //Constuctor
     //////////////
     public Game() throws AWTException, IOException{
-        Images images = new Images();
-        image = images.getImage("tree1");
         this.player1 = new Player(0.0,0.0,100,10,10,5);
         this.player2 = new Player(500.0, 500.0, 100, 10, 10, 5);
         players.add(player1);
@@ -66,6 +64,7 @@ public class Game implements ActionListener{
         gui = new Gui(1280, 720, input);
         gameTimer = new Timer(5, this);
         gameTimer.start();
+        map = new Map("Maps\\map1.map");
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
     }
@@ -122,6 +121,7 @@ public class Game implements ActionListener{
 
             }
         });
+        gui.drawChunk(new Chunk(map.loadChunk(0, 0), 0, 0));
         gui.drawPlayers(players);
         gui.drawEnemies(enemies);
         gui.displayFPS((int)frameRate);

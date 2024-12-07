@@ -36,46 +36,42 @@ public class Gui extends JPanel{
     JFrame frame = new JFrame("The Divided Realms INDEV");
     // Preloading. To be deprecated
     BufferedImage[] playerImages;
-    BufferedImage[] envImages;
     // The guy she tells you not to worry about (better image loading)
     Images images;
+    Images tileImages;
     Rectangle chunkUnloadBoundary = new Rectangle(-(TILE_SIZE * 10), -(TILE_SIZE * 10), Gui.WIDTH + (TILE_SIZE * 20), Gui.HEIGHT + (TILE_SIZE * 20));
     Animation slimeAnimation;
     ////////// CAMERA ///////////
     double cameraX;
     double cameraY;
-
+    static double sCameraX;
+    static double sCameraY; // Static version of camera coords
     ///////////////
     //Constuctor
     //////////////
     public Gui(int width, int height, Input input) {
         // Guess what this does.
-        images = new Images();
+        images = new Images("Images");
+        tileImages = new Images("Images\\Enviroment\\Tiles");
         // Define a constantly running Animation for the slime (soon to be better)
         slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
         slimeAnimation.start();
         // Honestly this could be a stateful animation.
         // TODO: fix.
         playerImages = new BufferedImage[5];
-        try {
-            // Load up all the player images (to be deprectated)
-            playerImages[0] = images.getImage("Player spritesheet").getSubimage(0, 0, 96, 96);
-            playerImages[1] = images.getImage("Player spritesheet").getSubimage(96, 0, 96, 96);
-            playerImages[2] = images.getImage("Player spritesheet").getSubimage(0, 96, 96, 96);
-            playerImages[3] = images.getImage("Player spritesheet").getSubimage(96, 96, 96, 96);
-            playerImages[4] = images.getImage("Player spritesheet");
-
-
-        } catch (Exception e){e.printStackTrace();}
-        // Load environment images
-        // TODO: Fix this too.
-        envImages = new BufferedImage[5];
-        try{
-            envImages[0] = images.getImage("tile_grass");
-        } catch (Exception e){e.printStackTrace();};
+        // Load up all the player images (to be deprectated)
+        playerImages[0] = images.getImage("Player spritesheet").getSubimage(0, 0, 96, 96);
+        playerImages[1] = images.getImage("Player spritesheet").getSubimage(96, 0, 96, 96);
+        playerImages[2] = images.getImage("Player spritesheet").getSubimage(0, 96, 96, 96);
+        playerImages[3] = images.getImage("Player spritesheet").getSubimage(96, 96, 96, 96);
+        playerImages[4] = images.getImage("Player spritesheet");
 
         this.width = WIDTH;
         this.height = HEIGHT;
+        this.cameraX = 0;
+        this.cameraY = 0;
+        this.sCameraX = 0;
+        this.sCameraY = 0;
         // JFrame setup
         this.setSize(width, height);
         frame.setSize(width, height);
@@ -114,13 +110,20 @@ public class Gui extends JPanel{
     public void addToQueue(GraphicsRunnable g){
         drawQueue.add(g);
     }
+
+    /////////////////////////////////////////////////
+    /// DRAW METHODS
+    /////////////////////////////////////////////////
+
+
+
     // Draws background, trees, environment, etc for now.
     public void background(int r, int g, int b){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 for(int y = 0; y < 18; y++){
                     for(int x = 0; x < 34; x++){
-                        g2d.drawImage(envImages[0], x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
+                        g2d.drawImage(tileImages.getImage(0), x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
                     }
                 }
             }
@@ -165,10 +168,6 @@ public class Gui extends JPanel{
         });
     }
 
-    // Return the width and height of the GUI
-    public double width() { return width; }
-    public double height() { return height; }
-
     public void drawEnemies(ArrayList<Enemies> enemies){
         //given an arraylist type enemies
         //draw enemies based on their x and y positon {use getxPos() getyPos()}
@@ -186,5 +185,32 @@ public class Gui extends JPanel{
         });
 
     }
-    /////////////// UTILITIES ///////////////
+    public void drawChunk(Chunk c){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                for(int y = 0; y < 10; y++){
+                    for(int x = 0; x < 10; x++){
+                        g2d.drawImage(tileImages.getImage(c.getTile(x, y) - 1), x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
+                            
+                    }
+                }
+            }
+        });
+    }
+    //////////////////////////////////////////////////
+    /// CAMERA
+    //////////////////////////////////////////////////
+    
+    public double getCameraX(){
+        return cameraX;
+    }
+    public double getCameraY(){
+        return cameraY;
+    }
+    // Move camera BY an amount.
+    public void moveCamera(double x, double y){
+        cameraX += x;
+        cameraY += y;
+    }
+
 }

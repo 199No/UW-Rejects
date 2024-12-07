@@ -27,22 +27,14 @@ public class Gui extends JPanel{
     // You need a frame to draw things on.
     JFrame frame = new JFrame("The Divided Realms Map Tool");
     Images images;
-    BufferedImage[] tileImages;
     int[][] chunk = new int[10][10];
     int selectedType = 1;
     ///////////////
     //Constuctor
     //////////////
     public Gui(int width, int height, Input input, int[][] chunk) {
-        images = new Images();
+        images = new Images("Images\\Enviroment\\Tiles");
         this.chunk = chunk;
-        tileImages = new BufferedImage[]{
-            images.getImage("tile_grass"),
-            images.getImage("tile_sand"),
-            images.getImage("tile_snow"),
-            images.getImage("tile_stone"),
-            images.getImage("tile_dirt"),
-        };
         this.width = WIDTH;
         this.height = HEIGHT;
         // JFrame setup
@@ -97,7 +89,7 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
-                        g2d.drawImage(tileImages[chunk[y][x] - 1], x * 50 + 100, y * 50 + 100, 50, 50, null);
+                        g2d.drawImage(images.getImage(chunk[y][x] - 1), x * 50 + 100, y * 50 + 100, 50, 50, null);
                     }
                 }
                 for(int y = 0; y < 10; y++){

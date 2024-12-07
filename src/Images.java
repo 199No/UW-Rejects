@@ -12,9 +12,9 @@ public class Images {
     ArrayList<BufferedImage> tempImageList = new ArrayList<BufferedImage>();
     ArrayList<String> tempImageNames = new ArrayList<String>();
 
-    public Images(){
+    public Images(String folderPath){
         //Load the images (see recursiveImageLoad)
-        recursiveImageLoad("Images");
+        recursiveImageLoad(folderPath);
 
         imageList = new BufferedImage[tempImageList.size()];
         imageNames = new String[tempImageNames.size()];
@@ -60,6 +60,9 @@ public class Images {
             }
         }
         return null;
+    }
+    public BufferedImage getImage(int id){
+        return imageList[id];
     }
 
 }

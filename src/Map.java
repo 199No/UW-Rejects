@@ -5,14 +5,20 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Map {
-    ArrayList<int[][]> loadedChunks = new ArrayList<int[][]>();
+    ArrayList<Chunk> loadedChunks = new ArrayList<Chunk>();
     File mapFile;
 
     public Map(String filePath){
         mapFile = new File(filePath);
     }
-    public void unloadChunks(){
-        
+    // Goes through the list of chunks and unloads any that are outside the chunk loading boundary
+    public void unloadChunks(double cameraX, double cameraY){
+        for(int i = 0; i < loadedChunks.size(); i++){
+             if(!loadedChunks.get(i).isVisible(cameraX, cameraY)){
+                 //chunk.doUnload(); // For later when enemy positions have to be saved
+                 loadedChunks.remove(i);
+             }
+        }
     }
     public int[][] loadChunk(int chunkX, int chunkY){
         // A single line of text in the file
@@ -55,6 +61,5 @@ public class Map {
         }catch(Exception e){e.printStackTrace();}
         return chunk;
     }
-    
     
 }
