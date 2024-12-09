@@ -232,4 +232,7 @@ public class Gui extends JPanel{
     public static double[] tileToScreen(double xTiles, double yTiles){
         return new double[] {xTiles * TILE_SIZE - sCameraX, yTiles * TILE_SIZE - sCameraY};
     }
+    public static double[] chunkToScreen(double xChunks, double yChunks){
+        return new double[] {xChunks * TILE_SIZE * 10 - sCameraX, yChunks * TILE_SIZE * 10 - sCameraY};
+    }
 }
