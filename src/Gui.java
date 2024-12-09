@@ -156,7 +156,7 @@ public class Gui extends JPanel{
                             
                         }
                     }
-                    g2d.drawImage(playerImage, (int)players.get(i).getxPos(), (int)players.get(i).getyPos(), TILE_SIZE, TILE_SIZE, null);
+                    g2d.drawImage(playerImage, 600, 300, TILE_SIZE, TILE_SIZE, null);
                 }
             }
         });
@@ -183,7 +183,8 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
-                        g2d.drawImage(tileImages.getImage(c.getTile(x, y) - 1), (c.x() * TILE_SIZE * 10) + x * TILE_SIZE, (c.y() * TILE_SIZE * 10) + y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
+                        double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
+                        g2d.drawImage(tileImages.getImage(c.getTile(x, y) - 1), (int)chunkCoords[0] + x * TILE_SIZE, (int)chunkCoords[1] + y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
                             
                     }
                 }
