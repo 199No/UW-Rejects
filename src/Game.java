@@ -119,6 +119,7 @@ public class Game implements ActionListener{
         gui.drawChunk(new Chunk(map.loadChunk(0, 0), 0, 0));
         gui.drawPlayers(players);
         gui.drawEnemies(enemies);
+        gui.drawHitboxes(players, enemies);
         gui.displayFPS((int)frameRate);
         gui.repaint();
         now = System.currentTimeMillis();
