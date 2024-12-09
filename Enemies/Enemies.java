@@ -27,6 +27,8 @@ public abstract class Enemies {
     protected boolean alert;
     protected boolean chasing;
     protected boolean idle;
+    protected Rectangle hitbox =  new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
+
     ///////////////
     //Constuctor
     //////////////
@@ -121,7 +123,7 @@ public abstract class Enemies {
     }
     
     public Rectangle getHitbox(){
-        return new Rectangle((int)this.xPos - this.width/2, (int) this.yPos - this.height/2, this.width, this.height);
+        return new Rectangle(this.getWidth()/2, this.getHeight()/2, (int) this.getxPos() + this.getWidth(), (int) this.getyPos() + this.getHeight());
     }
 
 }

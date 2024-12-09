@@ -190,6 +190,18 @@ public class Gui extends JPanel{
             }
         });
     }
+    public void drawHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                for(int p = 0; p < players.size(); p++){
+                    g2d.drawImage(images.getImage("Square1"), null, (int) players.get(p).getHitbox().getX(), (int) players.get(p).getHitbox().getY());
+                }
+                for(int e = 0; e < enemies.size(); e++){
+                    g2d.drawImage(images.getImage("Square1"), null, (int) enemies.get(e).getHitbox().getX(), (int) enemies.get(e).getHitbox().getY());  
+                }
+            }
+        });
+    }
     //////////////////////////////////////////////////
     /// CAMERA
     //////////////////////////////////////////////////
