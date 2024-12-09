@@ -64,5 +64,8 @@ public class Images {
     public BufferedImage getImage(int id){
         return imageList[id];
     }
+    public int numImages(){
+        return imageList.length;
+    }
 
 }

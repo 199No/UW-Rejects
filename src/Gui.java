@@ -2,17 +2,13 @@ package src;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import Enemies.Enemies;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 //-------------------------------------------------//
 //                      Gui                        //
 //-------------------------------------------------// 
@@ -27,7 +23,7 @@ public class Gui extends JPanel{
     // Made public so that other classes can see them
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
-    public static final int TILE_SIZE = 38;
+    public static final int TILE_SIZE = 68;
     // Where things get queued up to be drawn. 
     // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
     // Fixes timing issues.
@@ -70,8 +66,6 @@ public class Gui extends JPanel{
         this.height = HEIGHT;
         this.cameraX = 0;
         this.cameraY = 0;
-        this.sCameraX = 0;
-        this.sCameraY = 0;
         // JFrame setup
         this.setSize(width, height);
         frame.setSize(width, height);
@@ -162,7 +156,7 @@ public class Gui extends JPanel{
                             
                         }
                     }
-                    g2d.drawImage(playerImage, (int)players.get(i).getxPos(), (int)players.get(i).getyPos(), 96, 96, null);
+                    g2d.drawImage(playerImage, (int)players.get(i).getxPos(), (int)players.get(i).getyPos(), TILE_SIZE, TILE_SIZE, null);
                 }
             }
         });
@@ -171,7 +165,6 @@ public class Gui extends JPanel{
     public void drawEnemies(ArrayList<Enemies> enemies){
         //given an arraylist type enemies
         //draw enemies based on their x and y positon {use getxPos() getyPos()}
-        double now = System.currentTimeMillis();
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 for(int i = 0; i < enemies.size(); i ++){
@@ -190,9 +183,21 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
-                        g2d.drawImage(tileImages.getImage(c.getTile(x, y) - 1), x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
+                        g2d.drawImage(tileImages.getImage(c.getTile(x, y) - 1), (c.x() * TILE_SIZE * 10) + x * TILE_SIZE, (c.y() * TILE_SIZE * 10) + y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
                             
                     }
+                }
+            }
+        });
+    }
+    public void drawHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                for(int p = 0; p < players.size(); p++){
+                    g2d.drawImage(images.getImage("Square1"), null, (int) players.get(p).getHitbox().getX(), (int) players.get(p).getHitbox().getY());
+                }
+                for(int e = 0; e < enemies.size(); e++){
+                    g2d.drawImage(images.getImage("Square1"), null, (int) enemies.get(e).getHitbox().getX(), (int) enemies.get(e).getHitbox().getY());  
                 }
             }
         });
@@ -211,6 +216,23 @@ public class Gui extends JPanel{
     public void moveCamera(double x, double y){
         cameraX += x;
         cameraY += y;
+        sCameraX = cameraX;
+        sCameraY = cameraY;
     }
-
+    public void moveCameraTo(double x, double y){
+        cameraX = x;
+        cameraY = y;
+        sCameraX = cameraX;
+        sCameraY = cameraY;
+    }
+    // Absolute (pixels) to screenspace
+    public static double[] absToScreen(double x, double y){
+        return new double[] {x - sCameraX, y - sCameraY};
+    }   
+    public static double[] tileToScreen(double xTiles, double yTiles){
+        return new double[] {xTiles * TILE_SIZE - sCameraX, yTiles * TILE_SIZE - sCameraY};
+    }
+    public static double[] chunkToScreen(double xChunks, double yChunks){
+        return new double[] {xChunks * TILE_SIZE * 10 - sCameraX, yChunks * TILE_SIZE * 10 - sCameraY};
+    }
 }

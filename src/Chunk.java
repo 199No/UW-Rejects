@@ -24,4 +24,10 @@ public class Chunk {
     public boolean isVisible(double cameraX, double cameraY){
         return new Rectangle(-(int)cameraX, -(int)cameraY, Gui.TILE_SIZE*10, Gui.TILE_SIZE*10).contains(unloadBoundary);
     }
+    public int x(){
+        return x;
+    }
+    public int y(){
+        return y;
+    }
 }

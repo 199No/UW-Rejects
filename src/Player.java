@@ -53,7 +53,7 @@ public class Player {
     //Hitbox
     private boolean active; //the player is able to be hit if true
     private int[] topLeft; //top left of the hitbox
-    private Rectangle hitbox;
+    private Rectangle hitbox = new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
 
     //Mage
     private int mana;
@@ -224,6 +224,10 @@ public class Player {
 
     public void setSpeed(double speed){
         this.speed = speed;
+    }
+
+    public Rectangle getHitbox(){
+        return new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
     }
 
 }

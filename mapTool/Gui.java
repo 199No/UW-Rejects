@@ -94,9 +94,9 @@ public class Gui extends JPanel{
                 }
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 4; x++){
-                        //if(x + (y * 4) < tileImages.length){
-                         //   g2d.drawImage(tileImages[x + (y * 4)], x * 50 + 800, y * 50 + 100, 50, 50, null);
-                       // }
+                        if(x + (y * 4) < images.numImages()){
+                            g2d.drawImage(images.getImage(x + (y * 4)), x * 50 + 800, y * 50 + 100, 50, 50, null);
+                        }
                     }
                 }
             }
