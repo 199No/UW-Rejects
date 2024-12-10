@@ -156,7 +156,8 @@ public class Gui extends JPanel{
                             
                         }
                     }
-                    g2d.drawImage(playerImage, 600, 300, TILE_SIZE, TILE_SIZE, null);
+                    double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
+                    g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
                 }
             }
         });
@@ -228,12 +229,12 @@ public class Gui extends JPanel{
     }
     // Absolute (pixels) to screenspace
     public static double[] absToScreen(double x, double y){
-        return new double[] {x - sCameraX, y - sCameraY};
+        return new double[] {x - sCameraX - 25 + WIDTH / 2, y - sCameraY  - 25 + HEIGHT / 2};
     }   
     public static double[] tileToScreen(double xTiles, double yTiles){
-        return new double[] {xTiles * TILE_SIZE - sCameraX, yTiles * TILE_SIZE - sCameraY};
+        return new double[] {(xTiles * TILE_SIZE - sCameraX) + WIDTH/2, (yTiles * TILE_SIZE - sCameraY) + HEIGHT/2};
     }
     public static double[] chunkToScreen(double xChunks, double yChunks){
-        return new double[] {xChunks * TILE_SIZE * 10 - sCameraX, yChunks * TILE_SIZE * 10 - sCameraY};
+        return new double[] {(xChunks * TILE_SIZE * 10 - sCameraX) + WIDTH / 2, (yChunks * TILE_SIZE * 10 - sCameraY) + HEIGHT / 2};
     }
 }

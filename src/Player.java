@@ -225,7 +225,7 @@ public class Player {
     public void setSpeed(double speed){
         this.speed = speed;
     }
-
+    
     public Rectangle getHitbox(){
         return new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
     }
