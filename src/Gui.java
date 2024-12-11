@@ -37,6 +37,7 @@ public class Gui extends JPanel{
     Images tileImages;
     Rectangle chunkUnloadBoundary = new Rectangle(-(TILE_SIZE * 10), -(TILE_SIZE * 10), Gui.WIDTH + (TILE_SIZE * 20), Gui.HEIGHT + (TILE_SIZE * 20));
     Animation slimeAnimation;
+    StatefulAnimation playerAnimation;
     ////////// CAMERA ///////////
     double cameraX;
     double cameraY;
@@ -51,7 +52,10 @@ public class Gui extends JPanel{
         tileImages = new Images("Images\\Enviroment\\Tiles");
         // Define a constantly running Animation for the slime (soon to be better)
         slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
-        slimeAnimation.start();
+        slimeAnimation.start(); 
+        playerAnimation = new StatefulAnimation(100, 3, 4,
+            new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("Player Dashing"), true);
+
         // Honestly this could be a stateful animation.
         // TODO: fix.
         playerImages = new BufferedImage[5];
@@ -153,7 +157,6 @@ public class Gui extends JPanel{
                     if(players.get(i).getXDir() == -1){
                         if(players.get(i).getYDir() == -1){
                             playerImage = playerImages[3];
-                            
                         }
                         
                         else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
