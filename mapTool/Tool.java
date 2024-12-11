@@ -41,6 +41,8 @@ public class Tool implements ActionListener {
     }
     // Run every frame behind the scenes by Swing. The important bit is that it is run EVERY FRAME.
     public void actionPerformed(ActionEvent e){
+        // Update mouseX, mouseY, pmouseX, and pmouseY
+        input.updateMouse();
         // Give Gui a copy of the chunk with whatever new edits were added to it.
         gui.updateChunk(chunk);
         // Draw a background over the last frame, otherwise you get "smearing" (Google it)
