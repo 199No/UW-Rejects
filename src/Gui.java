@@ -140,20 +140,25 @@ public class Gui extends JPanel{
                     BufferedImage playerImage = playerImages[0];
                     // TODO: Get a single direction int from player and use that + an array index instead.
                     if(players.get(i).getXDir() == 1){
-                        if(players.get(i).getYDir() == 1){
+                        if(players.get(i).getYDir() == -1){
                             playerImage = playerImages[2];
                         }
-                        if(players.get(i).getYDir() == -1){
+                        
+                        else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
+                        {
                             playerImage = playerImages[0];
                         }
+                        
                     }
                     if(players.get(i).getXDir() == -1){
-                        if(players.get(i).getYDir() == 1){
-                            playerImage = playerImages[3];
-                        }
                         if(players.get(i).getYDir() == -1){
-                            playerImage = playerImages[1];
+                            playerImage = playerImages[3];
                             
+                        }
+                        
+                        else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
+                        {
+                            playerImage = playerImages[1];
                         }
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());

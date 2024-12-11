@@ -39,6 +39,8 @@ public class Game implements ActionListener{
     int dashing;
     Map map;
     boolean[] movement = new boolean[4];
+    Chunk chunk1;
+    Chunk chunk2;
     private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
     private ArrayList<Player>  players = new ArrayList<Player>();
 
@@ -55,12 +57,12 @@ public class Game implements ActionListener{
         this.input = new Input();
         enemies.add(createSlime(500, 700));
         gui = new Gui(1280, 720, input);
+        map = new Map("Maps\\map1.map");
+        // Only these four lines should happen after this comment otherwise stuff will break
         gameTimer = new Timer(5, this);
         gameTimer.start();
-        map = new Map("Maps\\map1.map");
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
-
     }
 
 //-------------------------------------------------//
@@ -116,8 +118,10 @@ public class Game implements ActionListener{
         //});
         // Dash bar
         
-        gui.drawChunk(new Chunk(map.loadChunk(0, 0), 0, 0));
-        gui.drawChunk(new Chunk(map.loadChunk(1, 0), 1, 0));
+        for(int i = 0; i < map.numLoadedChunks(); i++){
+            gui.drawChunk(map.getChunk(i));
+        }
+
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g){
                 double height1 = (((double)(int)System.currentTimeMillis() - (double)input.getLastp1Dash()) / 5000) * Gui.HEIGHT;

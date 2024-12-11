@@ -28,7 +28,7 @@ public class StatefulAnimation {
     }
     public BufferedImage getCurFrame(){
         if(step >= states[state].length){
-            step = 0;
+            st
         }
         int curFrame = states[state][step];
         return spriteSheet.getSubimage(

@@ -10,6 +10,11 @@ public class Map {
 
     public Map(String filePath){
         mapFile = new File(filePath);
+        for(int y = 0; y < 6; y++){
+            for(int x = 0; x < 6; x++){
+                loadedChunks.add(new Chunk(loadChunk(x, y), x, y));
+            }
+        }
     }
     // Goes through the list of chunks and unloads any that are outside the chunk loading boundary
     public void unloadChunks(double cameraX, double cameraY){
@@ -61,5 +66,10 @@ public class Map {
         }catch(Exception e){e.printStackTrace();}
         return chunk;
     }
-    
+    public Chunk getChunk(int i){
+        return loadedChunks.get(i);
+    }
+    public int numLoadedChunks(){
+        return loadedChunks.size();
+    }
 }

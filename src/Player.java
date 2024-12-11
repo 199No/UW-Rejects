@@ -145,7 +145,7 @@ public class Player {
     }
 
     public void dash(){
-        System.out.println("dash! (player)");
+        //System.out.println("dash! (player)");
     }
 
     public  void moveX(){
