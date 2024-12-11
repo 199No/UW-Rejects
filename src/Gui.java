@@ -216,10 +216,10 @@ public class Gui extends JPanel{
     /// CAMERA
     //////////////////////////////////////////////////
     
-    public double getCameraX(){
+    public double cameraX(){
         return cameraX;
     }
-    public double getCameraY(){
+    public double cameraY(){
         return cameraY;
     }
     // Move camera BY an amount.

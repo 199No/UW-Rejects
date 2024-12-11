@@ -138,7 +138,8 @@ public class Game implements ActionListener{
 
             }
         });
-        gui.moveCameraTo(player1.getxPos(), player1.getyPos());
+        
+        gui.moveCamera(((players.get(0).getxPos() + players.get(1).getxPos()) / 2 - gui.cameraX()) / 10, ((players.get(0).getyPos() + players.get(1).getyPos()) / 2 - gui.cameraY()) / 10);
         gui.drawPlayers(players);
         gui.drawEnemies(enemies);
         gui.drawHitboxes(players, enemies);
