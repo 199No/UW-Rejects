@@ -2,26 +2,29 @@ package src;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
+import Enemies.*;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.Timer;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent; //NOT NEEDED?
+import java.io.IOException;
+import java.io.File;   //NOT NEEDED?
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Arrays;   //NOT NEEDED?
+import javax.imageio.ImageIO; //NOT NEEDED?
+import javax.swing.Timer;
 
-import Enemies.*;
+
+
 //-------------------------------------------------//
 //                     Game                        //
 //-------------------------------------------------// 
+
 public class Game implements ActionListener{
+
     ///////////////
     //Properties
     ///////////////
@@ -35,15 +38,18 @@ public class Game implements ActionListener{
     int pDashing;
     int dashing;
     Map map;
-
     boolean[] movement = new boolean[4];
-
+    Chunk chunk1;
+    Chunk chunk2;
     private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
     private ArrayList<Player>  players = new ArrayList<Player>();
+
+
     ///////////////
     //Constuctor
     //////////////
     public Game() throws AWTException, IOException{
+
         this.player1 = new Player(0.0,0.0,100,10,10,5);
         this.player2 = new Player(500.0, 500.0, 100, 10, 10, 5);
         players.add(player1);
@@ -51,9 +57,10 @@ public class Game implements ActionListener{
         this.input = new Input();
         enemies.add(createSlime(500, 700));
         gui = new Gui(1280, 720, input);
+        map = new Map("Maps\\map1.map");
+        // Only these four lines should happen after this comment otherwise stuff will break
         gameTimer = new Timer(5, this);
         gameTimer.start();
-        map = new Map("Maps\\map1.map");
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
     }
@@ -63,22 +70,34 @@ public class Game implements ActionListener{
 //-------------------------------------------------// 
 
     @Override
+
     public void actionPerformed(ActionEvent e) {
+
         now = System.currentTimeMillis();
+
         if(now - lastSecond > 1000){
+
             lastSecond = now;
             frameRate = framesLastSecond;
             framesLastSecond = 0;
-        } else {
+
+        } 
+
+        else{
+
             framesLastSecond ++;
+
         }
 
         ////////////////
         /// Input
         ///////////////
+    
+
         // Input updates its copy of the player
         //update Player based on Input Information
         updatePlayer();
+
         
         for(int i = 0; i < this.enemies.size(); i++){
 
@@ -99,8 +118,10 @@ public class Game implements ActionListener{
         //});
         // Dash bar
         
-        gui.drawChunk(new Chunk(map.loadChunk(0, 0), 0, 0));
-        gui.drawChunk(new Chunk(map.loadChunk(1, 0), 1, 0));
+        for(int i = 0; i < map.numLoadedChunks(); i++){
+            gui.drawChunk(map.getChunk(i));
+        }
+
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g){
                 double height1 = (((double)(int)System.currentTimeMillis() - (double)input.getLastp1Dash()) / 5000) * Gui.HEIGHT;
@@ -117,6 +138,8 @@ public class Game implements ActionListener{
 
             }
         });
+        
+        gui.moveCamera(((players.get(0).getxPos() + players.get(1).getxPos()) / 2 - gui.cameraX()) / 10, ((players.get(0).getyPos() + players.get(1).getyPos()) / 2 - gui.cameraY()) / 10);
         gui.drawPlayers(players);
         gui.drawEnemies(enemies);
         gui.drawHitboxes(players, enemies);

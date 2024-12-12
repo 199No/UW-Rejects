@@ -12,7 +12,9 @@ public class StatefulAnimation {
     BufferedImage spriteSheet;
     int frameWidth;
     int frameHeight;
-    public StatefulAnimation(int frameTime, int widthFrames, int heightFrames, int[][] options, BufferedImage spriteSheet){
+    boolean autoLoop;
+    int lastStep;
+    public StatefulAnimation(int frameTime, int widthFrames, int heightFrames, int[][] options, BufferedImage spriteSheet, boolean autoLoop){
         this.frameTime = frameTime;
         this.widthFrames = widthFrames;
         this.heightFrames = heightFrames;
@@ -22,12 +24,20 @@ public class StatefulAnimation {
         this.spriteSheet = spriteSheet;
         state = 0;
         step = 0;
+        lastStep = (int)System.currentTimeMillis();
     }
     public void setState(int state){
         this.state = state;
     }
+    public void incrementState(int amount){
+        this.state += amount;
+    }
     public BufferedImage getCurFrame(){
-        if(step >= states[state].length){
+        if((int)System.currentTimeMillis() - lastStep > frameTime){
+            lastStep = (int)System.currentTimeMillis();
+            step ++;
+        }
+        if(step >= states[state].length - 1){
             step = 0;
         }
         int curFrame = states[state][step];

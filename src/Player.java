@@ -145,7 +145,7 @@ public class Player {
     }
 
     public void dash(){
-        System.out.println("dash! (player)");
+        //System.out.println("dash! (player)");
     }
 
     public  void moveX(){
@@ -225,7 +225,7 @@ public class Player {
     public void setSpeed(double speed){
         this.speed = speed;
     }
-
+    
     public Rectangle getHitbox(){
         return new Rectangle(this.getWidth()/2, this.getHeight()/2, (int) this.getxPos() + this.getWidth(), (int) this.getyPos() + this.getHeight());
     }

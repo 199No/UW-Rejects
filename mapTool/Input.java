@@ -97,7 +97,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
 
     @Override
     public void mouseDragged(MouseEvent e){
-
+        tool.handleMouseClick(mouseX, mouseY);
     }
 
     @Override

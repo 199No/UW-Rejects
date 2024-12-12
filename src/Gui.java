@@ -37,6 +37,7 @@ public class Gui extends JPanel{
     Images tileImages;
     Rectangle chunkUnloadBoundary = new Rectangle(-(TILE_SIZE * 10), -(TILE_SIZE * 10), Gui.WIDTH + (TILE_SIZE * 20), Gui.HEIGHT + (TILE_SIZE * 20));
     Animation slimeAnimation;
+    StatefulAnimation playerAnimation;
     ////////// CAMERA ///////////
     double cameraX;
     double cameraY;
@@ -51,7 +52,10 @@ public class Gui extends JPanel{
         tileImages = new Images("Images\\Enviroment\\Tiles");
         // Define a constantly running Animation for the slime (soon to be better)
         slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
-        slimeAnimation.start();
+        slimeAnimation.start(); 
+        playerAnimation = new StatefulAnimation(100, 3, 4,
+            new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("Player Dashing"), true);
+
         // Honestly this could be a stateful animation.
         // TODO: fix.
         playerImages = new BufferedImage[5];
@@ -140,23 +144,28 @@ public class Gui extends JPanel{
                     BufferedImage playerImage = playerImages[0];
                     // TODO: Get a single direction int from player and use that + an array index instead.
                     if(players.get(i).getXDir() == 1){
-                        if(players.get(i).getYDir() == 1){
+                        if(players.get(i).getYDir() == -1){
                             playerImage = playerImages[2];
                         }
-                        if(players.get(i).getYDir() == -1){
+                        
+                        else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
+                        {
                             playerImage = playerImages[0];
                         }
+                        
                     }
                     if(players.get(i).getXDir() == -1){
-                        if(players.get(i).getYDir() == 1){
+                        if(players.get(i).getYDir() == -1){
                             playerImage = playerImages[3];
                         }
-                        if(players.get(i).getYDir() == -1){
+                        
+                        else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
+                        {
                             playerImage = playerImages[1];
-                            
                         }
                     }
-                    g2d.drawImage(playerImage, (int)players.get(i).getxPos(), (int)players.get(i).getyPos(), TILE_SIZE, TILE_SIZE, null);
+                    double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
+                    g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
                 }
             }
         });
@@ -183,7 +192,8 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
-                        g2d.drawImage(tileImages.getImage(c.getTile(x, y) - 1), (c.x() * TILE_SIZE * 10) + x * TILE_SIZE, (c.y() * TILE_SIZE * 10) + y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
+                        double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
+                        g2d.drawImage(tileImages.getImage(c.getTile(x, y) - 1), (int)chunkCoords[0] + x * TILE_SIZE, (int)chunkCoords[1] + y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
                             
                     }
                 }
@@ -206,10 +216,10 @@ public class Gui extends JPanel{
     /// CAMERA
     //////////////////////////////////////////////////
     
-    public double getCameraX(){
+    public double cameraX(){
         return cameraX;
     }
-    public double getCameraY(){
+    public double cameraY(){
         return cameraY;
     }
     // Move camera BY an amount.
@@ -227,9 +237,12 @@ public class Gui extends JPanel{
     }
     // Absolute (pixels) to screenspace
     public static double[] absToScreen(double x, double y){
-        return new double[] {x - sCameraX, y - sCameraY};
+        return new double[] {x - sCameraX - 25 + WIDTH / 2, y - sCameraY  - 25 + HEIGHT / 2};
     }   
     public static double[] tileToScreen(double xTiles, double yTiles){
-        return new double[] {xTiles * TILE_SIZE - sCameraX, yTiles * TILE_SIZE - sCameraY};
+        return new double[] {(xTiles * TILE_SIZE - sCameraX) + WIDTH/2, (yTiles * TILE_SIZE - sCameraY) + HEIGHT/2};
+    }
+    public static double[] chunkToScreen(double xChunks, double yChunks){
+        return new double[] {(xChunks * TILE_SIZE * 10 - sCameraX) + WIDTH / 2, (yChunks * TILE_SIZE * 10 - sCameraY) + HEIGHT / 2};
     }
 }
