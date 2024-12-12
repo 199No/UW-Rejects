@@ -117,7 +117,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
 
     @Override
     public void mouseClicked(MouseEvent e) {}
-
+    
     @Override
     public void mousePressed(MouseEvent e) {}
 

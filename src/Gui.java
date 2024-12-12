@@ -165,7 +165,7 @@ public class Gui extends JPanel{
                         }
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
-                    g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
+                    g2d.drawImage(playerAnimation.getCurFrame(), (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
                 }
             }
         });
@@ -234,6 +234,9 @@ public class Gui extends JPanel{
         cameraY = y;
         sCameraX = cameraX;
         sCameraY = cameraY;
+    }
+    public void bruh(){
+        playerAnimation.incrementState(1);
     }
     // Absolute (pixels) to screenspace
     public static double[] absToScreen(double x, double y){
