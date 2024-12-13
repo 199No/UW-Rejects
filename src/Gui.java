@@ -9,6 +9,9 @@ import Enemies.Enemies;
 import java.awt.*;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 //-------------------------------------------------//
 //                      Gui                        //
 //-------------------------------------------------// 
@@ -165,6 +168,7 @@ public class Gui extends JPanel{
                         }
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
+                    
                     g2d.drawImage(playerAnimation.getCurFrame(), (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
                 }
             }
@@ -179,8 +183,10 @@ public class Gui extends JPanel{
                 for(int i = 0; i < enemies.size(); i ++){
 
                     BufferedImage slimeImage = slimeAnimation.getFrame();
+                    BufferedImage resultImage = new BufferedImage(slimeImage.getWidth(), slimeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
                     Rectangle slimeHitbox = enemies.get(i).getHitbox();
-                    g2d.drawImage(slimeImage, (int)enemies.get(i).getxPos(), (int)enemies.get(i).getyPos(), 50, 50, null);
+                    
+                    g2d.drawImage(slimeImage, (int)enemies.get(i).getxPos(), (int)enemies.get(i).getyPos(), TILE_SIZE, TILE_SIZE, null);
                     g2d.drawRect((int)slimeHitbox.getX(),(int)slimeHitbox.getY(),(int)slimeHitbox.getWidth(),(int)slimeHitbox.getHeight());
                 }
             }
@@ -203,6 +209,7 @@ public class Gui extends JPanel{
     public void drawHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
+
                 for(int p = 0; p < players.size(); p++){
                     g2d.drawImage(images.getImage("Square1"), null, (int) players.get(p).getHitbox().getX(), (int) players.get(p).getHitbox().getY());
                 }
