@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
+import java.awt.image.RescaleOp;
 //-------------------------------------------------//
 //                      Gui                        //
 //-------------------------------------------------// 
@@ -98,8 +99,6 @@ public class Gui extends JPanel{
     // Called internally by Swing.
     public void paintComponent(Graphics g){
         Graphics2D g2d = (Graphics2D)g;
-        // Antialiasing
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // Go through every item in the queue and draw it.
         for(int i = 0; i < drawQueue.size(); i++){
             drawQueue.get(i).draw(g2d);
@@ -168,8 +167,17 @@ public class Gui extends JPanel{
                         }
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
+                    RescaleOp r = new RescaleOp(0, 0, null);
+                    AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+                    g2d.setComposite(ac);
+
+                    BufferedImage result = new BufferedImage(playerAnimation.getCurFrame().getWidth(), playerAnimation.getCurFrame().getWidth(), BufferedImage.TYPE_INT_ARGB);
+                    result = r.filter(playerAnimation.getCurFrame(), result);
+
+                    g2d.drawImage(result, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
                     
-                    g2d.drawImage(playerAnimation.getCurFrame(), (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
+                    AlphaComposite af = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f);
+                    g2d.setComposite(af);
                 }
             }
         });
@@ -244,6 +252,10 @@ public class Gui extends JPanel{
     }
     public void bruh(){
         playerAnimation.incrementState(1);
+    }
+    public BufferedImage toShadow(BufferedImage image){
+        BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        
     }
     // Absolute (pixels) to screenspace
     public static double[] absToScreen(double x, double y){
