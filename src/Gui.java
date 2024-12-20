@@ -167,17 +167,9 @@ public class Gui extends JPanel{
                         }
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
-                    RescaleOp r = new RescaleOp(0, 0, null);
-                    AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
-                    g2d.setComposite(ac);
-
-                    BufferedImage result = new BufferedImage(playerAnimation.getCurFrame().getWidth(), playerAnimation.getCurFrame().getWidth(), BufferedImage.TYPE_INT_ARGB);
-                    result = r.filter(playerAnimation.getCurFrame(), result);
-
-                    g2d.drawImage(result, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
                     
-                    AlphaComposite af = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f);
-                    g2d.setComposite(af);
+
+                    g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
                 }
             }
         });
@@ -250,12 +242,8 @@ public class Gui extends JPanel{
         sCameraX = cameraX;
         sCameraY = cameraY;
     }
-    public void bruh(){
-        playerAnimation.incrementState(1);
-    }
     public BufferedImage toShadow(BufferedImage image){
         BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        
     }
     // Absolute (pixels) to screenspace
     public static double[] absToScreen(double x, double y){
