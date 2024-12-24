@@ -90,7 +90,7 @@ public class Tool implements ActionListener {
         // I don't wanna have to deal with methods throwing exceptions
         try {
             // TODO: Make this not a hardcoded map file
-            File f = new File("Maps\\map1.map");
+            File f = new File("Maps/map1.map");
             Scanner s = new Scanner(f);
             // Skip lines until one before the line at y...
             for(int i = 0; i < chunkY; i++){

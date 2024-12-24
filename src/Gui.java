@@ -53,7 +53,7 @@ public class Gui extends JPanel{
     public Gui(int width, int height, Input input) {
         // Guess what this does.
         images = new Images("Images");
-        tileImages = new Images("Images\\Enviroment\\Tiles");
+        tileImages = new Images("Images/Enviroment/Tiles");
         // Define a constantly running Animation for the slime (soon to be better)
         slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
         slimeAnimation.start(); 

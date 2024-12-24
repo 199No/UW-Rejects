@@ -57,7 +57,7 @@ public class Game implements ActionListener{
         this.input = new Input();
         enemies.add(createSlime(500, 700));
         gui = new Gui(1280, 720, input);
-        map = new Map("Maps\\map1.map");
+        map = new Map("Maps/map1.map");
         // Only these four lines should happen after this comment otherwise stuff will break
         gameTimer = new Timer(5, this);
         gameTimer.start();
