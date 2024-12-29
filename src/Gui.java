@@ -28,6 +28,8 @@ public class Gui extends JPanel{
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
     public static final int TILE_SIZE = 68;
+    public static final int PERSPECTIVE_FACTOR = 1800;
+    public static final double SCALE_FACTOR = 0.8;
     // Where things get queued up to be drawn. 
     // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
     // Fixes timing issues.
@@ -167,9 +169,9 @@ public class Gui extends JPanel{
                         }
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
-                    
+                    double[] player3dPos = screenTo3D(playerScreenPos[0], playerScreenPos[1]);
 
-                    g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
+                    g2d.drawImage(playerImage, (int)player3dPos[0], (int)player3dPos[1], TILE_SIZE, TILE_SIZE, null);
                 }
             }
         });
@@ -183,10 +185,10 @@ public class Gui extends JPanel{
                 for(int i = 0; i < enemies.size(); i ++){
 
                     BufferedImage slimeImage = slimeAnimation.getFrame();
-                    BufferedImage resultImage = new BufferedImage(slimeImage.getWidth(), slimeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
                     Rectangle slimeHitbox = enemies.get(i).getHitbox();
-                    
-                    g2d.drawImage(slimeImage, (int)enemies.get(i).getxPos(), (int)enemies.get(i).getyPos(), TILE_SIZE, TILE_SIZE, null);
+                    double[] screenPos = absToScreen(enemies.get(i).getxPos(), enemies.get(i).getyPos());
+                    double[] finalPos = screenTo3D(screenPos[0], screenPos[1]);
+                    g2d.drawImage(slimeImage, (int)finalPos[0], (int)finalPos[1], TILE_SIZE, TILE_SIZE, null);
                     g2d.drawRect((int)slimeHitbox.getX(),(int)slimeHitbox.getY(),(int)slimeHitbox.getWidth(),(int)slimeHitbox.getHeight());
                 }
             }
@@ -196,11 +198,19 @@ public class Gui extends JPanel{
     public void drawChunk(Chunk c){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
+                double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
-                        double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
-                        g2d.drawImage(tileImages.getImage(c.getTile(x, y) - 1), (int)chunkCoords[0] + x * TILE_SIZE, (int)chunkCoords[1] + y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
-                            
+                        // Apply 3d transform to this tile coords
+                        double[] threeDCoords = Gui.screenTo3D(chunkCoords[0] + (x * TILE_SIZE), chunkCoords[1] + (y * TILE_SIZE));
+                        // Take the y pos of the next tile down and subract the y pos of this tile to get the difference in height between this tile and the next one down.                        
+                        double threeDTileSize = Gui.screenTo3D(0, chunkCoords[1] + ((y + 1) * TILE_SIZE) )[1] - threeDCoords[1] + 1;
+                        // If this tile is off screen don't draw it.
+                        if(threeDCoords[1] > Gui.WIDTH + 100){
+                            return;
+                        }
+                        // Otherwise, do.
+                        g2d.drawImage(tileImages.getImage(c.getTile(x, y) - 1), (int)threeDCoords[0], (int)threeDCoords[1], TILE_SIZE, (int)threeDTileSize, null);
                     }
                 }
             }
@@ -254,5 +264,12 @@ public class Gui extends JPanel{
     }
     public static double[] chunkToScreen(double xChunks, double yChunks){
         return new double[] {(xChunks * TILE_SIZE * 10 - sCameraX) + WIDTH / 2, (yChunks * TILE_SIZE * 10 - sCameraY) + HEIGHT / 2};
+    }
+    // Screenspace (2D, pixels) to 2.5D (pixels)
+    public static double[] screenTo3D(double x, double y){
+        return new double[] {
+            x,
+            y * ((PERSPECTIVE_FACTOR / ( (1820-y) + PERSPECTIVE_FACTOR)) / SCALE_FACTOR)
+        };
     }
 }
