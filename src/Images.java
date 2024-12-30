@@ -14,9 +14,6 @@ public class Images {
 
     public Images(String folderPath){
         //Load the images (see recursiveImageLoad)
-
-        System.out.println();
-        System.out.println("IMAGE LOAD START--------------------------------");
         recursiveImageLoad(folderPath);
 
         imageList = new BufferedImage[tempImageList.size()];
@@ -38,7 +35,6 @@ public class Images {
         if(!folder.toString().endsWith(".png")){
             // Get the contents of the folder
             File[] contents = folder.listFiles();
-            System.out.println(folder.getAbsolutePath());
             // Search the contents of the folder for images
             for(int i = 0; i < contents.length; i++){
                 recursiveImageLoad(contents[i].getAbsolutePath());

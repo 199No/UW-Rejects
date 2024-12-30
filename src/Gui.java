@@ -28,8 +28,8 @@ public class Gui extends JPanel{
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
     public static final int TILE_SIZE = 68;
-    public static final int PERSPECTIVE_FACTOR = 3000;
-    public static final double SCALE_FACTOR = 1.2;
+    public static final int PERSPECTIVE_FACTOR = 5000;
+    public static final double SCALE_FACTOR = 0.9;
     // Where things get queued up to be drawn. 
     // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
     // Fixes timing issues.
@@ -210,7 +210,7 @@ public class Gui extends JPanel{
                             return;
                         }
                         // Otherwise, do.
-                        g2d.drawImage(tileImages.getImage(c.getTile(x, y) - 1), (int)threeDCoords[0], (int)threeDCoords[1], TILE_SIZE, (int)threeDTileSize, null);
+                        g2d.drawImage(tileImages.getImage(c.getTile(x, y)-1), (int)threeDCoords[0], (int)threeDCoords[1], TILE_SIZE, (int)threeDTileSize, null);
                     }
                 }
             }
@@ -269,7 +269,7 @@ public class Gui extends JPanel{
     public static double[] screenTo3D(double x, double y){
         return new double[] {
             x,
-            y * ((PERSPECTIVE_FACTOR / ( (2000-y) + PERSPECTIVE_FACTOR)) / SCALE_FACTOR)
+            y * ((PERSPECTIVE_FACTOR / ( (3000-y) + PERSPECTIVE_FACTOR)) / SCALE_FACTOR)
         };
     }
 }
