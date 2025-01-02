@@ -1,4 +1,5 @@
 package src;
+import javax.crypto.spec.GCMParameterSpec;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
@@ -7,6 +8,7 @@ import javax.swing.*;
 import Enemies.Enemies;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
@@ -171,7 +173,24 @@ public class Gui extends JPanel{
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
                     double[] player3dPos = screenTo3D(playerScreenPos[0], playerScreenPos[1]);
 
+                    // How much to vertically scale the final shadow
+                    double shadowYScaleFactor = 0.9;
+                    // The ratio between the player IMAGE size and the player's actual size.
+                    double playerToTileX = (double)TILE_SIZE/(double)playerImage.getWidth();
+                    double playerToTileY = (double)TILE_SIZE/(double)playerImage.getHeight();
+
+                    double shearFactor = 0.4;
+
+                    // Get an AffineTransform
+                    AffineTransform shadowTransform = AffineTransform.getScaleInstance(playerToTileX, -playerToTileY * shadowYScaleFactor);
+                    
+                    shadowTransform.translate((player3dPos[0]/playerToTileX) - (playerImage.getWidth()*shearFactor), -(double)((player3dPos[1] + 2*TILE_SIZE) - (1.0-shadowYScaleFactor)*(double)playerImage.getHeight())/(playerToTileY*shadowYScaleFactor));
+                    
+                    // Shear the image so it is at the right angle
+                    shadowTransform.shear(shearFactor, 0);
+
                     g2d.drawImage(playerImage, (int)player3dPos[0], (int)player3dPos[1], TILE_SIZE, TILE_SIZE, null);
+                    g2d.drawImage(toShadow(playerImage), shadowTransform, null);
                 }
             }
         });
@@ -196,7 +215,7 @@ public class Gui extends JPanel{
 
     }
     public void drawChunk(Chunk c){
-        drawQueue.add(new GraphicsRunnable() {
+       drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
                 for(int y = 0; y < 10; y++){
@@ -253,7 +272,25 @@ public class Gui extends JPanel{
         sCameraY = cameraY;
     }
     public BufferedImage toShadow(BufferedImage image){
-        BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Color color = new Color(0, 0, 0);
+        // Create a copy of the image to avoid modifying the original
+        BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+
+        // Copy the alpha channel from the original image
+        Graphics2D g = result.createGraphics();
+        g.drawImage(image, 0, 0, null);
+
+        // Set the composite rule to only affect non-transparent pixels
+        // See https://ssp.impulsetrain.com/porterduff.html
+        g.setComposite(AlphaComposite.SrcIn.derive(0.2f));
+
+        // Set the desired color and fill the entire image
+        g.setColor(color);
+        g.fillRect(0, 0, image.getWidth(), image.getHeight());
+        
+        
+        return result;
+        
     }
     // Absolute (pixels) to screenspace
     public static double[] absToScreen(double x, double y){
