@@ -173,19 +173,20 @@ public class Gui extends JPanel{
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
                     double[] player3dPos = screenTo3D(playerScreenPos[0], playerScreenPos[1]);
 
-                    // How much to vertically scale the final shadow
-                    double shadowYScaleFactor = 0.9;
-                    // The ratio between the player IMAGE size and the player's actual size.
+                    // How much to vertically scale the final shadow (for adjustments)
+                    double shadowYScaleFactor = 1;
+                    // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
                     double playerToTileX = (double)TILE_SIZE/(double)playerImage.getWidth();
                     double playerToTileY = (double)TILE_SIZE/(double)playerImage.getHeight();
-
+                    // How much to shear the shadow (basically shadow angle)
                     double shearFactor = 0.4;
 
-                    // Get an AffineTransform
-                    AffineTransform shadowTransform = AffineTransform.getScaleInstance(playerToTileX, -playerToTileY * shadowYScaleFactor);
+                    // Scale the image to the right size
+                    AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
                     
-                    shadowTransform.translate((player3dPos[0]/playerToTileX) - (playerImage.getWidth()*shearFactor), -(double)((player3dPos[1] + 2*TILE_SIZE) - (1.0-shadowYScaleFactor)*(double)playerImage.getHeight())/(playerToTileY*shadowYScaleFactor));
+                    shadowTransform.translate((player3dPos[0]) - ((playerImage.getWidth() - 30)*shearFactor), (double)((player3dPos[1] + 2*TILE_SIZE)));
                     
+                    shadowTransform.scale(playerToTileX, -playerToTileY * shadowYScaleFactor);
                     // Shear the image so it is at the right angle
                     shadowTransform.shear(shearFactor, 0);
 
