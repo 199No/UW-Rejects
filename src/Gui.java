@@ -174,22 +174,28 @@ public class Gui extends JPanel{
                     double[] player3dPos = screenTo3D(playerScreenPos[0], playerScreenPos[1]);
 
                     // How much to vertically scale the final shadow (for adjustments)
-                    double shadowYScaleFactor = 1;
+                    double shadowYScaleFactor = 0.8;
                     // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
                     double playerToTileX = (double)TILE_SIZE/(double)playerImage.getWidth();
                     double playerToTileY = (double)TILE_SIZE/(double)playerImage.getHeight();
                     // How much to shear the shadow (basically shadow angle)
-                    double shearFactor = 0.4;
+                    double shearFactor = -0.4;
 
-                    // Scale the image to the right size
+                    // Get an affine transform to work with
                     AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
-                    
-                    shadowTransform.translate((player3dPos[0]) - ((playerImage.getWidth() - 30)*shearFactor), (double)((player3dPos[1] + 2*TILE_SIZE)));
-                    
-                    shadowTransform.scale(playerToTileX, -playerToTileY * shadowYScaleFactor);
+                    // Move the shadow image to where it needs to be
+                    shadowTransform.translate(
+                                          // Because the image shears from the bottom up it moves the "feet" of the shadow,
+                                          // so we account for that and also the imminent scaling of the image.
+                        (player3dPos[0] + playerImage.getWidth() * shearFactor * playerToTileX * shadowYScaleFactor),
+                                                  // Flipping the image puts it above the player's head so we move it to be below the feet instead.
+                        (double)((player3dPos[1] + 2*TILE_SIZE) - playerImage.getHeight() * (1-shadowYScaleFactor) * playerToTileY)
+                    );
                     // Shear the image so it is at the right angle
                     shadowTransform.shear(shearFactor, 0);
-
+                    // Rescale the image so it appears the right size
+                    shadowTransform.scale(playerToTileX, -playerToTileY * shadowYScaleFactor);
+                    // Draw the player and its shadow
                     g2d.drawImage(playerImage, (int)player3dPos[0], (int)player3dPos[1], TILE_SIZE, TILE_SIZE, null);
                     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
                 }
