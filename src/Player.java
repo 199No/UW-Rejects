@@ -14,14 +14,18 @@ public class Player {
     private int defence;
     private int damage;
     private double speed;
+    private double maxSpeed;
 
     //multipliers
     private double damageMultiplier;
     private double speedMultiplier;
+    private double XPMultiplier;
 
     //positioning
     private double xPos;
     private double yPos;
+    private double Xvelocity;
+    private double Yvelocity;
     private final int width = 24;
     private final int height = 24;
 
@@ -32,7 +36,6 @@ public class Player {
     //XP
     private int level;
     private int XP;
-    private double XPMultiplier;
     private int XPToNextLevel;
 
     //Attack
@@ -71,17 +74,18 @@ public class Player {
 
     DOWN-RIGHT	1	     1
 
-     DOWN	    0	     1
+    DOWN	    0	     1
 
-     DOWN-LEFT -1	     1 
+    DOWN-LEFT -1	     1 
 
-     LEFT	   -1	     0
+    LEFT	   -1	     0
 
-     UP-LEFT   -1	    -1 
+    UP-LEFT   -1	    -1 
      */
 
     private int xDir; // -1 (left), 0 (neutral), 1 (right)
     private int yDir; // -1 (Up),   0 (neutral), 1 (down)
+
     ///////////////
     //Constuctor
     //////////////
@@ -94,7 +98,9 @@ public class Player {
         this.defence = d;
         this.damage = dmg;
         this.speed = s;
-
+        this.Yvelocity = this.speed;
+        this.Xvelocity = this.speed;
+        this.maxSpeed = 5;
         this.level = 0;
         this.XP = 0;
 
@@ -123,16 +129,25 @@ public class Player {
         //2 S || K
         //3 D || L
 
-        xDir = 0;
-        yDir = 0;
+        updateVelocity(movement);
 
-        if(movement[0]) yDir -= 1;
-        if(movement[1]) xDir -= 1;
-        if(movement[2]) yDir += 1;
-        if(movement[3]) xDir += 1;
+        this.xPos += Xvelocity;
+        this.yPos += Yvelocity;
 
-        this.xPos = xPos + (xDir * speed);
-        this.yPos = yPos + (yDir * speed);
+    }
+
+    public void updateVelocity(boolean[] movement){
+    
+    xDir= 0;
+    yDir = 0;
+
+    if(movement[0]) yDir -= 1;
+    if(movement[1]) xDir -= 1;
+    if(movement[2]) yDir += 1;
+    if(movement[3]) xDir += 1;
+
+    this.xPos = xPos + (xDir * speed);
+    this.yPos = yPos + (yDir * speed);
 
     }
 
