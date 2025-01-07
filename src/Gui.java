@@ -30,8 +30,10 @@ public class Gui extends JPanel{
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
     public static final int TILE_SIZE = 68;
-    public static final int PERSPECTIVE_FACTOR = 5000;
-    public static final double SCALE_FACTOR = 0.9;
+    public static final double FOCAL_LENGTH = 720 / Math.sqrt(2); // 720 / sqrt(2)
+    public static final double CAMERA_ANGLE = Math.PI * 0.15;
+    public static final double Y_OFFSET = -900;
+    public static final double Z_OFFSET = -1520;
     // Where things get queued up to be drawn. 
     // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
     // Fixes timing issues.
@@ -179,7 +181,7 @@ public class Gui extends JPanel{
                     double playerToTileX = (double)TILE_SIZE/(double)playerImage.getWidth();
                     double playerToTileY = (double)TILE_SIZE/(double)playerImage.getHeight();
                     // How much to shear the shadow (basically shadow angle)
-                    double shearFactor = -0.4;
+                    double shearFactor = -0.5;
 
                     // Get an affine transform to work with
                     AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
@@ -313,7 +315,8 @@ public class Gui extends JPanel{
     public static double[] screenTo3D(double x, double y){
         return new double[] {
             x,
-            y * ((PERSPECTIVE_FACTOR / ( (3000-y) + PERSPECTIVE_FACTOR)) / SCALE_FACTOR)
+            ((Y_OFFSET)* Math.sin(CAMERA_ANGLE)) * (FOCAL_LENGTH / ((y + Z_OFFSET) * Math.cos(CAMERA_ANGLE))) - TILE_SIZE
+
         };
     }
 }
