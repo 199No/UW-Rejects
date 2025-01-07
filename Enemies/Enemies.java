@@ -6,6 +6,7 @@ package Enemies;
 
 import src.Player;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 
 //-------------------------------------------------//
 //                   Enemies                       //
@@ -24,9 +25,13 @@ public abstract class Enemies {
     protected double xPos;
     protected double yPos;
     protected double[] lastSeen; // the x and y pos of the last time the enemy saw the player
-    protected boolean alert;
-    protected boolean chasing;
-    protected boolean idle;
+
+    // States of an enemie
+    protected boolean alert; // seen player, is aware
+    protected boolean chasing; // moving towards/attacking player
+    protected boolean idle; // still waiting for patrol movement
+    protected boolean patroling; // moving towards a spot, or has a specific path
+
     protected Rectangle hitbox =  new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
 
     ///////////////
@@ -44,13 +49,13 @@ public abstract class Enemies {
 
     public abstract void idleMove();
 
-    public abstract void attack(Vector direction);
+    public abstract void attack();
 
     public abstract void die();
 
     public abstract boolean isAlive();
 
-    public abstract boolean scanArea(Player player);
+    public abstract boolean scanArea(ArrayList<Player> players);
 
     public abstract void moveToward(double[] lastSeen);
 

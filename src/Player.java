@@ -75,21 +75,23 @@ public class Player {
 
         this.xPos = x;
         this.yPos = y;
+
         this.health = hp;
         this.defence = d;
         this.damage = dmg;
         this.speed = s;
+
         this.Yvelocity = this.speed;
         this.Xvelocity = this.speed;
         this.maxSpeed = 5;
         this.level = 0;
         this.XP = 0;
 
-        this.maxMana = 1000;
-        this.XPToNextLevel = 20; //levels increase by xpnextlevel *= 1.2
+        this.maxMana = 10000; // "mana" of 10
+        this.XPToNextLevel = 20; // levels increase by xpnextlevel *= 1.1
         this.attackCooldown = 500; // ↓↓ in miliseconds
-        this.dashCooldown = 5000;
-        this.blockCooldown = 5000;
+        this.dashCooldown = 5000; // 5 sec
+        this.blockCooldown = 5000; // 5 sec
 
         this.xDir = 0;
         this.yDir = 0;
@@ -111,9 +113,6 @@ public class Player {
         //3 D || L
 
         updateVelocity(movement);
-
-        this.xPos += Xvelocity;
-        this.yPos += Yvelocity;
 
    }
 
@@ -141,15 +140,7 @@ public class Player {
     }
 
     public void dash(){
-        //System.out.println("dash! (player)");
-    }
-
-    public  void moveX(){
-       //given a speed? 
-    }
-
-    public  void moveY(){
-        //given a speed?
+        System.out.println("dash! player " + this);
     }
 
     public double getxPos(){
