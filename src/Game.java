@@ -50,14 +50,14 @@ public class Game implements ActionListener{
     //////////////
     public Game() throws AWTException, IOException{
 
-        this.player1 = new Player(0.0,0.0,100,10,10,5);
+        this.player1 = new Player(750,300.0,100,10,10,5);
         this.player2 = new Player(500.0, 500.0, 100, 10, 10, 5);
         players.add(player1);
         players.add(player2);
         this.input = new Input();
-        enemies.add(createSlime(500, 700));
+        enemies.add(createSlime(1200, 3000));
         gui = new Gui(1280, 720, input);
-        map = new Map("Maps\\map1.map");
+        map = new Map("Maps/map1.map");
         // Only these four lines should happen after this comment otherwise stuff will break
         gameTimer = new Timer(5, this);
         gameTimer.start();

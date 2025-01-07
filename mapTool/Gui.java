@@ -33,7 +33,7 @@ public class Gui extends JPanel{
     //Constuctor
     //////////////
     public Gui(int width, int height, Input input, int[][] chunk) {
-        images = new Images("Images\\Enviroment\\Tiles");
+        images = new Images("Images/Enviroment/Tiles");
         this.chunk = chunk;
         this.width = WIDTH;
         this.height = HEIGHT;

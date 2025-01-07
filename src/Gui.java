@@ -1,4 +1,5 @@
 package src;
+import javax.crypto.spec.GCMParameterSpec;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
@@ -7,11 +8,13 @@ import javax.swing.*;
 import Enemies.Enemies;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
+import java.awt.image.RescaleOp;
 //-------------------------------------------------//
 //                      Gui                        //
 //-------------------------------------------------// 
@@ -27,6 +30,10 @@ public class Gui extends JPanel{
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
     public static final int TILE_SIZE = 68;
+    public static final double FOCAL_LENGTH = 720 / Math.sqrt(2); // 720 / sqrt(2)
+    public static final double CAMERA_ANGLE = Math.PI * 0.15;
+    public static final double Y_OFFSET = -900;
+    public static final double Z_OFFSET = -1520;
     // Where things get queued up to be drawn. 
     // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
     // Fixes timing issues.
@@ -52,7 +59,7 @@ public class Gui extends JPanel{
     public Gui(int width, int height, Input input) {
         // Guess what this does.
         images = new Images("Images");
-        tileImages = new Images("Images\\Enviroment\\Tiles");
+        tileImages = new Images("Images/Enviroment/Tiles");
         // Define a constantly running Animation for the slime (soon to be better)
         slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
         slimeAnimation.start(); 
@@ -98,8 +105,6 @@ public class Gui extends JPanel{
     // Called internally by Swing.
     public void paintComponent(Graphics g){
         Graphics2D g2d = (Graphics2D)g;
-        // Antialiasing
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // Go through every item in the queue and draw it.
         for(int i = 0; i < drawQueue.size(); i++){
             drawQueue.get(i).draw(g2d);
@@ -168,8 +173,33 @@ public class Gui extends JPanel{
                         }
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
-                    
-                    g2d.drawImage(playerAnimation.getCurFrame(), (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
+                    double[] player3dPos = screenTo3D(playerScreenPos[0], playerScreenPos[1]);
+
+                    // How much to vertically scale the final shadow (for adjustments)
+                    double shadowYScaleFactor = 0.8;
+                    // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
+                    double playerToTileX = (double)TILE_SIZE/(double)playerImage.getWidth();
+                    double playerToTileY = (double)TILE_SIZE/(double)playerImage.getHeight();
+                    // How much to shear the shadow (basically shadow angle)
+                    double shearFactor = -0.5;
+
+                    // Get an affine transform to work with
+                    AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
+                    // Move the shadow image to where it needs to be
+                    shadowTransform.translate(
+                                          // Because the image shears from the bottom up it moves the "feet" of the shadow,
+                                          // so we account for that and also the imminent scaling of the image.
+                        (player3dPos[0] + playerImage.getWidth() * shearFactor * playerToTileX * shadowYScaleFactor),
+                                                  // Flipping the image puts it above the player's head so we move it to be below the feet instead.
+                        (double)((player3dPos[1] + 2*TILE_SIZE) - playerImage.getHeight() * (1-shadowYScaleFactor) * playerToTileY)
+                    );
+                    // Shear the image so it is at the right angle
+                    shadowTransform.shear(shearFactor, 0);
+                    // Rescale the image so it appears the right size
+                    shadowTransform.scale(playerToTileX, -playerToTileY * shadowYScaleFactor);
+                    // Draw the player and its shadow
+                    g2d.drawImage(playerImage, (int)player3dPos[0], (int)player3dPos[1], TILE_SIZE, TILE_SIZE, null);
+                    g2d.drawImage(toShadow(playerImage), shadowTransform, null);
                 }
             }
         });
@@ -183,10 +213,10 @@ public class Gui extends JPanel{
                 for(int i = 0; i < enemies.size(); i ++){
 
                     BufferedImage slimeImage = slimeAnimation.getFrame();
-                    BufferedImage resultImage = new BufferedImage(slimeImage.getWidth(), slimeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
                     Rectangle slimeHitbox = enemies.get(i).getHitbox();
-                    
-                    g2d.drawImage(slimeImage, (int)enemies.get(i).getxPos(), (int)enemies.get(i).getyPos(), TILE_SIZE, TILE_SIZE, null);
+                    double[] screenPos = absToScreen(enemies.get(i).getxPos(), enemies.get(i).getyPos());
+                    double[] finalPos = screenTo3D(screenPos[0], screenPos[1]);
+                    g2d.drawImage(slimeImage, (int)finalPos[0], (int)finalPos[1], TILE_SIZE, TILE_SIZE, null);
                     g2d.drawRect((int)slimeHitbox.getX(),(int)slimeHitbox.getY(),(int)slimeHitbox.getWidth(),(int)slimeHitbox.getHeight());
                 }
             }
@@ -194,13 +224,21 @@ public class Gui extends JPanel{
 
     }
     public void drawChunk(Chunk c){
-        drawQueue.add(new GraphicsRunnable() {
+       drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
+                double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
-                        double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
-                        g2d.drawImage(tileImages.getImage(c.getTile(x, y) - 1), (int)chunkCoords[0] + x * TILE_SIZE, (int)chunkCoords[1] + y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
-                            
+                        // Apply 3d transform to this tile coords
+                        double[] threeDCoords = Gui.screenTo3D(chunkCoords[0] + (x * TILE_SIZE), chunkCoords[1] + (y * TILE_SIZE));
+                        // Take the y pos of the next tile down and subract the y pos of this tile to get the difference in height between this tile and the next one down.                        
+                        double threeDTileSize = Gui.screenTo3D(0, chunkCoords[1] + ((y + 1) * TILE_SIZE) )[1] - threeDCoords[1] + 1;
+                        // If this tile is off screen don't draw it.
+                        if(threeDCoords[1] > Gui.WIDTH + 100){
+                            return;
+                        }
+                        // Otherwise, do.
+                        g2d.drawImage(tileImages.getImage(c.getTile(x, y)-1), (int)threeDCoords[0], (int)threeDCoords[1], TILE_SIZE, (int)threeDTileSize, null);
                     }
                 }
             }
@@ -242,8 +280,26 @@ public class Gui extends JPanel{
         sCameraX = cameraX;
         sCameraY = cameraY;
     }
-    public void bruh(){
-        playerAnimation.incrementState(1);
+    public BufferedImage toShadow(BufferedImage image){
+        Color color = new Color(0, 0, 0);
+        // Create a copy of the image to avoid modifying the original
+        BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+
+        // Copy the alpha channel from the original image
+        Graphics2D g = result.createGraphics();
+        g.drawImage(image, 0, 0, null);
+
+        // Set the composite rule to only affect non-transparent pixels
+        // See https://ssp.impulsetrain.com/porterduff.html
+        g.setComposite(AlphaComposite.SrcIn.derive(0.2f));
+
+        // Set the desired color and fill the entire image
+        g.setColor(color);
+        g.fillRect(0, 0, image.getWidth(), image.getHeight());
+        
+        
+        return result;
+        
     }
     // Absolute (pixels) to screenspace
     public static double[] absToScreen(double x, double y){
@@ -254,5 +310,13 @@ public class Gui extends JPanel{
     }
     public static double[] chunkToScreen(double xChunks, double yChunks){
         return new double[] {(xChunks * TILE_SIZE * 10 - sCameraX) + WIDTH / 2, (yChunks * TILE_SIZE * 10 - sCameraY) + HEIGHT / 2};
+    }
+    // Screenspace (2D, pixels) to 2.5D (pixels)
+    public static double[] screenTo3D(double x, double y){
+        return new double[] {
+            x,
+            ((Y_OFFSET)* Math.sin(CAMERA_ANGLE)) * (FOCAL_LENGTH / ((y + Z_OFFSET) * Math.cos(CAMERA_ANGLE))) - TILE_SIZE
+
+        };
     }
 }
