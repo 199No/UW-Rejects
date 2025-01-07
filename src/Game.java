@@ -9,12 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent; //NOT NEEDED?
 import java.io.IOException;
-import java.io.File;   //NOT NEEDED?
 import java.util.ArrayList;
-import java.util.Arrays;   //NOT NEEDED?
-import javax.imageio.ImageIO; //NOT NEEDED?
 import javax.swing.Timer;
 
 
