@@ -107,7 +107,7 @@ public class Slime extends Enemies{
     }
 
     //checks to see if the slime can see the player, LOS of player with obstacles, if it can sets the alert to true
-    public boolean scanArea(ArrayList<Player> players){ // scans for player around slime, returns true if slime can see the player
+    public boolean scanArea(Player player){ // scans for player around slime, returns true if slime can see the player
         /* 
         //check to see if player is even inside the radius of the eyesight of the slime
         if(calcDistance(player) < eyesight){

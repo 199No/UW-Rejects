@@ -55,7 +55,7 @@ public abstract class Enemies {
 
     public abstract boolean isAlive();
 
-    public abstract boolean scanArea(ArrayList<Player> players);
+    public abstract boolean scanArea(Player player);
 
     public abstract void moveToward(double[] lastSeen);
 

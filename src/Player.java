@@ -64,6 +64,25 @@ public class Player {
     private double manaRegenRate;
 
     //Animation
+
+    /*         xDir     yDir
+    UP	        0	    -1
+
+    UP-RIGHT	1	    -1
+
+    RIGHT	    1	     0
+
+    DOWN-RIGHT	1	     1
+
+    DOWN	    0	     1
+
+    DOWN-LEFT -1	     1 
+
+    LEFT	   -1	     0
+
+    UP-LEFT   -1	    -1 
+     */
+
     private int xDir; // -1 (left), 0 (neutral), 1 (right)
     private int yDir; // -1 (Up),   0 (neutral), 1 (down)
 
@@ -106,7 +125,7 @@ public class Player {
 //-------------------------------------------------// 
 
 
-   public void move(boolean[] movement){
+    public void move(boolean[] movement){
         //0 W || I
         //1 A || J
         //2 S || K
@@ -114,9 +133,12 @@ public class Player {
 
         updateVelocity(movement);
 
+        this.xPos += Xvelocity;
+        this.yPos += Yvelocity;
+
    }
 
-   public void updateVelocity(boolean[] movement){
+    public void updateVelocity(boolean[] movement){
     
     xDir= 0;
     yDir = 0;
@@ -129,7 +151,7 @@ public class Player {
     this.xPos = xPos + (xDir * speed);
     this.yPos = yPos + (yDir * speed);
 
-   }
+    }
 
     public  void attack(){
         System.out.println("attack!");

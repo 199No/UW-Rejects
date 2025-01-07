@@ -19,10 +19,10 @@ public class Map {
     // Goes through the list of chunks and unloads any that are outside the chunk loading boundary
     public void unloadChunks(double cameraX, double cameraY){
         for(int i = 0; i < loadedChunks.size(); i++){
-             if(!loadedChunks.get(i).isVisible(cameraX, cameraY)){
+            if(!loadedChunks.get(i).isVisible(cameraX, cameraY)){
                  //chunk.doUnload(); // For later when enemy positions have to be saved
-                 loadedChunks.remove(i);
-             }
+                loadedChunks.remove(i);
+            }
         }
     }
     public int[][] loadChunk(int chunkX, int chunkY){
@@ -46,7 +46,7 @@ public class Map {
             line = s.nextLine();
             // Split the line into individual chunks; the regex here reads .split(";}").
             row = line.split(";\\}");
-                     
+
             rawChunk = row[chunkX] // Get the chunk at our desired X
                 .substring(1) // Get rid of the first character which is always a {
                     .split(";"); // Split into rows of tiles.
