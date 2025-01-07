@@ -224,7 +224,7 @@ public class Gui extends JPanel{
 
     }
     public void drawChunk(Chunk c){
-       drawQueue.add(new GraphicsRunnable() {
+        drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
                 for(int y = 0; y < 10; y++){

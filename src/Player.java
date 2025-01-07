@@ -63,13 +63,13 @@ public class Player {
     //Animation
 
     /*         xDir     yDir
-     UP	        0	    -1
+    UP	        0	    -1
 
-     UP-RIGHT	1	    -1
+    UP-RIGHT	1	    -1
 
-     RIGHT	    1	     0
+    RIGHT	    1	     0
 
-     DOWN-RIGHT	1	     1
+    DOWN-RIGHT	1	     1
 
      DOWN	    0	     1
 
@@ -117,7 +117,7 @@ public class Player {
 //-------------------------------------------------// 
 
 
-   public void move(boolean[] movement){
+    public void move(boolean[] movement){
         //0 W || I
         //1 A || J
         //2 S || K
@@ -134,7 +134,7 @@ public class Player {
         this.xPos = xPos + (xDir * speed);
         this.yPos = yPos + (yDir * speed);
 
-   }
+    }
 
     public  void attack(){
         System.out.println("attack!");
