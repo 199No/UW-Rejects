@@ -14,6 +14,7 @@ public class Player {
     private int defence;
     private int damage;
     private double speed;
+    private double maxSpeed;
 
     //multipliers
     private double damageMultiplier;
@@ -22,6 +23,8 @@ public class Player {
     //positioning
     private double xPos;
     private double yPos;
+    private double Xvelocity;
+    private double Yvelocity;
     private final int width = 24;
     private final int height = 24;
 
@@ -94,7 +97,9 @@ public class Player {
         this.defence = d;
         this.damage = dmg;
         this.speed = s;
-
+        this.Yvelocity = this.speed;
+        this.Xvelocity = this.speed;
+        this.maxSpeed = 5;
         this.level = 0;
         this.XP = 0;
 
@@ -123,16 +128,37 @@ public class Player {
         //2 S || K
         //3 D || L
 
-        xDir = 0;
-        yDir = 0;
+        updateVelocity(movement);
 
-        if(movement[0]) yDir -= 1;
-        if(movement[1]) xDir -= 1;
-        if(movement[2]) yDir += 1;
-        if(movement[3]) xDir += 1;
+        this.xPos += Xvelocity;
+        this.yPos += Yvelocity;
 
-        this.xPos = xPos + (xDir * speed);
-        this.yPos = yPos + (yDir * speed);
+   }
+
+   public void updateVelocity(boolean[] movement){
+    //check to see if keys are being pressed
+    //if keys arent being pressed move velocity closer and closer to zero by a fixed amount
+        if(!movement[0] && Yvelocity > 0) Yvelocity -= 0.5; // W I 
+        if(!movement[1] && Xvelocity < 0) Xvelocity += 0.5; // A J
+        if(!movement[2] && Yvelocity > 0) Yvelocity -= 0.5; // S K
+        if(!movement[3] && Xvelocity < 0) Xvelocity += 0.5; // D L
+
+        if(movement[0] /*&& Math.abs(Yvelocity) < this.maxSpeed*/
+        ) Yvelocity -= 1; // W I 
+        if(movement[1] /*&& Math.abs(Xvelocity) < this.maxSpeed*/
+        ) Xvelocity -= 1; // A J
+        if(movement[2] /*&& Math.abs(Yvelocity) < this.maxSpeed*/
+        ) Yvelocity += 1; // S K
+        if(movement[3] /*&& Math.abs(Xvelocity) < this.maxSpeed*/
+        ) Xvelocity += 1; // D L
+
+        if(Yvelocity > maxSpeed) this.Yvelocity = maxSpeed;
+        if(Yvelocity < -maxSpeed) this.Yvelocity = -maxSpeed;
+
+        if(Xvelocity > maxSpeed) this.Xvelocity = maxSpeed;
+        if(Xvelocity < -maxSpeed) this.Xvelocity = -maxSpeed;
+
+        System.out.println(Yvelocity);
 
    }
 
