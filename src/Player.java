@@ -133,9 +133,6 @@ public class Player {
 
         updateVelocity(movement);
 
-        this.xPos += Xvelocity;
-        this.yPos += Yvelocity;
-
    }
 
     public void updateVelocity(boolean[] movement){
