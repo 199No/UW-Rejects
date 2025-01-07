@@ -19,6 +19,7 @@ public class Player {
     //multipliers
     private double damageMultiplier;
     private double speedMultiplier;
+    private double XPMultiplier;
 
     //positioning
     private double xPos;
@@ -35,7 +36,6 @@ public class Player {
     //XP
     private int level;
     private int XP;
-    private double XPMultiplier;
     private int XPToNextLevel;
 
     //Attack
@@ -66,25 +66,26 @@ public class Player {
     //Animation
 
     /*         xDir     yDir
-     UP	        0	    -1
+    UP	        0	    -1
 
-     UP-RIGHT	1	    -1
+    UP-RIGHT	1	    -1
 
-     RIGHT	    1	     0
+    RIGHT	    1	     0
 
-     DOWN-RIGHT	1	     1
+    DOWN-RIGHT	1	     1
 
-     DOWN	    0	     1
+    DOWN	    0	     1
 
-     DOWN-LEFT -1	     1 
+    DOWN-LEFT -1	     1 
 
-     LEFT	   -1	     0
+    LEFT	   -1	     0
 
-     UP-LEFT   -1	    -1 
+    UP-LEFT   -1	    -1 
      */
 
     private int xDir; // -1 (left), 0 (neutral), 1 (right)
     private int yDir; // -1 (Up),   0 (neutral), 1 (down)
+
     ///////////////
     //Constuctor
     //////////////
@@ -122,7 +123,7 @@ public class Player {
 //-------------------------------------------------// 
 
 
-   public void move(boolean[] movement){
+    public void move(boolean[] movement){
         //0 W || I
         //1 A || J
         //2 S || K
@@ -133,34 +134,22 @@ public class Player {
         this.xPos += Xvelocity;
         this.yPos += Yvelocity;
 
-   }
+    }
 
-   public void updateVelocity(boolean[] movement){
-    //check to see if keys are being pressed
-    //if keys arent being pressed move velocity closer and closer to zero by a fixed amount
-        if(!movement[0] && Yvelocity > 0) Yvelocity -= 0.5; // W I 
-        if(!movement[1] && Xvelocity < 0) Xvelocity += 0.5; // A J
-        if(!movement[2] && Yvelocity > 0) Yvelocity -= 0.5; // S K
-        if(!movement[3] && Xvelocity < 0) Xvelocity += 0.5; // D L
+    public void updateVelocity(boolean[] movement){
+    
+    xDir= 0;
+    yDir = 0;
 
-        if(movement[0] /*&& Math.abs(Yvelocity) < this.maxSpeed*/
-        ) Yvelocity -= 1; // W I 
-        if(movement[1] /*&& Math.abs(Xvelocity) < this.maxSpeed*/
-        ) Xvelocity -= 1; // A J
-        if(movement[2] /*&& Math.abs(Yvelocity) < this.maxSpeed*/
-        ) Yvelocity += 1; // S K
-        if(movement[3] /*&& Math.abs(Xvelocity) < this.maxSpeed*/
-        ) Xvelocity += 1; // D L
+    if(movement[0]) yDir -= 1;
+    if(movement[1]) xDir -= 1;
+    if(movement[2]) yDir += 1;
+    if(movement[3]) xDir += 1;
 
-        if(Yvelocity > maxSpeed) this.Yvelocity = maxSpeed;
-        if(Yvelocity < -maxSpeed) this.Yvelocity = -maxSpeed;
+    this.xPos = xPos + (xDir * speed);
+    this.yPos = yPos + (yDir * speed);
 
-        if(Xvelocity > maxSpeed) this.Xvelocity = maxSpeed;
-        if(Xvelocity < -maxSpeed) this.Xvelocity = -maxSpeed;
-
-        System.out.println(Yvelocity);
-
-   }
+    }
 
     public  void attack(){
         System.out.println("attack!");
