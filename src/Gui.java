@@ -31,9 +31,9 @@ public class Gui extends JPanel{
     public static final int HEIGHT = 720;
     public static final int TILE_SIZE = 68;
     public static final double FOCAL_LENGTH = 720 / Math.sqrt(2); // 720 / sqrt(2)
-    public static final double CAMERA_ANGLE = Math.PI * 0.15;
-    public static final double Y_OFFSET = -900;
-    public static final double Z_OFFSET = -1520;
+    public static final double CAMERA_ANGLE = Math.PI * 0.10;
+    public static final double Y_OFFSET = -1200;
+    public static final double Z_OFFSET = -1720;
     // Where things get queued up to be drawn. 
     // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
     // Fixes timing issues.

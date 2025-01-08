@@ -8,6 +8,7 @@ package Enemies;
 import src.Player;
 import java.awt.Rectangle;
 import java.util.Random;
+import java.util.ArrayList;
 
 //-------------------------------------------------//
 //                   Enemies                       //
@@ -25,7 +26,6 @@ public class Slime extends Enemies{
     int startDash;
     boolean chasing;
     double[] randomLoc;
-    Vector direction;
 
     ///////////////
     //Constuctor
@@ -53,6 +53,7 @@ public class Slime extends Enemies{
 
     }
 
+    //Move idlely after some time.
     public void idleMove(){
 
 
@@ -84,12 +85,8 @@ public class Slime extends Enemies{
         */
     }
 
-    public void attack(Vector direction){
+    public void attack(){
 
-    }
-
-    public void runAway(Vector direction){
-        
     }
 
     public void die(){
@@ -111,6 +108,7 @@ public class Slime extends Enemies{
 
     //checks to see if the slime can see the player, LOS of player with obstacles, if it can sets the alert to true
     public boolean scanArea(Player player){ // scans for player around slime, returns true if slime can see the player
+        /* 
         //check to see if player is even inside the radius of the eyesight of the slime
         if(calcDistance(player) < eyesight){
             //the player is inside the circle
@@ -125,28 +123,34 @@ public class Slime extends Enemies{
             }
         }
         return false;
+        */
+        return false;
     }
 
     public void update(){  // sets and checks all parts of the enemy (ran every frame)
 
     }
 
-    public boolean checkObstaclesLOS(Vector direction){
+    //Check for obstacles in the way of the line of sight
+    public boolean checkObstaclesLOS(){
+        /* 
         //at every point of vector check if there is an obstacle
         direction.normalize(1);
 
         //returns true if there is an obstacle
         return false;
+        */
+        return false;
     }
-
+    //Caluates the distance between the player and the slime and sees if its in its radius of sight
     public double calcDistance(Player player) {
         double dx = this.getxPos() - player.getxPos();
         double dy = this.getyPos() - player.getyPos();
         return Math.sqrt(dx * dx + dy * dy);
     }
 
+    //Moving towards the last time the player was seen, (not attacking just moving)
     public void moveToward(double[] lastSeen){
-
 
         /* 
         //move toward the point that was given
@@ -175,7 +179,10 @@ public class Slime extends Enemies{
         */
     }
 
-    public void dashToward(Vector direction){
+
+    // dashing towards, whether that be a idle movement, or a player attack 
+    // TODO: Given a parameter that tells the slime to move that direction
+    public void dashToward(){
  
 
         /* 
