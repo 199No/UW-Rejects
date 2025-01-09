@@ -1,5 +1,4 @@
 package src;
-import javax.crypto.spec.GCMParameterSpec;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
@@ -11,11 +10,6 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
-import java.awt.image.VolatileImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
-import java.awt.image.RescaleOp;
 //-------------------------------------------------//
 //                      Gui                        //
 //-------------------------------------------------// 
@@ -105,7 +99,6 @@ public class Gui extends JPanel{
     // Runs every frame and draws stuff to the screen.
     // Called internally by Swing.
     public void paintComponent(Graphics g){
-        super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
         // Go through every item in the queue and draw it.
         for(int i = 0; i < drawQueue.size(); i++){
