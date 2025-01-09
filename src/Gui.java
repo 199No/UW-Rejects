@@ -1,5 +1,4 @@
 package src;
-import javax.crypto.spec.GCMParameterSpec;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
@@ -11,10 +10,6 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
-import java.awt.image.RescaleOp;
 //-------------------------------------------------//
 //                      Gui                        //
 //-------------------------------------------------// 
@@ -58,8 +53,8 @@ public class Gui extends JPanel{
     //////////////
     public Gui(int width, int height, Input input) {
         // Guess what this does.
-        images = new Images("Images");
-        tileImages = new Images("Images/Enviroment/Tiles");
+        images = new Images("Images", Transparency.BITMASK);
+        tileImages = new Images("Images/Enviroment/Tiles", Transparency.OPAQUE);
         // Define a constantly running Animation for the slime (soon to be better)
         slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
         slimeAnimation.start(); 
@@ -290,7 +285,7 @@ public class Gui extends JPanel{
     public BufferedImage toShadow(BufferedImage image){
         Color color = new Color(0, 0, 0);
         // Create a copy of the image to avoid modifying the original
-        BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+        BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), Transparency.TRANSLUCENT);
 
         // Copy the alpha channel from the original image
         Graphics2D g = result.createGraphics();

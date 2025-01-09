@@ -55,7 +55,7 @@ public class Game implements ActionListener{
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map");
         // Only these four lines should happen after this comment otherwise stuff will break
-        gameTimer = new Timer(5, this);
+        gameTimer = new Timer(2, this);
         gameTimer.start();
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
