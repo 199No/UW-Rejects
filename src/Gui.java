@@ -249,10 +249,17 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
 
                 for(int p = 0; p < players.size(); p++){
-                    g2d.drawImage(images.getImage("Square1"), null, (int) players.get(p).getHitbox().getX(), (int) players.get(p).getHitbox().getY());
+                    double[] hitbox = players.get(p).getHitboxTopLeft();
+                    double[] location = absToScreen(hitbox[0], hitbox[1]);
+                    double[] location3d = screenTo3D(location[0], location[1]);
+                    g2d.drawImage(images.getImage("Square1"), (int) location3d[0] + players.get(p).getWidth()/4, (int) location3d[1] + players.get(p).getHeight()/4, players.get(p).getWidth()/2, players.get(p).getHeight()/2, null);
                 }
+
                 for(int e = 0; e < enemies.size(); e++){
-                    g2d.drawImage(images.getImage("Square1"), null, (int) enemies.get(e).getHitbox().getX(), (int) enemies.get(e).getHitbox().getY());  
+                    double[] hitbox = enemies.get(e).getHitboxTopLeft();
+                    double[] location = absToScreen(hitbox[0], hitbox[1]);
+                    double[] location3d = screenTo3D(location[0], location[1]);
+                    g2d.drawImage(images.getImage("Square1"), (int) location3d[0] + enemies.get(e).getWidth()/4, (int) location3d[1] + enemies.get(e).getHeight()/4, enemies.get(e).getWidth()/2, enemies.get(e).getHeight()/2, null);
                 }
             }
         });
