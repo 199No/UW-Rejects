@@ -126,9 +126,13 @@ public abstract class Enemies {
     public boolean checkHitbox(Player player){
         return false;
     }
-    
+
+    public double[] getHitboxTopLeft(){
+        return new double[]{getxPos(), getyPos()};
+    }
+
     public Rectangle getHitbox(){
-        return new Rectangle(this.getWidth()/2, this.getHeight()/2, (int) this.getxPos() + this.getWidth(), (int) this.getyPos() + this.getHeight());
+        return new Rectangle((int) this.getxPos(), (int) this.getyPos(), this.getWidth(), this.getHeight());
     }
 
 }

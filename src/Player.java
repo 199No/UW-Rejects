@@ -26,8 +26,8 @@ public class Player {
     private double yPos;
     private double Xvelocity;
     private double Yvelocity;
-    private final int width = 24;
-    private final int height = 24;
+    private final int width = Gui.TILE_SIZE;
+    private final int height = Gui.TILE_SIZE;
 
     //misc
     private int temperature;
@@ -125,13 +125,15 @@ public class Player {
 //-------------------------------------------------// 
 
 
-    public void move(boolean[] movement){
+    public void move(boolean[] movement, boolean isShifting){
         //0 W || I
         //1 A || J
         //2 S || K
         //3 D || L
 
         updateVelocity(movement);
+
+        //System.out.println("shifting " + isShifting);
 
    }
 
@@ -177,10 +179,6 @@ public class Player {
 
     public double[] getLocation(){
         return new double[] {this.xPos,this.yPos};
-    }
-
-    public double[] getHitboxTopLeft(){
-        return new double[]{xPos+this.getWidth()/4, yPos+this.getHeight()/4};
     }
 
     public int[] getDirection(){
@@ -231,9 +229,13 @@ public class Player {
     public void setSpeed(double speed){
         this.speed = speed;
     }
-    
+
+    public double[] getHitboxTopLeft(){
+        return new double[]{getxPos(), getyPos()};
+    }
+
     public Rectangle getHitbox(){
-        return new Rectangle(this.getWidth()/2, this.getHeight()/2, (int) this.getxPos() + this.getWidth(), (int) this.getyPos() + this.getHeight());
+        return new Rectangle((int) this.getxPos(), (int) this.getyPos(), this.getWidth(), this.getHeight());
     }
 
 }

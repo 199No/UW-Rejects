@@ -163,9 +163,9 @@ public class Game implements ActionListener{
         //move player based on shift and keys pressed
 
         this.movement = new boolean[]{keys[this.input.getPlayer1Keys()[0]], keys[this.input.getPlayer1Keys()[1]], keys[this.input.getPlayer1Keys()[2]], keys[this.input.getPlayer1Keys()[3]]};  // W A S D
-        player1.move(movement);
+        player1.move(movement, shifts[0]);
         this.movement = new boolean[]{keys[this.input.getPlayer2Keys()[0]], keys[this.input.getPlayer2Keys()[1]], keys[this.input.getPlayer2Keys()[2]], keys[this.input.getPlayer2Keys()[3]]};  // I J K L
-        player2.move(movement);
+        player2.move(movement, shifts[1]);
 
         //ATTACK
         if(keys[67]){
