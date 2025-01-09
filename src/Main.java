@@ -9,16 +9,16 @@ import java.io.IOException;
 //                     Main                        //
 //-------------------------------------------------// 
 public class Main{
-    ///////////////
+    //////////////
     //Properties
     //////////////
 
-    ///////////////
+    /////////////
     //Constuctor
     /////////////
 
 //   |
-//   V 
+//   V
     public static void main(String[] args) throws AWTException, IOException{
         new Game();
     }
