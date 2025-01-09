@@ -1,21 +1,30 @@
 package src;
+import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class Images {
     BufferedImage[] imageList;
     String[] imageNames;
+    int transparency;
+    GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                                        .getDefaultScreenDevice()
+                                            .getDefaultConfiguration();
 
     ArrayList<BufferedImage> tempImageList = new ArrayList<BufferedImage>();
     ArrayList<String> tempImageNames = new ArrayList<String>();
-
-    public Images(String folderPath){
+    public Images(String folderPath, int transparency){
+        this.transparency = transparency;
         //Load the images (see recursiveImageLoad)
         recursiveImageLoad(folderPath);
-
         imageList = new BufferedImage[tempImageList.size()];
         imageNames = new String[tempImageNames.size()];
 
@@ -30,7 +39,6 @@ public class Images {
     private void recursiveImageLoad(String folderPath){
         // New file from the path
         File folder = new File(folderPath);
-        System.out.println(folderPath);
         // If folder is actually a folder (not an image)...
         if(!folder.toString().endsWith(".png")){
             // Get the contents of the folder
@@ -44,13 +52,19 @@ public class Images {
         else {
             // ImageIO error handling
             try {
+                Image image = ImageIO.read(folder);
+                BufferedImage bimage = config.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
+                Graphics bGraphics = bimage.getGraphics();
+                bGraphics.drawImage(image, 0, 0, null);
+                bGraphics.dispose();
                 // Add this image to the list
-                tempImageList.add(ImageIO.read(folder));
+                tempImageList.add(bimage);
                 // Add its name to the list of names
                 tempImageNames.add(folder.getName().replace(".png", ""));
             } catch(Exception e){
                 // ImageIO shouldn't throw errors bruh
                 System.out.println("This REALLY shouldn't happen.");
+                e.printStackTrace();
             }
         }
     }
