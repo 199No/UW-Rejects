@@ -122,7 +122,7 @@ public class Game implements ActionListener{
             public void draw(Graphics2D g){
                 double height1 = (((double)(int)System.currentTimeMillis() - (double)input.getLastp1Dash()) / 5000) * Gui.HEIGHT;
                 g.setColor(Color.BLACK);
-                g.fillRect(Gui.WIDTH - 30, 0, 30, Gui.HEIGHT);
+                g.fillRect(0, 0, 30, Gui.HEIGHT);
                 g.setColor(new Color(3, 148, 252));
                 g.fillRect(0, Gui.HEIGHT - (int)height1, 30, (int)height1);
 
