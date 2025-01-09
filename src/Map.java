@@ -6,13 +6,13 @@ import java.util.Scanner;
 
 public class Map {
     ArrayList<Chunk> loadedChunks = new ArrayList<Chunk>();
-    File mapFile;
+    String tilePath;
+    String envPath;
 
-    public Map(String filePath){
-        mapFile = new File(filePath);
+    public Map(String tilePath, String envPath){
         for(int y = 0; y < 6; y++){
             for(int x = 0; x < 6; x++){
-                loadedChunks.add(new Chunk(loadChunk(x, y), x, y));
+                loadedChunks.add(new Chunk(loadChunk(x, y, tilePath), loadChunk(x, y, envPath), x, y));
             }
         }
     }
@@ -25,7 +25,7 @@ public class Map {
             }
         }
     }
-    public int[][] loadChunk(int chunkX, int chunkY){
+    public int[][] loadChunk(int chunkX, int chunkY, String filePath){
         // A single line of text in the file
         String line;
         // A row of chunks represented as an array of Strings
@@ -37,7 +37,7 @@ public class Map {
 
         // I don't wanna have to deal with methods throwing exceptions
         try {
-            Scanner s = new Scanner(mapFile);
+            Scanner s = new Scanner(new File(filePath));
             // Skip lines until one before the line at y...
             for(int i = 0; i < chunkY; i++){
                 s.nextLine();

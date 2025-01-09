@@ -12,8 +12,9 @@ public class Chunk {
     private int[][] tileData; // Ground data (what type of tile is the ground?)
     private int[][] envData; // Environment data (what is on the ground?) (trees, houses, chests, etc)
     private Rectangle unloadBoundary = new Rectangle(-Gui.TILE_SIZE*10, -Gui.TILE_SIZE*10, Gui.WIDTH + 20*Gui.TILE_SIZE, Gui.HEIGHT + 20*Gui.TILE_SIZE); 
-    public Chunk(int[][] tileData,/* int[][] envData, */ int x, int y){
+    public Chunk(int[][] tileData, int[][] envData, int x, int y){
         this.tileData = tileData;
+        this.envData = envData;
         this.x = x;
         this.y = y;
     }

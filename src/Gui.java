@@ -1,5 +1,4 @@
 package src;
-import javax.crypto.spec.GCMParameterSpec;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
@@ -11,11 +10,6 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
-import java.awt.image.VolatileImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
-import java.awt.image.RescaleOp;
 //-------------------------------------------------//
 //                      Gui                        //
 //-------------------------------------------------// 
@@ -105,7 +99,6 @@ public class Gui extends JPanel{
     // Runs every frame and draws stuff to the screen.
     // Called internally by Swing.
     public void paintComponent(Graphics g){
-        super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
         // Go through every item in the queue and draw it.
         for(int i = 0; i < drawQueue.size(); i++){
@@ -251,10 +244,17 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
 
                 for(int p = 0; p < players.size(); p++){
-                    g2d.drawImage(images.getImage("Square1"), null, (int) players.get(p).getHitbox().getX(), (int) players.get(p).getHitbox().getY());
+                    double[] hitbox = players.get(p).getHitboxTopLeft();
+                    double[] location = absToScreen(hitbox[0], hitbox[1]);
+                    double[] location3d = screenTo3D(location[0], location[1]);
+                    g2d.drawImage(images.getImage("Square1"), (int) location3d[0] + players.get(p).getWidth()/4, (int) location3d[1] + players.get(p).getHeight()/4, players.get(p).getWidth()/2, players.get(p).getHeight()/2, null);
                 }
+
                 for(int e = 0; e < enemies.size(); e++){
-                    g2d.drawImage(images.getImage("Square1"), null, (int) enemies.get(e).getHitbox().getX(), (int) enemies.get(e).getHitbox().getY());  
+                    double[] hitbox = enemies.get(e).getHitboxTopLeft();
+                    double[] location = absToScreen(hitbox[0], hitbox[1]);
+                    double[] location3d = screenTo3D(location[0], location[1]);
+                    g2d.drawImage(images.getImage("Square1"), (int) location3d[0] + enemies.get(e).getWidth()/4, (int) location3d[1] + enemies.get(e).getHeight()/4, enemies.get(e).getWidth()/2, enemies.get(e).getHeight()/2, null);
                 }
             }
         });
