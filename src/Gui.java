@@ -303,6 +303,9 @@ public class Gui extends JPanel{
         return result;
         
     }
+    public BufferedImage toPersp(BufferedImage image, double width1, double width2, double height){
+        // x2 = 1 + ((w2 - w1)/2h)*x
+    }
     // Absolute (pixels) to screenspace
     public static double[] absToScreen(double x, double y){
         return new double[] {x - sCameraX - 25 + WIDTH / 2, y - sCameraY  - 25 + HEIGHT / 2};
