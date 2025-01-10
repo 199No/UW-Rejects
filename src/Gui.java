@@ -193,7 +193,7 @@ public class Gui extends JPanel{
                     // Rescale the image so it appears the right size
                     shadowTransform.scale(playerToTileX, -playerToTileY * shadowYScaleFactor);
                     // Draw the player and its shadow
-                    g2d.drawImage(playerImage, (int)player3dPos[0], (int)player3dPos[1], TILE_SIZE, TILE_SIZE, null);
+                    g2d.drawImage(toPersp(playerImage, 68), (int)player3dPos[0], (int)player3dPos[1], TILE_SIZE, TILE_SIZE, null);
                     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
                 }
             }
@@ -303,8 +303,15 @@ public class Gui extends JPanel{
         return result;
         
     }
-    public BufferedImage toPersp(BufferedImage image, double width1, double width2, double height){
+    public BufferedImage toPersp (BufferedImage image, double width2){
         // x2 = 1 + ((w2 - w1)/2h)*x
+        BufferedImage result = new BufferedImage((int)width2, image.getHeight(), Transparency.BITMASK);
+        for(int y = 0; y < result.getHeight(); y++){
+            for(int x = 0; x < result.getWidth(); x++){
+                result.setRGB(x, y, image.getRGB(x, y));
+            }
+        }
+        return result;
     }
     // Absolute (pixels) to screenspace
     public static double[] absToScreen(double x, double y){
