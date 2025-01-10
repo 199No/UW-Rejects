@@ -31,7 +31,7 @@ public class Slime extends Enemies{
     //Constuctor
     //////////////
     public Slime(double x, double y){
-        super();
+        super(x,y);
         this.health = 10;
         this.damage = 1;
         this.speed = 3;

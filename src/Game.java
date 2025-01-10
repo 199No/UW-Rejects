@@ -51,7 +51,7 @@ public class Game implements ActionListener{
         players.add(player1);
         players.add(player2);
         this.input = new Input();
-        enemies.add(createSlime(1200, 3000));
+        enemies.add(createSlime(750, 300));
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
         // Only these four lines should happen after this comment otherwise stuff will break

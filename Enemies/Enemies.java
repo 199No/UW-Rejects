@@ -32,13 +32,19 @@ public abstract class Enemies {
     protected boolean idle; // still waiting for patrol movement
     protected boolean patroling; // moving towards a spot, or has a specific path
 
-    protected Rectangle hitbox =  new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
-
+    private boolean active; //the player is able to be hit if true
+    
+    private Rectangle hitbox = new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
     ///////////////
     //Constuctor
     //////////////
     public Enemies(){
         
+    }
+
+    public Enemies(double x, double y){
+        this.xPos = x;
+        this.yPos = y;
     }
     
     //-------------------------------------------------//
@@ -134,5 +140,6 @@ public abstract class Enemies {
     public Rectangle getHitbox(){
         return new Rectangle((int) this.getxPos(), (int) this.getyPos(), this.getWidth(), this.getHeight());
     }
+
 
 }
