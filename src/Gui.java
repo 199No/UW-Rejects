@@ -52,8 +52,9 @@ public class Gui extends JPanel{
     //Constuctor
     //////////////
     public Gui(int width, int height, Input input) {
-        // Guess what this does.
+        // General images, uses bitmask transparency
         images = new Images("Images", Transparency.BITMASK);
+        // Images for tiles only
         tileImages = new Images("Images/Enviroment/Tiles", Transparency.OPAQUE);
         // Define a constantly running Animation for the slime (soon to be better)
         slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
@@ -304,7 +305,7 @@ public class Gui extends JPanel{
         
     }
     public BufferedImage toPersp (BufferedImage image, double width2){
-        // x2 = 1 + ((w2 - w1)/2h)*x
+        //x1 = (w1/40 * x) * (((w2/w1-1)/h)*y+1) + y*(k1/h);
         BufferedImage result = new BufferedImage((int)width2, image.getHeight(), Transparency.BITMASK);
         for(int y = 0; y < result.getHeight(); y++){
             for(int x = 0; x < result.getWidth(); x++){
