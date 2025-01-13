@@ -24,14 +24,18 @@ public class Player {
     //positioning
     private double xPos;
     private double yPos;
-    private double Xvelocity;
-    private double Yvelocity;
+    private double xVel;
+    private double yVel;
+    private int xDir; // -1 (left), 0 (neutral), 1 (right)
+    private int yDir; // -1 (Up),   0 (neutral), 1 (down)
+
     private final int width = Gui.TILE_SIZE;
     private final int height = Gui.TILE_SIZE;
 
     //misc
     private int temperature;
     private int score;
+    private double friction;
 
     //XP
     private int level;
@@ -83,9 +87,6 @@ public class Player {
     UP-LEFT   -1	    -1 
      */
 
-    private int xDir; // -1 (left), 0 (neutral), 1 (right)
-    private int yDir; // -1 (Up),   0 (neutral), 1 (down)
-
     ///////////////
     //Constuctor
     //////////////
@@ -100,8 +101,6 @@ public class Player {
         this.damage = dmg;
         this.speed = s;
 
-        this.Yvelocity = this.speed;
-        this.Xvelocity = this.speed;
         this.maxSpeed = 5;
         this.level = 0;
         this.XP = 0;
@@ -114,6 +113,9 @@ public class Player {
 
         this.xDir = 0;
         this.yDir = 0;
+        this.xVel = 0;
+        this.yVel = 0;
+        this.friction = 0.5; // 0 - 1
 
         this.isDashing = false;
         this.isBlocking = false;
@@ -131,26 +133,39 @@ public class Player {
         //2 S || K
         //3 D || L
 
-        updateVelocity(movement);
+        int tempxVel = 0;
+        int tempyVel = 0;
+        if(movement[0]) tempyVel -= 1;
+        if(movement[1]) tempxVel -= 1;
+        if(movement[2]) tempyVel += 1;
+        if(movement[3]) tempxVel += 1;
 
-        //System.out.println("shifting " + isShifting);
+        double mag = Math.sqrt(tempxVel * tempxVel  + tempyVel * tempyVel);
 
-   }
+        if(mag > 0){
 
-    public void updateVelocity(boolean[] movement){
-    
-    xDir= 0;
-    yDir = 0;
+            tempxVel /= mag;
+            tempyVel /= mag;
 
-    if(movement[0]) yDir -= 1;
-    if(movement[1]) xDir -= 1;
-    if(movement[2]) yDir += 1;
-    if(movement[3]) xDir += 1;
+            this.xVel += tempxVel * this.speed;
+            this.yVel += tempyVel * this.speed;
+            
+        }else{
 
-    this.xPos = xPos + (xDir * speed);
-    this.yPos = yPos + (yDir * speed);
+            this.xVel *= this.friction;
+            this.yVel *= this.friction;
+            
+            //make sure there isnt always friction
+            if(Math.abs(this.xVel) < 0.2) this.xVel = 0;
+            if(Math.abs(this.yVel) < 0.2) this.yVel = 0;           
+
+        }
+
+        this.xPos += this.xVel;
+        this.yPos += this.yVel;
 
     }
+
 
     public  void attack(){
         System.out.println("attack!");
@@ -161,7 +176,7 @@ public class Player {
     }
 
     public void dash(){
-        System.out.println("dash! player " + this);
+        //System.out.println("dash! player " + this);
     }
 
     public double getxPos(){
