@@ -46,8 +46,8 @@ public class Game implements ActionListener{
     //////////////
     public Game() throws AWTException, IOException{
 
-        this.player1 = new Player(750,300.0,100,10,10,5);
-        this.player2 = new Player(500.0, 500.0, 100, 10, 10, 5);
+        this.player1 = new Player(750,300.0,100,10,10,2);
+        this.player2 = new Player(500.0, 500.0, 100, 10, 10, 2);
         players.add(player1);
         players.add(player2);
         this.input = new Input();

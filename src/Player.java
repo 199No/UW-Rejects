@@ -101,7 +101,7 @@ public class Player {
         this.damage = dmg;
         this.speed = s;
 
-        this.maxSpeed = 5;
+        this.maxSpeed = 2 * this.speed * this.speed;
         this.level = 0;
         this.XP = 0;
 
@@ -115,7 +115,7 @@ public class Player {
         this.yDir = 0;
         this.xVel = 0;
         this.yVel = 0;
-        this.friction = 0.5; // 0 - 1
+        this.friction = 0.99; // 0 - 1 closer to 1 is less friction
 
         this.isDashing = false;
         this.isBlocking = false;
@@ -135,11 +135,12 @@ public class Player {
 
         int tempxVel = 0;
         int tempyVel = 0;
-        if(movement[0]) tempyVel -= 1;
-        if(movement[1]) tempxVel -= 1;
-        if(movement[2]) tempyVel += 1;
-        if(movement[3]) tempxVel += 1;
 
+        if(movement[0]){ tempyVel -= 1; }
+        if(movement[1]){ tempxVel -= 1; }
+        if(movement[2]){ tempyVel += 1; }
+        if(movement[3]){ tempxVel += 1; }
+        
         double mag = Math.sqrt(tempxVel * tempxVel  + tempyVel * tempyVel);
 
         if(mag > 0){
@@ -147,18 +148,36 @@ public class Player {
             tempxVel /= mag;
             tempyVel /= mag;
 
-            this.xVel += tempxVel * this.speed;
-            this.yVel += tempyVel * this.speed;
+            this.xVel += tempxVel * (this.speed);
+            this.yVel += tempyVel * (this.speed);
             
         }else{
 
             this.xVel *= this.friction;
             this.yVel *= this.friction;
             
+            /* 
             //make sure there isnt always friction
-            if(Math.abs(this.xVel) < 0.2) this.xVel = 0;
-            if(Math.abs(this.yVel) < 0.2) this.yVel = 0;           
+            if(Math.abs(this.xVel) < 0.01) this.xVel = 0;
+            if(Math.abs(this.yVel) < 0.01) this.yVel = 0;
+            */
+            
+        }
 
+        if(Math.abs(this.xVel) > this.maxSpeed){
+            if(this.xVel < 0){
+                this.xVel = -this.maxSpeed;
+            }else{
+                this.xVel = this.maxSpeed;
+            }
+        }
+
+        if(Math.abs(this.yVel) > this.maxSpeed){ 
+            if(this.yVel < 0){
+                this.yVel = -this.maxSpeed;
+            }else{
+                this.yVel = this.maxSpeed;
+            }
         }
 
         this.xPos += this.xVel;
