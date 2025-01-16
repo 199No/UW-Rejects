@@ -68,7 +68,7 @@ public class Game implements ActionListener{
     @Override
 
     public void actionPerformed(ActionEvent e) {
-
+        // Calculate FPS
         now = System.currentTimeMillis();
 
         if(now - lastSecond > 1000){
@@ -94,7 +94,7 @@ public class Game implements ActionListener{
         //update Player based on Input Information
         updatePlayer();
 
-        
+        // Update enemies
         for(int i = 0; i < this.enemies.size(); i++){
 
             for(int j = 0; j < this.players.size(); j++){
@@ -112,12 +112,14 @@ public class Game implements ActionListener{
         //        g2d.drawImage(image.getScaledInstance(Gui.WIDTH, Gui.HEIGHT, 0), 0, 0, null);
         //    }
         //});
-        // Dash bar
-        
+        // Draw the background (Happens before ALL other draw commands)
+        // Draw the ground
         for(int i = 0; i < map.numLoadedChunks(); i++){
             gui.drawChunk(map.getChunk(i));
         }
-
+        
+        gui.background(0, 0, 0);
+        // Draw dash bars
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g){
                 double height1 = (((double)(int)System.currentTimeMillis() - (double)input.getLastp1Dash()) / 5000) * Gui.HEIGHT;
@@ -134,7 +136,6 @@ public class Game implements ActionListener{
 
             }
         });
-        
         gui.moveCamera(((players.get(0).getxPos() + players.get(1).getxPos()) / 2 - gui.cameraX()) / 10, ((players.get(0).getyPos() + players.get(1).getyPos()) / 2 - gui.cameraY()) / 10);
         gui.drawPlayers(players);
         gui.drawEnemies(enemies);

@@ -17,6 +17,9 @@ public class Gui extends JPanel{
     ///////////////
     //Properties
     ////////////// 
+    GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                                        .getDefaultScreenDevice()
+                                            .getDefaultConfiguration();
     
     // Width and height of the draw area
     int width;
@@ -27,7 +30,7 @@ public class Gui extends JPanel{
     public static final int TILE_SIZE = 68;
     public static final double FOCAL_LENGTH = 720 / Math.sqrt(2); // 720 / sqrt(2)
     public static final double CAMERA_ANGLE = Math.PI * 0.10;
-    public static final double Y_OFFSET = -1200;
+    public static final double Y_OFFSET = -3200;
     public static final double Z_OFFSET = -1720;
     // Where things get queued up to be drawn. 
     // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
@@ -123,11 +126,8 @@ public class Gui extends JPanel{
     public void background(int r, int g, int b){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                for(int y = 0; y < 18; y++){
-                    for(int x = 0; x < 34; x++){
-                        g2d.drawImage(tileImages.getImage(0), x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
-                    }
-                }
+                g2d.setColor(new Color(r, g, b));
+                g2d.drawRect(0, 0, Gui.WIDTH, Gui.HEIGHT);
             }
         });
     }
@@ -194,9 +194,9 @@ public class Gui extends JPanel{
                     // Rescale the image so it appears the right size
                     shadowTransform.scale(playerToTileX, -playerToTileY * shadowYScaleFactor);
                     // Draw the player and its shadow
-                    g2d.drawImage(toPersp(playerImage, 68), (int)player3dPos[0], (int)player3dPos[1], TILE_SIZE, TILE_SIZE, null);
+                    g2d.drawImage(playerImage, (int)player3dPos[0], (int)player3dPos[1], TILE_SIZE, TILE_SIZE, null);
                     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
-                }
+                } 
             }
         });
     }
@@ -221,6 +221,9 @@ public class Gui extends JPanel{
     }
     public void drawChunk(Chunk c){
         drawQueue.add(new GraphicsRunnable() {
+            BufferedImage scaledImage;
+            BufferedImage tileImage;
+            Graphics g;
             public void draw(Graphics2D g2d){
                 double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
                 for(int y = 0; y < 10; y++){
@@ -234,6 +237,22 @@ public class Gui extends JPanel{
                             return;
                         }
                         // Otherwise, do.
+                        
+                        tileImage = tileImages.getImage(c.getTile(x, y)-1);
+                        scaledImage = config.createCompatibleImage(TILE_SIZE, (int)threeDTileSize);
+                        
+                        g = scaledImage.getGraphics();
+                        g.drawImage(tileImage, 0, 0, TILE_SIZE, (int)threeDTileSize, null);
+                        g.dispose();
+                        
+                        toPersp(
+                                     scaledImage,
+                                         screenTo3D(threeDCoords[0] + TILE_SIZE, threeDCoords[0])[0],
+                                         screenTo3D(threeDCoords[0], threeDCoords[1])[0],
+                                         screenTo3D(threeDCoords[0] + TILE_SIZE, threeDCoords[1] + threeDTileSize)[0],
+                                         screenTo3D(threeDCoords[0], threeDCoords[1] + threeDTileSize)[0]
+                                    );
+                        
                         g2d.drawImage(tileImages.getImage(c.getTile(x, y)-1), (int)threeDCoords[0], (int)threeDCoords[1], TILE_SIZE, (int)threeDTileSize, null);
                     }
                 }
@@ -304,12 +323,30 @@ public class Gui extends JPanel{
         return result;
         
     }
-    public BufferedImage toPersp (BufferedImage image, double width2){
+    public BufferedImage toPersp (BufferedImage image, double A, double B, double C, double D){
         //x1 = (w1/40 * x) * (((w2/w1-1)/h)*y+1) + y*(k1/h);
-        BufferedImage result = new BufferedImage((int)width2, image.getHeight(), Transparency.BITMASK);
+
+
+        double x_i, x_f; // X initial and X final - coords for the ends of each row on the trapezoid
+        double k = D - B; // "Overhang" on the trapezoid - how much space between the absolute corner and the beginning of the bottom of the trapezoid
+        double w1 = A - B; // Top width of the trapz
+        double w2 = C - D; // Bottom width of the trapz
+        double h = image.getHeight(); // Height of the trapz
+        double xn; // "new x" - result of the transformation
+        BufferedImage result = new BufferedImage((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))), image.getHeight(), Transparency.BITMASK);
+
         for(int y = 0; y < result.getHeight(); y++){
-            for(int x = 0; x < result.getWidth(); x++){
-                result.setRGB(x, y, image.getRGB(x, y));
+
+            x_i = y * k/h;
+            x_f = x_i + w1 + (y/h)*(w2-w1);
+            System.out.println();
+            System.out.println("--- NEW LINE --- y: " + y);
+            for(int x = (int)x_i; x < x_f; x++){
+
+                xn = ((x - ((y*k)/h)) / ( ((((w2-w1)*y) / (w2*h)) + 1) * (w1 / (double)image.getWidth()) ));
+                System.out.println("xn: " + xn);
+                result.setRGB(x, y, new Color(255, 0, 0).getRGB());
+                
             }
         }
         return result;
@@ -327,8 +364,8 @@ public class Gui extends JPanel{
     // Screenspace (2D, pixels) to 2.5D (pixels)
     public static double[] screenTo3D(double x, double y){
         return new double[] {
-            x,
-            ((Y_OFFSET)* Math.sin(CAMERA_ANGLE)) * (FOCAL_LENGTH / ((y + Z_OFFSET) * Math.cos(CAMERA_ANGLE))) - TILE_SIZE
+            -x * FOCAL_LENGTH / ((y + Z_OFFSET) * Math.cos(CAMERA_ANGLE)) + Gui.WIDTH/2,
+            ((Y_OFFSET)* Math.sin(CAMERA_ANGLE)) * (FOCAL_LENGTH / ((y + Z_OFFSET) * Math.cos(CAMERA_ANGLE)))
 
         };
     }
