@@ -234,7 +234,7 @@ public class Gui extends JPanel{
                         // Take the y pos of the next tile down and subract the y pos of this tile to get the difference in height between this tile and the next one down.                        
                         double threeDTileSize = Gui.screenTo3D(0, chunkCoords[1] + ((y + 1) * TILE_SIZE) )[1] - threeDCoords[1] + 1;
                         // If this tile is off screen don't draw it.
-                        if(threeDCoords[1] > Gui.WIDTH + 100 || threeDCoords[0] - (Gui.WIDTH / 2) < 0){
+                        if(threeDCoords[1] > Gui.WIDTH + 100){ //|| threeDCoords[0] - (Gui.WIDTH / 2) < 0){
                             return;
                         }
                         // Otherwise, do.
@@ -324,15 +324,15 @@ public class Gui extends JPanel{
 
         double x_i, x_f; // X initial and X final - coords for the ends of each row on the trapezoid
         double k = D - B; // "Overhang" on the trapezoid - how much space between the absolute corner and the beginning of the bottom of the trapezoid
-        double w1 = A - B; // Top width of the trapz
-        double w2 = C - D; // Bottom width of the trapz
+        double w1 = Math.abs(A - B); // Top width of the trapz
+        double w2 = Math.abs(C - D); // Bottom width of the trapz
         double h = image.getHeight(); // Height of the trapz
         double xn; // "new x" - result of the transformation
         double wy, rx;
         BufferedImage result = new BufferedImage(Math.abs((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))) + 1), image.getHeight(), Transparency.BITMASK);
         double imageWidth = result.getWidth();
         boolean isInv = (k < 0);
-        for(int y = 0; y < result.getHeight() - 1; y++){
+        for(int y = 0; y < result.getHeight(); y++){
 
             x_i = y * k/h;
             x_f = x_i + w1 + (y/h)*(w2-w1);
@@ -353,13 +353,14 @@ public class Gui extends JPanel{
                     xn = image.getWidth() - 1;
                 }
                 if(x < 0){
-                    result.setRGB(0, y, image.getRGB((int)xn, y));
+                    result.setRGB((int)(imageWidth - x), y, image.getRGB((int)xn, y));
                 }
                 else if(x >= imageWidth){
                     result.setRGB((int)imageWidth - 1, y, image.getRGB((int)xn, y));
 
                 } else {
                     result.setRGB((int)(x), y, image.getRGB((int)xn, y));
+                    
                 }
             }
         }
