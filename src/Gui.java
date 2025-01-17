@@ -233,7 +233,7 @@ public class Gui extends JPanel{
                         // Take the y pos of the next tile down and subract the y pos of this tile to get the difference in height between this tile and the next one down.                        
                         double threeDTileSize = Gui.screenTo3D(0, chunkCoords[1] + ((y + 1) * TILE_SIZE) )[1] - threeDCoords[1] + 1;
                         // If this tile is off screen don't draw it.
-                        if(threeDCoords[1] > Gui.WIDTH + 100){
+                        if(threeDCoords[1] > Gui.WIDTH + 100 || threeDCoords[0] - (Gui.WIDTH / 2) < 0){
                             return;
                         }
                         // Otherwise, do.
@@ -241,10 +241,10 @@ public class Gui extends JPanel{
                         
                         tileImage = toPersp(
                             tileImages.getImage(c.getTile(x, y)-1),
-                                         screenTo3D(threeDCoords[0] + TILE_SIZE, threeDCoords[0])[0],
-                                         screenTo3D(threeDCoords[0], threeDCoords[1])[0],
-                                         screenTo3D(threeDCoords[0] + TILE_SIZE, threeDCoords[1] + threeDTileSize)[0],
-                                         screenTo3D(threeDCoords[0], threeDCoords[1] + threeDTileSize)[0]
+                                         screenTo3D(threeDCoords[0] + TILE_SIZE, threeDCoords[1])[0] - (Gui.WIDTH / 2),
+                                         screenTo3D(threeDCoords[0], threeDCoords[1])[0] - (Gui.WIDTH / 2),
+                                         screenTo3D(threeDCoords[0] + TILE_SIZE, threeDCoords[1] + threeDTileSize)[0] - (Gui.WIDTH / 2),
+                                         screenTo3D(threeDCoords[0], threeDCoords[1] + threeDTileSize)[0] - (Gui.WIDTH / 2)
                         );
                         
                         g2d.drawImage(tileImage, (int)threeDCoords[0], (int)threeDCoords[1], TILE_SIZE, (int)threeDTileSize, null);
@@ -328,20 +328,38 @@ public class Gui extends JPanel{
         double h = image.getHeight(); // Height of the trapz
         double xn; // "new x" - result of the transformation
         double wy, rx;
-        BufferedImage result = new BufferedImage((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))) + 1, image.getHeight(), Transparency.BITMASK);
-        double imageWidth = image.getWidth();
-        for(int y = 0; y < result.getHeight(); y++){
+        BufferedImage result = new BufferedImage(Math.abs((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))) + 1), image.getHeight(), Transparency.BITMASK);
+        double imageWidth = result.getWidth();
+        boolean isInv = (k < 0);
+        for(int y = 0; y < result.getHeight() - 1; y++){
 
             x_i = y * k/h;
             x_f = x_i + w1 + (y/h)*(w2-w1);
-            for(int x = (int)x_i; x < x_f; x++){
+            for(int x = (int)x_i; x < Math.ceil(x_f); x++){
 
 
                 wy = (((w2-w1)/h)*y)+w1;
-                rx=(x-x_i)/wy;
-                xn=rx*imageWidth;
+                if(isInv){
+                    rx=((x - k)-x_i)/wy;
+                } else {
+                    rx=(x-x_i)/wy;
+                }
                 
-                result.setRGB(x, y, new Color(255, 0, 0).getRGB());
+                xn=(rx*imageWidth) + ((isInv)? -k : 0);
+                if(xn < 0){
+                    xn = 0;
+                } else if(xn >= image.getWidth()){
+                    xn = image.getWidth() - 1;
+                }
+                if(x < 0){
+                    result.setRGB(0, y, image.getRGB((int)xn, y));
+                }
+                else if(x >= imageWidth){
+                    result.setRGB((int)imageWidth - 1, y, image.getRGB((int)xn, y));
+
+                } else {
+                    result.setRGB((int)(x), y, image.getRGB((int)xn, y));
+                }
             }
         }
         return result;
