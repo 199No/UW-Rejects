@@ -24,6 +24,10 @@ public class Player {
     //positioning
     private double xPos;
     private double yPos;
+    private final double minXPos = 0;
+    private final double minYPos = 0;
+    private final double maxXPos = 9999;
+    private final double maxYPos = 9999;
     private double xVel;
     private double yVel;
     private int xDir; // -1 (left), 0 (neutral), 1 (right)
@@ -54,8 +58,9 @@ public class Player {
 
     //Dash
     private int dashCooldown; // in miliseconds
-    private int dashLength   = 350 + 500 + 350; // in miliseconds
+    public static final int DASHLENGTH   = 350 + 500 + 350; // in miliseconds
     private boolean isDashing;
+    private int lastDash;
     
     //Hitbox
     private boolean active; //the player is able to be hit if true
@@ -115,7 +120,7 @@ public class Player {
         this.yDir = 0;
         this.xVel = 0;
         this.yVel = 0;
-        this.friction = 0.99; // 0 - 1 closer to 1 is less friction
+        this.friction = 0.75; // 0 - 1 closer to 1 is less friction
 
         this.isDashing = false;
         this.isBlocking = false;
@@ -160,33 +165,50 @@ public class Player {
             if(Math.abs(this.xVel) > this.maxSpeed){
                 if(this.xVel < 0){
                     this.xVel = -this.maxSpeed;
-                }else{
+                } else {
                     this.xVel = this.maxSpeed;
                 }
             }
         }
 
-        if(Math.abs(this.xVel) > this.maxSpeed){
-            if(this.xVel < 0){
-                this.xVel = -this.maxSpeed;
+        if(Math.abs(this.yVel) > this.maxSpeed){
+            if(this.yVel < 0){
+                this.yVel = -this.maxSpeed;
             }else{
-                this.xVel = this.maxSpeed;
+                this.yVel = this.maxSpeed;
             }
         }
             
-
         this.xPos += xVel;
         this.yPos += yVel;
 
+        // border control
+
+        if(this.xPos < this.minXPos){
+            this.xPos = this.minXPos;
+        }
+
+        if(this.xPos > this.maxXPos){
+            this.xPos = this.maxXPos;
+        }
+
+        if(this.yPos < this.minYPos){
+            this.yPos = this.minYPos;
+        }
+
+        if(this.yPos > this.maxYPos){
+            this.yPos = this.maxYPos;
+        }
+
     }
 
 
-    public  void attack(){
-        System.out.println("attack!");
+    public void attack(){
+        System.out.println("attack! " + this);
     }
 
     public void block(){
-        System.out.println("block!");
+        System.out.println("block! " + this);
     }
 
     public void dash(){
@@ -247,10 +269,6 @@ public class Player {
         return this.active;
     }
 
-    public int getDashLength(){
-        return this.dashLength;
-    }
-
     public double getSpeed(){
         return speed;
     }
@@ -261,6 +279,14 @@ public class Player {
 
     public double[] getHitboxTopLeft(){
         return new double[]{getxPos(), getyPos()};
+    }
+
+    public int getLastDash(){
+        return this.lastDash;
+    }
+
+    public void setLastDash(int time){
+        this.lastDash = time;
     }
 
     public Rectangle getHitbox(){

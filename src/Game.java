@@ -164,11 +164,16 @@ public class Game implements ActionListener{
         boolean[] shifts = input.getShifts();
         //move player based on shift and keys pressed
 
-        this.movement = new boolean[]{keys[this.input.getPlayer1Keys()[0]], keys[this.input.getPlayer1Keys()[1]], keys[this.input.getPlayer1Keys()[2]], keys[this.input.getPlayer1Keys()[3]]};  // W A S D
-        player1.move(movement, shifts[0]);
-        this.movement = new boolean[]{keys[this.input.getPlayer2Keys()[0]], keys[this.input.getPlayer2Keys()[1]], keys[this.input.getPlayer2Keys()[2]], keys[this.input.getPlayer2Keys()[3]]};  // I J K L
-        player2.move(movement, shifts[1]);
+        if(!player1.getIsDashing()){
+            this.movement = new boolean[]{keys[this.input.getPlayer1Keys()[0]], keys[this.input.getPlayer1Keys()[1]], keys[this.input.getPlayer1Keys()[2]], keys[this.input.getPlayer1Keys()[3]]};  // W A S D
+            player1.move(movement, shifts[0]);
+        }
 
+        if(!player2.getIsDashing()){
+            this.movement = new boolean[]{keys[this.input.getPlayer2Keys()[0]], keys[this.input.getPlayer2Keys()[1]], keys[this.input.getPlayer2Keys()[2]], keys[this.input.getPlayer2Keys()[3]]};  // I J K L
+            player2.move(movement, shifts[1]);
+        }
+        
         //ATTACK
         if(keys[67]){
             //C
@@ -178,6 +183,8 @@ public class Game implements ActionListener{
             //N
             this.player2.attack();
         }
+
+
         //BLOCK
         if(keys[88]){
             //X
@@ -188,12 +195,14 @@ public class Game implements ActionListener{
             this.player2.block();
         }
         //DASH
-        //can the player dash?
+
+        //can the players dash?
 
         if((int) System.currentTimeMillis() - input.getLastp1Dash() > 5000){
             for(int i = 0; i < this.input.getPlayer1Keys().length; i++){
                 if(this.input.getPlayer1Keys()[i] == input.getDash()){
                     player1.dash();
+                    player1.setLastDash((int) System.currentTimeMillis());
                 }
             }
         }
@@ -202,8 +211,19 @@ public class Game implements ActionListener{
             for(int i = 0; i < this.input.getPlayer2Keys().length; i++){
                 if(this.input.getPlayer2Keys()[i] == input.getDash()){
                     player2.dash();
+                    player2.setLastDash((int) System.currentTimeMillis());
                 }
             }
+        }
+
+        // are the players done dashing?
+
+        if((int) System.currentTimeMillis() - player1.getLastDash() > Player.DASHLENGTH){
+            player1.setIsDashing(false);
+        }
+
+        if((int) System.currentTimeMillis() - player2.getLastDash() > Player.DASHLENGTH){
+            player2.setIsDashing(false);
         }
 
     }
