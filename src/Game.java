@@ -114,11 +114,12 @@ public class Game implements ActionListener{
         //});
         // Draw the background (Happens before ALL other draw commands)
         // Draw the ground
+        
+        gui.background(0, 0, 0);
         for(int i = 0; i < map.numLoadedChunks(); i++){
             gui.drawChunk(map.getChunk(i));
         }
         
-        gui.background(0, 0, 0);
         // Draw dash bars
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g){
