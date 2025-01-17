@@ -137,27 +137,21 @@ public class Player {
         //given that figure out if it starts going left or is going right
         // max out xVel at a specific point ( -(s^2), (s^2) )
 
-        double tempXVel = 0;
-        double tempYVel = 0;
-
         if(movement[0]){
-            tempYVel -= (this.speed);
+            this.yVel -= (this.speed);
         }
 
         if(movement[1]){
-            tempXVel -= (this.speed);
+            this.xVel -= (this.speed);
         }
 
         if(movement[2]){
-            tempYVel += (this.speed);
+            this.yVel += (this.speed);
         }
 
         if(movement[3]){
-            tempXVel += (this.speed);
+            this.xVel += (this.speed);
         }
-
-        this.xVel += tempXVel;
-        this.yVel += tempYVel;
 
         this.xVel *= this.friction;
         this.yVel *= this.friction;
@@ -183,66 +177,6 @@ public class Player {
 
         this.xPos += xVel;
         this.yPos += yVel;
-
-
-
-        /* 
-        int xDirection = 0;
-        int yDirection = 0;
-
-        if(movement[0]){ yDirection -= 1; }
-        if(movement[1]){ xDirection -= 1; }
-        if(movement[2]){ yDirection += 1; }
-        if(movement[3]){ xDirection += 1; }
-        
-        double mag = Math.sqrt(this.xVel * this.xVel  + this.yVel * this.yVel);
-
-        if(mag > 0){
-
-            double tempxVel = this.xVel;
-            double tempyVel = this.yVel;
-
-            tempxVel /= mag;
-            tempyVel /= mag;
-
-            this.xVel += xDirection * tempxVel * (this.speed);
-            this.yVel += yDirection * tempyVel * (this.speed);
-            
-        }else{
-
-            this.xVel *= this.friction;
-            this.yVel *= this.friction;
-            
-            
-            //make sure there isnt always friction
-            if(Math.abs(this.xVel) < 0.01) this.xVel = 0;
-            if(Math.abs(this.yVel) < 0.01) this.yVel = 0;
-            
-            
-        }
-        
-
-         
-        if(Math.abs(this.xVel) > this.maxSpeed){
-            if(this.xVel < 0){
-                this.xVel = -this.maxSpeed;
-            }else{
-                this.xVel = this.maxSpeed;
-            }
-        }
-
-        if(Math.abs(this.yVel) > this.maxSpeed){ 
-            if(this.yVel < 0){
-                this.yVel = -this.maxSpeed;
-            }else{
-                this.yVel = this.maxSpeed;
-            }
-        }
-        */
-        
-
-        //this.xPos += this.xVel;
-        //this.yPos += this.yVel;
 
     }
 
