@@ -126,8 +126,9 @@ public class Gui extends JPanel{
     public void background(int r, int g, int b){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
+                System.out.println("feuyhe");
                 g2d.setColor(new Color(r, g, b));
-                g2d.drawRect(0, 0, Gui.WIDTH, Gui.HEIGHT);
+                g2d.fillRect(0, 0, Gui.WIDTH, Gui.HEIGHT);
             }
         });
     }
@@ -241,10 +242,10 @@ public class Gui extends JPanel{
                         
                         tileImage = toPersp(
                             tileImages.getImage(c.getTile(x, y)-1),
-                                         screenTo3D(threeDCoords[0] + TILE_SIZE, threeDCoords[1])[0] - (Gui.WIDTH / 2),
-                                         screenTo3D(threeDCoords[0], threeDCoords[1])[0] - (Gui.WIDTH / 2),
-                                         screenTo3D(threeDCoords[0] + TILE_SIZE, threeDCoords[1] + threeDTileSize)[0] - (Gui.WIDTH / 2),
-                                         screenTo3D(threeDCoords[0], threeDCoords[1] + threeDTileSize)[0] - (Gui.WIDTH / 2)
+                                         screenTo3D(threeDCoords[0] + TILE_SIZE - (Gui.WIDTH / 2), threeDCoords[1])[0],
+                                         screenTo3D(threeDCoords[0] - (Gui.WIDTH / 2), threeDCoords[1])[0],
+                                         screenTo3D(threeDCoords[0] + TILE_SIZE - (Gui.WIDTH / 2), threeDCoords[1] + threeDTileSize)[0],
+                                         screenTo3D(threeDCoords[0] - (Gui.WIDTH / 2), threeDCoords[1] + threeDTileSize)[0]
                         );
                         
                         g2d.drawImage(tileImage, (int)threeDCoords[0], (int)threeDCoords[1], TILE_SIZE, (int)threeDTileSize, null);
