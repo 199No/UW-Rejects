@@ -323,35 +323,38 @@ public class Gui extends JPanel{
 
 
         double x_i, x_f; // X initial and X final - coords for the ends of each row on the trapezoid
-        double k = D - B; // "Overhang" on the trapezoid - how much space between the absolute corner and the beginning of the bottom of the trapezoid
-        double w1 = Math.abs(A - B); // Top width of the trapz
-        double w2 = Math.abs(C - D); // Bottom width of the trapz
+        double k = Math.abs(D - B); // "Overhang" on the trapezoid - how much space between the absolute corner and the beginning of the bottom of the trapezoid
+        double w1 = Math.abs(A) - Math.abs(B); // Top width of the trapz
+        double w2 = Math.abs(C) - Math.abs(D); // Bottom width of the trapz
         double h = image.getHeight(); // Height of the trapz
-        double xn; // "new x" - result of the transformation
-        double wy, rx;
-        BufferedImage result = new BufferedImage(Math.abs((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))) + 1), image.getHeight(), Transparency.BITMASK);
-        double imageWidth = result.getWidth();
+        double xn; // X on the image
+        double wy, rx; // Wy = width based on y, rx = how far along wy x is
+        double imageWidth = Math.abs((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))));
+        BufferedImage result = new BufferedImage((int)((imageWidth == 0)? 1 : imageWidth), image.getHeight(), Transparency.BITMASK);
+
         boolean isInv = (k < 0);
         for(int y = 0; y < result.getHeight(); y++){
-
+            // Find x initial
             x_i = y * k/h;
+            // Find x final
             x_f = x_i + w1 + (y/h)*(w2-w1);
+            // Starting at x_i, ending at x_f...
             for(int x = (int)x_i; x < Math.ceil(x_f); x++){
 
 
                 wy = (((w2-w1)/h)*y)+w1;
+
                 if(isInv){
                     rx=((x - k)-x_i)/wy;
                 } else {
                     rx=(x-x_i)/wy;
                 }
                 
-                xn=(rx*imageWidth) + ((isInv)? -k : 0);
-                if(xn < 0){
-                    xn = 0;
-                } else if(xn >= image.getWidth()){
-                    xn = image.getWidth() - 1;
-                }
+                xn=(rx*(image.getWidth())) + ((isInv)? -k : 0);
+                System.out.println(xn);
+                xn = Math.round(xn);
+                
+                System.out.println(xn + " " + image.getWidth());
                 if(x < 0){
                     result.setRGB((int)(imageWidth - x), y, image.getRGB((int)xn, y));
                 }
