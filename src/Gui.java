@@ -317,19 +317,19 @@ public class Gui extends JPanel{
         return result;
         
     }
-    public BufferedImage toPersp (BufferedImage image, double A, double B, double C, double D){
+    public BufferedImage toPersp (BufferedImage texture, double A, double B, double C, double D){
         //x1 = (topWidth/40 * x) * (((bottomWidth/topWidth-1)/h)*y+1) + y*(k1/h);
 
 
-        double x_i, x_f; // X initial and X final - coords for the ends of each row on the trapezoid
+        double startX, endX; // X initial and X final - coords for the ends of each row on the trapezoid
         double k = Math.abs(D - B); // "Overhang" on the trapezoid - how much space between the absolute corner and the beginning of the bottom of the trapezoid
         double topWidth = Math.abs(A) - Math.abs(B); // Top width of the trapz
         double bottomWidth = Math.abs(C) - Math.abs(D); // Bottom width of the trapz
-        double h = image.getHeight(); // Height of the trapz
+        double h = texture.getHeight(); // Height of the trapz
         double textureX; // X on the image
         double rowWidth, rx; // rowWidth = width based on y, rx = how far along rowWidth x is
-        double imageWidth = Math.abs((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))));
-        BufferedImage result = new BufferedImage((int)((imageWidth == 0)? 1 : imageWidth), image.getHeight(), Transparency.BITMASK);
+        double resultWidth = Math.abs((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))));
+        BufferedImage result = new BufferedImage((int)((resultWidth == 0)? 1 : resultWidth), texture.getHeight(), Transparency.BITMASK);
 
         boolean isInv = (k < 0);
         for(int y = 0; y < result.getHeight(); y++){
@@ -337,22 +337,22 @@ public class Gui extends JPanel{
             rowWidth = (((bottomWidth-topWidth)/h)*y)+topWidth;
 
             // Find x initial
-            x_i = y * k/h;
+            startX = y * k/h;
             // Find x final
-            x_f = x_i + rowWidth;
-            // Starting at x_i, ending at x_f...
-            for(int x = (int)x_i; x < Math.ceil(x_f); x++){
+            endX = startX + rowWidth;
+            // Starting at startX, ending at endX...
+            for(int x = (int)startX; x < Math.ceil(endX); x++){
 
                 if(isInv){
-                    rx=((x - k)-x_i)/rowWidth;
+                    rx=((x - k)-startX)/rowWidth;
                 } else {
-                    rx=(x-x_i)/rowWidth;
+                    rx=(x-startX)/rowWidth;
                 }
-                
-                textureX=Math.min( Math.max( (rx*(image.getWidth())), 0 ), image.getWidth() - 1);
+                // Calculate textureX and clamp it between 0 and image width
+                textureX=Math.min( Math.max( (rx*(texture.getWidth())), 0 ), texture.getWidth() - 1);
 
-                if(x >= 0 && x < imageWidth){
-                    result.setRGB((int)(imageWidth - 1 - x), y, image.getRGB((int)Math.floor(textureX), y));
+                if(x >= 0 && x < resultWidth){
+                    result.setRGB((int)(x), y, texture.getRGB((int)Math.floor(textureX), y));
                 }
             }
         }
