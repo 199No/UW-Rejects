@@ -36,11 +36,7 @@ public class Player {
     private int temperature;
     private int score;
     private double friction;
-
-    //XP
-    private int level;
-    private int XP;
-    private int XPToNextLevel;
+    public int playernum;
 
     //Attack
     private int attackCooldown; // in miliseconds
@@ -54,44 +50,22 @@ public class Player {
 
     //Dash
     private int dashCooldown; // in miliseconds
-    private int dashLength   = 350 + 500 + 350; // in miliseconds
+    public int dashLength   = 350 + 500 + 350; // in miliseconds
     private boolean isDashing;
+    private int lastDash;
     
     //Hitbox
     private boolean active; //the player is able to be hit if true
     private int[] topLeft; //top left of the hitbox
     private Rectangle hitbox = new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
 
-    //Mage
-    private int mana;
-    private int maxMana;
-    private double manaRegenRate;
-
-    //Animation
-
-    /*         xDir     yDir
-    UP	        0	    -1
-
-    UP-RIGHT	1	    -1
-
-    RIGHT	    1	     0
-
-    DOWN-RIGHT	1	     1
-
-    DOWN	    0	     1
-
-    DOWN-LEFT -1	     1 
-
-    LEFT	   -1	     0
-
-    UP-LEFT   -1	    -1 
-     */
-
     ///////////////
     //Constuctor
     //////////////
-    public Player(double x, double y, int hp, int d, int dmg, double s) {
+    public Player(double x, double y, int hp, int d, int dmg, double s, int playernum) {
         System.out.println("Player!");
+
+        this.playernum = playernum;
 
         this.xPos = x;
         this.yPos = y;
@@ -102,11 +76,7 @@ public class Player {
         this.speed = s;
 
         this.maxSpeed = 2 * this.speed * this.speed;
-        this.level = 0;
-        this.XP = 0;
 
-        this.maxMana = 10000; // "mana" of 10
-        this.XPToNextLevel = 20; // levels increase by xpnextlevel *= 1.1
         this.attackCooldown = 500; // ↓↓ in miliseconds
         this.dashCooldown = 5000; // 5 sec
         this.blockCooldown = 5000; // 5 sec
@@ -115,7 +85,7 @@ public class Player {
         this.yDir = 0;
         this.xVel = 0;
         this.yVel = 0;
-        this.friction = 0.99; // 0 - 1 closer to 1 is less friction
+        this.friction = 0.75; // 0 - 1 closer to 1 is less friction
 
         this.isDashing = false;
         this.isBlocking = false;
@@ -127,123 +97,48 @@ public class Player {
 //-------------------------------------------------// 
 
 
-    public void move(boolean[] movement, boolean isShifting){
-        //0 W || I
-        //1 A || J
-        //2 S || K
-        //3 D || L
+    public void move(boolean[] movement, boolean isShifting) {
+        applyMovement(movement);
+        applyFriction();
+        capVelocity();
+        updatePosition(isShifting ? 0.125 : 1); // 1/8 = 0.125
+    }
 
-        //xVel + going right - going left
-        //given that figure out if it starts going left or is going right
-        // max out xVel at a specific point ( -(s^2), (s^2) )
-
-        double tempXVel = 0;
-        double tempYVel = 0;
-
-        if(movement[0]){
-            tempYVel -= (this.speed);
+    public void move(int num, int factor) {
+        boolean[] movement = new boolean[4];
+        if (num >= 0 && num < movement.length) {
+            movement[num] = true;
         }
+        applyMovement(movement);
+        applyFriction();
+        capVelocity();
+        updatePosition(factor);
+    }
 
-        if(movement[1]){
-            tempXVel -= (this.speed);
-        }
+    // Apply movement based on the movement array
+    private void applyMovement(boolean[] movement) {
+        if (movement[0]) this.yVel -= this.speed; // Up
+        if (movement[1]) this.xVel -= this.speed; // Left
+        if (movement[2]) this.yVel += this.speed; // Down
+        if (movement[3]) this.xVel += this.speed; // Right
+    }
 
-        if(movement[2]){
-            tempYVel += (this.speed);
-        }
-
-        if(movement[3]){
-            tempXVel += (this.speed);
-        }
-
-        this.xVel += tempXVel;
-        this.yVel += tempYVel;
-
+    // Apply friction to the velocities
+    private void applyFriction() {
         this.xVel *= this.friction;
         this.yVel *= this.friction;
+    }
 
-        if(Math.abs(this.xVel) > this.maxSpeed){
-            if(Math.abs(this.xVel) > this.maxSpeed){
-                if(this.xVel < 0){
-                    this.xVel = -this.maxSpeed;
-                }else{
-                    this.xVel = this.maxSpeed;
-                }
-            }
-        }
+    // Cap the velocities to the maximum speed
+    private void capVelocity() {
+        this.xVel = Math.max(-this.maxSpeed, Math.min(this.xVel, this.maxSpeed));
+        this.yVel = Math.max(-this.maxSpeed, Math.min(this.yVel, this.maxSpeed));
+    }
 
-        if(Math.abs(this.xVel) > this.maxSpeed){
-            if(this.xVel < 0){
-                this.xVel = -this.maxSpeed;
-            }else{
-                this.xVel = this.maxSpeed;
-            }
-        }
-            
-
-        this.xPos += xVel;
-        this.yPos += yVel;
-
-
-
-        /* 
-        int xDirection = 0;
-        int yDirection = 0;
-
-        if(movement[0]){ yDirection -= 1; }
-        if(movement[1]){ xDirection -= 1; }
-        if(movement[2]){ yDirection += 1; }
-        if(movement[3]){ xDirection += 1; }
-        
-        double mag = Math.sqrt(this.xVel * this.xVel  + this.yVel * this.yVel);
-
-        if(mag > 0){
-
-            double tempxVel = this.xVel;
-            double tempyVel = this.yVel;
-
-            tempxVel /= mag;
-            tempyVel /= mag;
-
-            this.xVel += xDirection * tempxVel * (this.speed);
-            this.yVel += yDirection * tempyVel * (this.speed);
-            
-        }else{
-
-            this.xVel *= this.friction;
-            this.yVel *= this.friction;
-            
-            
-            //make sure there isnt always friction
-            if(Math.abs(this.xVel) < 0.01) this.xVel = 0;
-            if(Math.abs(this.yVel) < 0.01) this.yVel = 0;
-            
-            
-        }
-        
-
-         
-        if(Math.abs(this.xVel) > this.maxSpeed){
-            if(this.xVel < 0){
-                this.xVel = -this.maxSpeed;
-            }else{
-                this.xVel = this.maxSpeed;
-            }
-        }
-
-        if(Math.abs(this.yVel) > this.maxSpeed){ 
-            if(this.yVel < 0){
-                this.yVel = -this.maxSpeed;
-            }else{
-                this.yVel = this.maxSpeed;
-            }
-        }
-        */
-        
-
-        //this.xPos += this.xVel;
-        //this.yPos += this.yVel;
-
+    // Update the player's position based on velocity and a scaling factor
+    private void updatePosition(double scale) {
+        this.xPos += this.xVel * scale;
+        this.yPos += this.yVel * scale;
     }
 
 
@@ -255,8 +150,18 @@ public class Player {
         System.out.println("block!");
     }
 
-    public void dash(){
-        //System.out.println("dash! player " + this);
+    public void dash(int i){
+        // i is the index of the player keys
+        int dl = dashLength;
+        //if is dashing is not true, that is the first time player is dashing (aka the start)
+        if(!isDashing){
+            //this.lastDash = (int) System.currentTimeMillis();
+        }else{
+            move(i, 8);
+        }
+
+
+        System.out.println("dash! player " + this);
     }
 
     public double getxPos(){
@@ -266,7 +171,8 @@ public class Player {
     public double getyPos(){
         return this.yPos;
     }
-
+    
+    /* 
     public void teleport(int x, int y){
         xPos = x;
         yPos = y;
@@ -275,6 +181,7 @@ public class Player {
     public double[] getLocation(){
         return new double[] {this.xPos,this.yPos};
     }
+    */
 
     public int[] getDirection(){
         //0,2 for index when grabbing a image from a 2d array of player images
@@ -319,6 +226,10 @@ public class Player {
 
     public double getSpeed(){
         return speed;
+    }
+
+    public double getLastDash(){
+        return lastDash;
     }
 
     public void setSpeed(double speed){

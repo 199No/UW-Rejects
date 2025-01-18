@@ -46,8 +46,8 @@ public class Game implements ActionListener{
     //////////////
     public Game() throws AWTException, IOException{
 
-        this.player1 = new Player(750,300.0,100,10,10,2);
-        this.player2 = new Player(500.0, 500.0, 100, 10, 10, 2);
+        this.player1 = new Player(750,300.0,100,10,10,2.5,1);
+        this.player2 = new Player(500.0, 500.0, 100, 10, 10, 2.5,2);
         players.add(player1);
         players.add(player2);
         this.input = new Input();
@@ -92,7 +92,8 @@ public class Game implements ActionListener{
 
         // Input updates its copy of the player
         //update Player based on Input Information
-        updatePlayer();
+        updatePlayer(player1);
+        updatePlayer(player2);
 
         // Update enemies
         for(int i = 0; i < this.enemies.size(); i++){
@@ -158,7 +159,28 @@ public class Game implements ActionListener{
         return this.player2;
     }
 
-    public void updatePlayer(){
+    public void updatePlayer(Player player){
+        
+        
+        // Get input information
+    boolean[] keys = input.getKeys();
+    boolean[] shifts = input.getShifts();
+
+    // Update player movement
+    updatePlayerMovement(player1, input.getPlayer1Keys(), shifts[0], keys);
+    updatePlayerMovement(player2, input.getPlayer2Keys(), shifts[1], keys);
+
+    // Handle player actions
+    handlePlayerActions(player1, keys, 67, 88); // Attack: C, Block: X
+    handlePlayerActions(player2, keys, 78, 77); // Attack: N, Block: M
+
+    // Handle player dashing
+    handlePlayerDash(player1, input.getPlayer1Keys());
+    handlePlayerDash(player2, input.getPlayer2Keys());
+        
+        
+        
+        /* 
         //get input information
         boolean[] keys   = input.getKeys();
         boolean[] shifts = input.getShifts();
@@ -190,21 +212,75 @@ public class Game implements ActionListener{
         //DASH
         //can the player dash?
 
-        if((int) System.currentTimeMillis() - input.getLastp1Dash() > 5000){
+        if((int) System.currentTimeMillis() - input.getLastp1Dash() < player1.dashLength){
             for(int i = 0; i < this.input.getPlayer1Keys().length; i++){
-                if(this.input.getPlayer1Keys()[i] == input.getDash()){
-                    player1.dash();
+                if(this.input.getPlayer1Keys()[i] == input.getDash() && !this.player1.getIsDashing()){
+                    player1.dash(i);
+                    this.player1.setIsDashing(true);
+                }else if(this.input.getPlayer1Keys()[i] == input.getDash() && this.player1.getIsDashing()){
+                    player1.dash(i);
                 }
             }
         }
 
-        if((int) System.currentTimeMillis() - input.getLastp2Dash() > 5000){
+        if((int) System.currentTimeMillis() - input.getLastp2Dash() < player2.dashLength){
             for(int i = 0; i < this.input.getPlayer2Keys().length; i++){
-                if(this.input.getPlayer2Keys()[i] == input.getDash()){
-                    player2.dash();
+                if(this.input.getPlayer2Keys()[i] == input.getDash() && !this.player2.getIsDashing()){
+                    player2.dash(i);
+                    this.player2.setIsDashing(true);
+                }else if(this.input.getPlayer2Keys()[i] == input.getDash() && this.player2.getIsDashing()){
+                    player2.dash(i);
                 }
             }
         }
 
+        //is the player done dashing
+        if((int) System.currentTimeMillis() - player1.getLastDash() > player1.dashLength){
+            this.player1.setIsDashing(false);
+        }
+
+        if((int) System.currentTimeMillis() - player2.getLastDash() > player2.dashLength){
+            this.player2.setIsDashing(false);
+        }
+        */
     }
+
+    private void updatePlayerMovement(Player player, int[] playerKeys, boolean shift, boolean[] keys) {
+        boolean[] movement = new boolean[] {
+            keys[playerKeys[0]], // Up
+            keys[playerKeys[1]], // Left
+            keys[playerKeys[2]], // Down
+            keys[playerKeys[3]]  // Right
+        };
+        player.move(movement, shift);
+    }
+    private void handlePlayerActions(Player player, boolean[] keys, int attackKey, int blockKey) {
+        if (keys[attackKey]) {
+            player.attack();
+        }
+        if (keys[blockKey]) {
+            player.block();
+        }
+    }
+
+    private void handlePlayerDash(Player player, int[] playerKeys) {
+        if ((int) System.currentTimeMillis() - input.getLastDash(player) < player.dashLength) {
+            for (int key : playerKeys) {
+                if (key == input.getDash()) {
+                    if (!player.getIsDashing()) {
+                        player.dash(key);
+                        player.setIsDashing(true);
+                    } else {
+                        player.dash(key);
+                    }
+                }
+            }
+        }
+    
+        // Check if the player is done dashing
+        if ((int) System.currentTimeMillis() - player.getLastDash() > player.dashLength) {
+            player.setIsDashing(false);
+        }
+    }
+
 }
