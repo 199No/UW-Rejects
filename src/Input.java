@@ -146,7 +146,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
                 //checkDash
 
                 //check double click
-                if(released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 500 && (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 500){
+                if(released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 350 && (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 350){
 
                     //was it a player1 double click
                     if(checkPlayer1Keys(e.getKeyCode())){
