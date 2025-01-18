@@ -126,7 +126,6 @@ public class Gui extends JPanel{
     public void background(int r, int g, int b){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                System.out.println("feuyhe");
                 g2d.setColor(new Color(r, g, b));
                 g2d.fillRect(0, 0, Gui.WIDTH, Gui.HEIGHT);
             }
@@ -173,7 +172,7 @@ public class Gui extends JPanel{
                     double[] player3dPos = screenTo3D(playerScreenPos[0], playerScreenPos[1]);
 
                     // How much to vertically scale the final shadow (for adjustments)
-                    double shadowYScaleFactor = 0.8;
+                    double shadorowWidthScaleFactor = 0.8;
                     // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
                     double playerToTileX = (double)TILE_SIZE/(double)playerImage.getWidth();
                     double playerToTileY = (double)TILE_SIZE/(double)playerImage.getHeight();
@@ -186,14 +185,14 @@ public class Gui extends JPanel{
                     shadowTransform.translate(
                                           // Because the image shears from the bottom up it moves the "feet" of the shadow,
                                           // so we account for that and also the imminent scaling of the image.
-                        (player3dPos[0] + playerImage.getWidth() * shearFactor * playerToTileX * shadowYScaleFactor),
+                        (player3dPos[0] + playerImage.getWidth() * shearFactor * playerToTileX * shadorowWidthScaleFactor),
                                                   // Flipping the image puts it above the player's head so we move it to be below the feet instead.
-                        (double)((player3dPos[1] + 2*TILE_SIZE) - playerImage.getHeight() * (1-shadowYScaleFactor) * playerToTileY)
+                        (double)((player3dPos[1] + 2*TILE_SIZE) - playerImage.getHeight() * (1-shadorowWidthScaleFactor) * playerToTileY)
                     );
                     // Shear the image so it is at the right angle
                     shadowTransform.shear(shearFactor, 0);
                     // Rescale the image so it appears the right size
-                    shadowTransform.scale(playerToTileX, -playerToTileY * shadowYScaleFactor);
+                    shadowTransform.scale(playerToTileX, -playerToTileY * shadorowWidthScaleFactor);
                     // Draw the player and its shadow
                     g2d.drawImage(playerImage, (int)player3dPos[0], (int)player3dPos[1], TILE_SIZE, TILE_SIZE, null);
                     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
@@ -319,51 +318,41 @@ public class Gui extends JPanel{
         
     }
     public BufferedImage toPersp (BufferedImage image, double A, double B, double C, double D){
-        //x1 = (w1/40 * x) * (((w2/w1-1)/h)*y+1) + y*(k1/h);
+        //x1 = (topWidth/40 * x) * (((bottomWidth/topWidth-1)/h)*y+1) + y*(k1/h);
 
 
         double x_i, x_f; // X initial and X final - coords for the ends of each row on the trapezoid
         double k = Math.abs(D - B); // "Overhang" on the trapezoid - how much space between the absolute corner and the beginning of the bottom of the trapezoid
-        double w1 = Math.abs(A) - Math.abs(B); // Top width of the trapz
-        double w2 = Math.abs(C) - Math.abs(D); // Bottom width of the trapz
+        double topWidth = Math.abs(A) - Math.abs(B); // Top width of the trapz
+        double bottomWidth = Math.abs(C) - Math.abs(D); // Bottom width of the trapz
         double h = image.getHeight(); // Height of the trapz
-        double xn; // X on the image
-        double wy, rx; // Wy = width based on y, rx = how far along wy x is
+        double textureX; // X on the image
+        double rowWidth, rx; // rowWidth = width based on y, rx = how far along rowWidth x is
         double imageWidth = Math.abs((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))));
         BufferedImage result = new BufferedImage((int)((imageWidth == 0)? 1 : imageWidth), image.getHeight(), Transparency.BITMASK);
 
         boolean isInv = (k < 0);
         for(int y = 0; y < result.getHeight(); y++){
+            
+            rowWidth = (((bottomWidth-topWidth)/h)*y)+topWidth;
+
             // Find x initial
             x_i = y * k/h;
             // Find x final
-            x_f = x_i + w1 + (y/h)*(w2-w1);
+            x_f = x_i + rowWidth;
             // Starting at x_i, ending at x_f...
             for(int x = (int)x_i; x < Math.ceil(x_f); x++){
 
-
-                wy = (((w2-w1)/h)*y)+w1;
-
                 if(isInv){
-                    rx=((x - k)-x_i)/wy;
+                    rx=((x - k)-x_i)/rowWidth;
                 } else {
-                    rx=(x-x_i)/wy;
+                    rx=(x-x_i)/rowWidth;
                 }
                 
-                xn=(rx*(image.getWidth())) + ((isInv)? -k : 0);
-                System.out.println(xn);
-                xn = Math.round(xn);
-                
-                System.out.println(xn + " " + image.getWidth());
-                if(x < 0){
-                    result.setRGB((int)(imageWidth - x), y, image.getRGB((int)xn, y));
-                }
-                else if(x >= imageWidth){
-                    result.setRGB((int)imageWidth - 1, y, image.getRGB((int)xn, y));
+                textureX=Math.min( Math.max( (rx*(image.getWidth())), 0 ), image.getWidth() - 1);
 
-                } else {
-                    result.setRGB((int)(x), y, image.getRGB((int)xn, y));
-                    
+                if(x >= 0 && x < imageWidth){
+                    result.setRGB((int)(imageWidth - 1 - x), y, image.getRGB((int)Math.floor(textureX), y));
                 }
             }
         }
