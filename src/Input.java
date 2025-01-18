@@ -138,28 +138,34 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
+
         if(e.getKeyCode() < keys.length){
              //checks to see if this input was a new input
+
             if(getKey(e.getKeyCode()) == false){
-                keys[e.getKeyCode()] = true;
                 //checkDash
 
                 //check double click
                 if(released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 500 && (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 500){
+
+                    //was it a player1 double click
                     if(checkPlayer1Keys(e.getKeyCode())){
-                        //is it player1
+                        //is it possible with cooldown?
                         if((int) System.currentTimeMillis() - this.lastp1Dash > 5000){
                             this.lastp1Dash = (int) System.currentTimeMillis();
+                            this.dash = e.getKeyCode();
                         }
                     }
+
+                    //was it a player 2 double click
                     if(checkPlayer2Keys(e.getKeyCode())){
                         //is it player2
                         if((int) System.currentTimeMillis() - this.lastp2Dash > 5000){
                             this.lastp2Dash = (int) System.currentTimeMillis();
+                            this.dash = e.getKeyCode();
                         }
                     }
-                    this.lastDash = (int) System.currentTimeMillis();
-                    this.dash = e.getKeyCode();
+                    //this.lastDash = (int) System.currentTimeMillis();
                 }
                 
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
@@ -171,10 +177,10 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
                     }
                 }
                 pressed[e.getKeyCode()] = (int) System.currentTimeMillis(); // new key pressed
-            }else{
-                keys[e.getKeyCode()] = true;
             }
+        
         }
+        keys[e.getKeyCode()] = true;
     }
 
     @Override
@@ -219,6 +225,15 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     public int[] getPlayer2Keys(){
         return this.player2Keys;
     }
+    public int[] getPlayerKeys(Player player){
+        if(player.playernum == 1){
+            return getPlayer1Keys();
+        }
+        if(player.playernum == 2){
+            return getPlayer2Keys();
+        }
+        return null;
+    }
     public boolean checkPlayer1Keys(int key){
         for(int i = 0; i < this.player1Keys.length; i++){
             if(key == player1Keys[i]){
@@ -234,6 +249,15 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
             }
         }
         return false;
+    }
+    public int getLastDash(Player player){
+        if(player.playernum == 1){
+            getLastp1Dash();
+        }
+        if(player.playernum == 2){
+            getLastp2Dash();
+        }
+        return -1;
     }
     public int getLastp1Dash(){
         return this.lastp1Dash;

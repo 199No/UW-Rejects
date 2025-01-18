@@ -54,8 +54,9 @@ public class Player {
 
     //Dash
     private int dashCooldown; // in miliseconds
-    private int dashLength   = 350 + 500 + 350; // in miliseconds
+    public int dashLength   = 350 + 500 + 350; // in miliseconds
     private boolean isDashing;
+    private int lastDash;
     
     //Hitbox
     private boolean active; //the player is able to be hit if true
@@ -86,12 +87,15 @@ public class Player {
 
     UP-LEFT   -1	    -1 
      */
+    public int playernum;
 
     ///////////////
     //Constuctor
     //////////////
-    public Player(double x, double y, int hp, int d, int dmg, double s) {
+    public Player(double x, double y, int hp, int d, int dmg, double s, int playernum) {
         System.out.println("Player!");
+
+        this.playernum = playernum;
 
         this.xPos = x;
         this.yPos = y;
@@ -115,7 +119,7 @@ public class Player {
         this.yDir = 0;
         this.xVel = 0;
         this.yVel = 0;
-        this.friction = 0.99; // 0 - 1 closer to 1 is less friction
+        this.friction = 0.75; // 0 - 1 closer to 1 is less friction
 
         this.isDashing = false;
         this.isBlocking = false;
@@ -136,114 +140,107 @@ public class Player {
         //xVel + going right - going left
         //given that figure out if it starts going left or is going right
         // max out xVel at a specific point ( -(s^2), (s^2) )
+                    double tempXVel = 0;
+            double tempYVel = 0;
 
-        double tempXVel = 0;
-        double tempYVel = 0;
-
-        if(movement[0]){
-            tempYVel -= (this.speed);
-        }
-
-        if(movement[1]){
-            tempXVel -= (this.speed);
-        }
-
-        if(movement[2]){
-            tempYVel += (this.speed);
-        }
-
-        if(movement[3]){
-            tempXVel += (this.speed);
-        }
-
-        this.xVel += tempXVel;
-        this.yVel += tempYVel;
-
-        this.xVel *= this.friction;
-        this.yVel *= this.friction;
-
-        if(Math.abs(this.xVel) > this.maxSpeed){
-            if(Math.abs(this.xVel) > this.maxSpeed){
-                if(this.xVel < 0){
-                    this.xVel = -this.maxSpeed;
-                }else{
-                    this.xVel = this.maxSpeed;
-                }
+            if(movement[0]){
+                tempYVel -= (this.speed);
             }
-        }
 
-        if(Math.abs(this.xVel) > this.maxSpeed){
-            if(this.xVel < 0){
-                this.xVel = -this.maxSpeed;
-            }else{
-                this.xVel = this.maxSpeed;
+            if(movement[1]){
+                tempXVel -= (this.speed);
             }
-        }
-            
 
-        this.xPos += xVel;
-        this.yPos += yVel;
+            if(movement[2]){
+                tempYVel += (this.speed);
+            }
 
+            if(movement[3]){
+                tempXVel += (this.speed);
+            }
 
-
-        /* 
-        int xDirection = 0;
-        int yDirection = 0;
-
-        if(movement[0]){ yDirection -= 1; }
-        if(movement[1]){ xDirection -= 1; }
-        if(movement[2]){ yDirection += 1; }
-        if(movement[3]){ xDirection += 1; }
-        
-        double mag = Math.sqrt(this.xVel * this.xVel  + this.yVel * this.yVel);
-
-        if(mag > 0){
-
-            double tempxVel = this.xVel;
-            double tempyVel = this.yVel;
-
-            tempxVel /= mag;
-            tempyVel /= mag;
-
-            this.xVel += xDirection * tempxVel * (this.speed);
-            this.yVel += yDirection * tempyVel * (this.speed);
-            
-        }else{
+            this.xVel += tempXVel;
+            this.yVel += tempYVel;
 
             this.xVel *= this.friction;
             this.yVel *= this.friction;
-            
-            
-            //make sure there isnt always friction
-            if(Math.abs(this.xVel) < 0.01) this.xVel = 0;
-            if(Math.abs(this.yVel) < 0.01) this.yVel = 0;
-            
-            
-        }
-        
 
-         
-        if(Math.abs(this.xVel) > this.maxSpeed){
-            if(this.xVel < 0){
-                this.xVel = -this.maxSpeed;
-            }else{
-                this.xVel = this.maxSpeed;
+            if(Math.abs(this.xVel) > this.maxSpeed){
+                if(Math.abs(this.xVel) > this.maxSpeed){
+                    if(this.xVel < 0){
+                        this.xVel = -this.maxSpeed;
+                    }else{
+                        this.xVel = this.maxSpeed;
+                    }
+                }
             }
-        }
 
-        if(Math.abs(this.yVel) > this.maxSpeed){ 
-            if(this.yVel < 0){
-                this.yVel = -this.maxSpeed;
-            }else{
-                this.yVel = this.maxSpeed;
+            if(Math.abs(this.yVel) > this.maxSpeed){
+                if(this.yVel < 0){
+                    this.yVel = -this.maxSpeed;
+                }else{
+                    this.yVel = this.maxSpeed;
+                }
             }
-        }
-        */
+                
+            if(!isDashing){
+                this.xPos += xVel;
+                this.yPos += yVel;
+            }else{
+                this.xPos += xVel/8;
+                this.yPos += yVel/8;
+            }
         
+    }
 
-        //this.xPos += this.xVel;
-        //this.yPos += this.yVel;
+    public void move(int num, int factor){
 
+                double tempXVel = 0;
+            double tempYVel = 0;
+
+            if(num == 0){
+                tempYVel -= (this.speed);
+            }else
+
+            if(num == 1){
+                tempXVel -= (this.speed);
+            }else
+
+            if(num == 2){
+                tempYVel += (this.speed);
+            }
+
+            if(num == 3){
+                tempXVel += (this.speed);
+            }
+
+            this.xVel += tempXVel;
+            this.yVel += tempYVel;
+
+            this.xVel *= this.friction;
+            this.yVel *= this.friction;
+
+            if(Math.abs(this.xVel) > this.maxSpeed){
+                if(Math.abs(this.xVel) > this.maxSpeed){
+                    if(this.xVel < 0){
+                        this.xVel = -this.maxSpeed;
+                    }else{
+                        this.xVel = this.maxSpeed;
+                    }
+                }
+            }
+
+            if(Math.abs(this.yVel) > this.maxSpeed){
+                if(this.yVel < 0){
+                    this.yVel = -this.maxSpeed;
+                }else{
+                    this.yVel = this.maxSpeed;
+                }
+            }
+                System.out.println(xVel * factor);
+                this.xPos += xVel * factor;
+                this.yPos += yVel * factor;
+        
     }
 
 
@@ -255,8 +252,18 @@ public class Player {
         System.out.println("block!");
     }
 
-    public void dash(){
-        //System.out.println("dash! player " + this);
+    public void dash(int i){
+        // i is the index of the player keys
+        int dl = dashLength;
+        //if is dashing is not true, that is the first time player is dashing (aka the start)
+        if(!isDashing){
+            this.lastDash = (int) System.currentTimeMillis();
+        }else{
+            move(i, 8);
+        }
+
+
+        System.out.println("dash! player " + this);
     }
 
     public double getxPos(){
@@ -319,6 +326,10 @@ public class Player {
 
     public double getSpeed(){
         return speed;
+    }
+
+    public double getLastDash(){
+        return lastDash;
     }
 
     public void setSpeed(double speed){
