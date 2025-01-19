@@ -27,6 +27,7 @@ public class Gui extends JPanel{
     // Made public so that other classes can see them
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
+    public static final int PLAYERSIZE = 24;
     public static final int TILE_SIZE = 68;
     public static final double FOCAL_LENGTH = 720 / Math.sqrt(2); // 720 / sqrt(2)
     public static final double CAMERA_ANGLE = Math.PI * 0.10;
@@ -39,13 +40,16 @@ public class Gui extends JPanel{
     // You need a frame to draw things on.
     JFrame frame = new JFrame("The Divided Realms INDEV");
     // Preloading. To be deprecated
-    BufferedImage[] playerImages;
+    BufferedImage[] player1Images;
+    BufferedImage[] player2Images;
+
     // The guy she tells you not to worry about (better image loading)
     Images images;
     Images tileImages;
     Rectangle chunkUnloadBoundary = new Rectangle(-(TILE_SIZE * 10), -(TILE_SIZE * 10), Gui.WIDTH + (TILE_SIZE * 20), Gui.HEIGHT + (TILE_SIZE * 20));
     Animation slimeAnimation;
-    StatefulAnimation playerAnimation;
+    StatefulAnimation player1DashAnimation;
+    StatefulAnimation player2DashAnimation;
     ////////// CAMERA ///////////
     double cameraX;
     double cameraY;
@@ -60,20 +64,34 @@ public class Gui extends JPanel{
         // Images for tiles only
         tileImages = new Images("Images/Enviroment/Tiles", Transparency.OPAQUE);
         // Define a constantly running Animation for the slime (soon to be better)
-        slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
+        slimeAnimation = new Animation(images.getImage("slime"), 4, 2, 7, 150, true);
         slimeAnimation.start(); 
-        playerAnimation = new StatefulAnimation(100, 3, 4,
-            new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("Player Dashing"), true);
+        
+        player1Images = new BufferedImage[5];
+        // Load up all the player images (to be deprectated)
+        player1Images[0] = images.getImage("playerIdle").getSubimage(0 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player1Images[1] = images.getImage("playerIdle").getSubimage(1 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player1Images[2] = images.getImage("playerIdle").getSubimage(0 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player1Images[3] = images.getImage("playerIdle").getSubimage(1 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player1Images[4] = images.getImage("playerIdle");
+        player1Images[4] = images.getImage("playerIdle");
 
+
+        player1DashAnimation = new StatefulAnimation(100, 3, 2,
+            new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("playerDash"), true);
         // Honestly this could be a stateful animation.
         // TODO: fix.
-        playerImages = new BufferedImage[5];
+
+        player2Images = new BufferedImage[5];
         // Load up all the player images (to be deprectated)
-        playerImages[0] = images.getImage("playerIdle").getSubimage(0, 0, 96, 96);
-        playerImages[1] = images.getImage("playerIdle").getSubimage(96, 0, 96, 96);
-        playerImages[2] = images.getImage("playerIdle").getSubimage(0, 96, 96, 96);
-        playerImages[3] = images.getImage("playerIdle").getSubimage(96, 96, 96, 96);
-        
+        player2Images[0] = images.getImage("player2Idle").getSubimage(0 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player2Images[1] = images.getImage("player2Idle").getSubimage(1 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player2Images[2] = images.getImage("player2Idle").getSubimage(0 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player2Images[3] = images.getImage("player2Idle").getSubimage(1 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player2Images[4] = images.getImage("player2Idle");
+
+        player2DashAnimation = new StatefulAnimation(100, 3, 2,
+        new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("player2Dash"), true);
 
         this.width = WIDTH;
         this.height = HEIGHT;
@@ -145,27 +163,39 @@ public class Gui extends JPanel{
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                     for(int i = 0; i < players.size(); i++){
-                    BufferedImage playerImage = playerImages[0];
+
+
+                        BufferedImage[] idle = new BufferedImage[5];
+                        if(players.get(i).playernum == 1){
+                            idle = player1Images;
+                        }else if(players.get(i).playernum == 2){
+                            idle = player2Images;
+                        }
+                    BufferedImage playerImage = idle[0];
                     // TODO: Get a single direction int from player and use that + an array index instead.
-                    if(players.get(i).getXDir() == 1){
-                        if(players.get(i).getYDir() == -1){
-                            playerImage = playerImages[2];
+                    if(players.get(i).getIsDashing()){
+                        playerImage = player1DashAnimation.getCurFrame();
+                    }else{
+                        if(players.get(i).getXDir() == 1){
+                            if(players.get(i).getYDir() == -1){
+                                playerImage = idle[2];
+                            }
+                            
+                            else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
+                            {
+                                playerImage = idle[0];
+                            }
+                            
                         }
-                        
-                        else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
-                        {
-                            playerImage = playerImages[0];
-                        }
-                        
-                    }
-                    if(players.get(i).getXDir() == -1){
-                        if(players.get(i).getYDir() == -1){
-                            playerImage = playerImages[3];
-                        }
-                        
-                        else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
-                        {
-                            playerImage = playerImages[1];
+                        if(players.get(i).getXDir() == -1){
+                            if(players.get(i).getYDir() == -1){
+                                playerImage = idle[3];
+                            }
+                            
+                            else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
+                            {
+                                playerImage = idle[1];
+                            }
                         }
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
@@ -209,11 +239,9 @@ public class Gui extends JPanel{
                 for(int i = 0; i < enemies.size(); i ++){
 
                     BufferedImage slimeImage = slimeAnimation.getFrame();
-                    Rectangle slimeHitbox = enemies.get(i).getHitbox();
                     double[] screenPos = absToScreen(enemies.get(i).getxPos(), enemies.get(i).getyPos());
                     double[] finalPos = screenTo3D(screenPos[0], screenPos[1]);
                     g2d.drawImage(slimeImage, (int)finalPos[0], (int)finalPos[1], TILE_SIZE, TILE_SIZE, null);
-                    g2d.drawRect((int)slimeHitbox.getX(),(int)slimeHitbox.getY(),(int)slimeHitbox.getWidth(),(int)slimeHitbox.getHeight());
                 }
             }
         });

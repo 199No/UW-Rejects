@@ -52,7 +52,7 @@ public class Player {
     private int dashCooldown; // in miliseconds
     public int dashLength   = 350 + 500 + 350; // in miliseconds
     private boolean isDashing;
-    private int lastDash;
+    private int lastDash = 0;
     
     //Hitbox
     private boolean active; //the player is able to be hit if true
@@ -101,18 +101,11 @@ public class Player {
         applyMovement(movement);
         applyFriction();
         capVelocity();
-        updatePosition(isShifting ? 0.125 : 1); // 1/8 = 0.125
-    }
-
-    public void move(int num, int factor) {
-        boolean[] movement = new boolean[4];
-        if (num >= 0 && num < movement.length) {
-            movement[num] = true;
+        if(isShifting){
+            updatePosition(2 * this.speed);
+        }else{
+            updatePosition(this.speed);
         }
-        applyMovement(movement);
-        applyFriction();
-        capVelocity();
-        updatePosition(factor);
     }
 
     // Apply movement based on the movement array
@@ -136,11 +129,10 @@ public class Player {
     }
 
     // Update the player's position based on velocity and a scaling factor
-    private void updatePosition(double scale) {
-        this.xPos += this.xVel * scale;
-        this.yPos += this.yVel * scale;
+    private void updatePosition(double speed) {
+        this.xPos += this.xVel * speed;
+        this.yPos += this.yVel * speed;
     }
-
 
     public  void attack(){
         System.out.println("attack!");
@@ -150,18 +142,13 @@ public class Player {
         System.out.println("block!");
     }
 
-    public void dash(int i){
-        // i is the index of the player keys
-        int dl = dashLength;
-        //if is dashing is not true, that is the first time player is dashing (aka the start)
-        if(!isDashing){
-            //this.lastDash = (int) System.currentTimeMillis();
-        }else{
-            move(i, 8);
+    public void dash(int key, int speed) {
+        boolean[] movement = new boolean[4];
+        if (key >= 0 && key < movement.length) {
+            movement[key] = true;
         }
-
-
-        System.out.println("dash! player " + this);
+        applyMovement(movement);
+        updatePosition(speed);
     }
 
     public double getxPos(){
@@ -171,17 +158,6 @@ public class Player {
     public double getyPos(){
         return this.yPos;
     }
-    
-    /* 
-    public void teleport(int x, int y){
-        xPos = x;
-        yPos = y;
-    }
-
-    public double[] getLocation(){
-        return new double[] {this.xPos,this.yPos};
-    }
-    */
 
     public int[] getDirection(){
         //0,2 for index when grabbing a image from a 2d array of player images
