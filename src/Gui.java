@@ -163,37 +163,39 @@ public class Gui extends JPanel{
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                     for(int i = 0; i < players.size(); i++){
+
+
                         BufferedImage[] idle = new BufferedImage[5];
-                        StatefulAnimation dashing = null;
                         if(players.get(i).playernum == 1){
                             idle = player1Images;
-                            dashing = player1DashAnimation;
-                            
                         }else if(players.get(i).playernum == 2){
                             idle = player2Images;
-                            dashing = player2DashAnimation;
                         }
                     BufferedImage playerImage = idle[0];
                     // TODO: Get a single direction int from player and use that + an array index instead.
-                    if(players.get(i).getXDir() == 1){
-                        if(players.get(i).getYDir() == -1){
-                            playerImage = idle[2];
+                    if(players.get(i).getIsDashing()){
+                        playerImage = player1DashAnimation.getCurFrame();
+                    }else{
+                        if(players.get(i).getXDir() == 1){
+                            if(players.get(i).getYDir() == -1){
+                                playerImage = idle[2];
+                            }
+                            
+                            else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
+                            {
+                                playerImage = idle[0];
+                            }
+                            
                         }
-                        
-                        else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
-                        {
-                            playerImage = idle[0];
-                        }
-                        
-                    }
-                    if(players.get(i).getXDir() == -1){
-                        if(players.get(i).getYDir() == -1){
-                            playerImage = idle[3];
-                        }
-                        
-                        else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
-                        {
-                            playerImage = idle[1];
+                        if(players.get(i).getXDir() == -1){
+                            if(players.get(i).getYDir() == -1){
+                                playerImage = idle[3];
+                            }
+                            
+                            else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
+                            {
+                                playerImage = idle[1];
+                            }
                         }
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
@@ -237,11 +239,9 @@ public class Gui extends JPanel{
                 for(int i = 0; i < enemies.size(); i ++){
 
                     BufferedImage slimeImage = slimeAnimation.getFrame();
-                    Rectangle slimeHitbox = enemies.get(i).getHitbox();
                     double[] screenPos = absToScreen(enemies.get(i).getxPos(), enemies.get(i).getyPos());
                     double[] finalPos = screenTo3D(screenPos[0], screenPos[1]);
                     g2d.drawImage(slimeImage, (int)finalPos[0], (int)finalPos[1], TILE_SIZE, TILE_SIZE, null);
-                    g2d.drawRect((int)slimeHitbox.getX(),(int)slimeHitbox.getY(),(int)slimeHitbox.getWidth(),(int)slimeHitbox.getHeight());
                 }
             }
         });
