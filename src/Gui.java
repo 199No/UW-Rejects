@@ -69,11 +69,11 @@ public class Gui extends JPanel{
         // TODO: fix.
         playerImages = new BufferedImage[5];
         // Load up all the player images (to be deprectated)
-        playerImages[0] = images.getImage("Player spritesheet").getSubimage(0, 0, 96, 96);
-        playerImages[1] = images.getImage("Player spritesheet").getSubimage(96, 0, 96, 96);
-        playerImages[2] = images.getImage("Player spritesheet").getSubimage(0, 96, 96, 96);
-        playerImages[3] = images.getImage("Player spritesheet").getSubimage(96, 96, 96, 96);
-        playerImages[4] = images.getImage("Player spritesheet");
+        playerImages[0] = images.getImage("playerIdle").getSubimage(0, 0, 96, 96);
+        playerImages[1] = images.getImage("playerIdle").getSubimage(96, 0, 96, 96);
+        playerImages[2] = images.getImage("playerIdle").getSubimage(0, 96, 96, 96);
+        playerImages[3] = images.getImage("playerIdle").getSubimage(96, 96, 96, 96);
+        
 
         this.width = WIDTH;
         this.height = HEIGHT;
