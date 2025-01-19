@@ -27,6 +27,7 @@ public class Gui extends JPanel{
     // Made public so that other classes can see them
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
+    public static final int PLAYERSIZE = 24;
     public static final int TILE_SIZE = 68;
     public static final double FOCAL_LENGTH = 720 / Math.sqrt(2); // 720 / sqrt(2)
     public static final double CAMERA_ANGLE = Math.PI * 0.10;
@@ -39,7 +40,9 @@ public class Gui extends JPanel{
     // You need a frame to draw things on.
     JFrame frame = new JFrame("The Divided Realms INDEV");
     // Preloading. To be deprecated
-    BufferedImage[] playerImages;
+    BufferedImage[] player1Images;
+    BufferedImage[] player2Images;
+
     // The guy she tells you not to worry about (better image loading)
     Images images;
     Images tileImages;
@@ -60,20 +63,29 @@ public class Gui extends JPanel{
         // Images for tiles only
         tileImages = new Images("Images/Enviroment/Tiles", Transparency.OPAQUE);
         // Define a constantly running Animation for the slime (soon to be better)
-        slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
+        slimeAnimation = new Animation(images.getImage("slime"), 7, 1, 7, 150, true);
         slimeAnimation.start(); 
-        playerAnimation = new StatefulAnimation(100, 3, 4,
-            new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("Player Dashing"), true);
+        playerAnimation = new StatefulAnimation(100, 6, 1,
+            new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("playerDash"), true);
 
         // Honestly this could be a stateful animation.
         // TODO: fix.
-        playerImages = new BufferedImage[5];
+        player1Images = new BufferedImage[5];
         // Load up all the player images (to be deprectated)
-        playerImages[0] = images.getImage("Player spritesheet").getSubimage(0, 0, 96, 96);
-        playerImages[1] = images.getImage("Player spritesheet").getSubimage(96, 0, 96, 96);
-        playerImages[2] = images.getImage("Player spritesheet").getSubimage(0, 96, 96, 96);
-        playerImages[3] = images.getImage("Player spritesheet").getSubimage(96, 96, 96, 96);
-        playerImages[4] = images.getImage("Player spritesheet");
+        player2Images = new BufferedImage[5];
+        // Load up all the player images (to be deprectated)
+        for(int i = 0; i < 4; i++){
+            player1Images[i] = images.getImage("playerIdle").getSubimage(0 + (i * PLAYERSIZE), 0, PLAYERSIZE, PLAYERSIZE);
+        }
+        player1Images[4] = images.getImage("playerIdle");
+
+        player2Images = new BufferedImage[5];
+        // Load up all the player images (to be deprectated)
+        for(int i = 0; i < 4; i++){
+            player2Images[i] = images.getImage("player2Idle").getSubimage(0 + (i * PLAYERSIZE), 0, PLAYERSIZE, PLAYERSIZE);
+        }
+        player2Images[4] = images.getImage("player2Idle");
+
 
         this.width = WIDTH;
         this.height = HEIGHT;
@@ -145,27 +157,27 @@ public class Gui extends JPanel{
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                     for(int i = 0; i < players.size(); i++){
-                    BufferedImage playerImage = playerImages[0];
+                    BufferedImage playerImage = player1Images[0];
                     // TODO: Get a single direction int from player and use that + an array index instead.
                     if(players.get(i).getXDir() == 1){
                         if(players.get(i).getYDir() == -1){
-                            playerImage = playerImages[2];
+                            playerImage = player1Images[2];
                         }
                         
                         else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
                         {
-                            playerImage = playerImages[0];
+                            playerImage = player1Images[0];
                         }
                         
                     }
                     if(players.get(i).getXDir() == -1){
                         if(players.get(i).getYDir() == -1){
-                            playerImage = playerImages[3];
+                            playerImage = player1Images[3];
                         }
                         
                         else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
                         {
-                            playerImage = playerImages[1];
+                            playerImage = player1Images[1];
                         }
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());

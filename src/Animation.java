@@ -18,7 +18,7 @@ public class Animation {
         this.widthFrames = widthFrames;
         this.heightFrames = heightFrames;
         this.frameWidth = sheet.getWidth() / widthFrames;
-        this.frameHeight = sheet.getWidth() / heightFrames;
+        this.frameHeight = sheet.getHeight() / heightFrames;
         this.numFrames = numFrames;
         this.isLooping = isLooping;
         this.frameTime = frameTime;
