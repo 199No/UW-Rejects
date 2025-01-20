@@ -7,6 +7,7 @@ import javax.swing.*;
 import Enemies.Enemies;
 
 import java.awt.*;
+import java.awt.Taskbar.State;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
@@ -162,20 +163,17 @@ public class Gui extends JPanel{
     public void drawPlayers(ArrayList<Player> players){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                    for(int i = 0; i < players.size(); i++){
+                for(int i = 0; i < players.size(); i++){
+                    BufferedImage[] idle = getPlayerIdle(players.get(i));
+                    StatefulAnimation playerDash = getPlayerDash(players.get(i));
 
-
-                        BufferedImage[] idle = new BufferedImage[5];
-                        if(players.get(i).playernum == 1){
-                            idle = player1Images;
-                        }else if(players.get(i).playernum == 2){
-                            idle = player2Images;
-                        }
                     BufferedImage playerImage = idle[0];
-                    // TODO: Get a single direction int from player and use that + an array index instead.
+
                     if(players.get(i).getIsDashing()){
-                        playerImage = player1DashAnimation.getCurFrame();
-                    }else{
+                        playerImage = playerDash.getCurFrame();
+                    }else if(!players.get(i).getIsDashing() && playerDash.getCurState() == playerDash.getStates().length-1){
+                        System.out.println("dashing ended but animation did not!");
+                    }else{                     // TODO: Get a single direction int from player and use that + an array index instead.
                         if(players.get(i).getXDir() == 1){
                             if(players.get(i).getYDir() == -1){
                                 playerImage = idle[2];
@@ -197,6 +195,7 @@ public class Gui extends JPanel{
                                 playerImage = idle[1];
                             }
                         }
+                    
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
                     double[] player3dPos = screenTo3D(playerScreenPos[0], playerScreenPos[1]);
@@ -229,6 +228,25 @@ public class Gui extends JPanel{
                 } 
             }
         });
+    }
+
+    public BufferedImage[] getPlayerIdle(Player player){
+        BufferedImage[] idle = new BufferedImage[5];
+        if(player.playernum == 1){
+           idle = player1Images;
+        }else if(player.playernum == 2){
+            idle = player2Images;
+        }
+        return idle;
+    }
+
+    public StatefulAnimation getPlayerDash(Player player){
+        if(player.playernum == 1){
+            return player1DashAnimation;
+         }else if(player.playernum == 2){
+            return player1DashAnimation;
+         }
+         return null;
     }
 
     public void drawEnemies(ArrayList<Enemies> enemies){

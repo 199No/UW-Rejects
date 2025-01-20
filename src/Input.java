@@ -34,9 +34,9 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     int[] released = new int[90];
     
     int dash; // keyevent used to distinguish which key was pressed
-    int lastDash = 0; //(int) System.currentTimeMillis(); // in mili
-    int lastp1Dash = 0;//(int) System.currentTimeMillis(); // in mili
-    int lastp2Dash = 0;//(int) System.currentTimeMillis(); // in mili
+    int lastDash = (int) System.currentTimeMillis(); // in mili
+    int lastp1Dash = (int) System.currentTimeMillis(); // in mili
+    int lastp2Dash = (int) System.currentTimeMillis(); // in mili
 
     // all keys used, besides shift for player 1
     int[] player1Keys = {
@@ -146,8 +146,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
                 //checkDash
 
                 //check double click
-                if (released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 350 && 
-                (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 350) {
+                if (released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 350 && (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 350) {
                     
                     boolean isPlayer1 = checkPlayer1Keys(e.getKeyCode());
                     boolean isPlayer2 = checkPlayer2Keys(e.getKeyCode());
