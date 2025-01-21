@@ -191,11 +191,11 @@ public class Game implements ActionListener{
 
         // Handle player dashing
         if ((int) System.currentTimeMillis() - input.getLastDash(player1) < player.dashLength) {
-            handlePlayerDash(player1, input.getPlayerKeys(player1));
+            handlePlayerDash(player1, input.player1Keys);
         }
 
         if ((int) System.currentTimeMillis() - input.getLastDash(player2) < player.dashLength) {
-            handlePlayerDash(player2, input.getPlayerKeys(player2));
+            handlePlayerDash(player2, input.player2Keys);
         }
 
         inBounds(player);
@@ -226,18 +226,22 @@ public class Game implements ActionListener{
     private void handlePlayerDash(Player player, int[] playerKeys) {
         for (int key = 0; key < playerKeys.length; key++) {
             if (playerKeys[key] == input.getDash()) {
-                if(!player.getIsDashing()){
+                if (!player.getIsDashing()) {
                     System.out.println("player dashed!");
                     //first instance of dash
                     player.dash(key, 8);
                     player.setIsDashing(true);
+                }else if ( (int) System.currentTimeMillis() - player.getLastDash() > player.dashLength) {
+                    System.out.println("player stopped dashing");
+                    player.setIsDashing(false);
                 }else{
+                    System.out.println("Still dashing");
                     //is dashing, not first instance
                     player.dash(key, 8);
                 }
             }
         }
-    
+    /* 
         // Check if the player is done dashing
         if ((int) System.currentTimeMillis() - player.getLastDash() > player.dashLength) {
             if(player.getIsDashing()){
@@ -245,6 +249,7 @@ public class Game implements ActionListener{
             player.setIsDashing(false);
             }
         }
+    */
     }
 
 }
