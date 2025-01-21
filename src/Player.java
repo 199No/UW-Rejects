@@ -32,11 +32,6 @@ public class Player {
     private final int width = Gui.TILE_SIZE;
     private final int height = Gui.TILE_SIZE;
 
-    private double xMin = 0;
-    private double yMin = 0;
-    private double xMax = 10000;
-    private double yMax = 10000;
-
     //misc
     private int temperature;
     private int score;
@@ -55,7 +50,7 @@ public class Player {
 
     //Dash
     private int dashCooldown; // in miliseconds
-    public int dashLength   = 350 + 500 + 350; // in miliseconds
+    public int dashLength   = 250 + 500 + 250; // in miliseconds
     private boolean isDashing;
     private int lastDash = (int) System.currentTimeMillis();
     
@@ -136,9 +131,7 @@ public class Player {
     // Update the player's position based on velocity and a scaling factor
     private void updatePosition(double speed) {
         this.xPos += this.xVel * speed;
-        inXBounds();
         this.yPos += this.yVel * speed;
-        inYBounds();
     }
 
     public  void attack(){
@@ -163,8 +156,21 @@ public class Player {
         return this.xPos;
     }
 
+    public void setxPos(double xPos){
+        this.xPos = xPos;
+    }
+
     public double getyPos(){
         return this.yPos;
+    }
+
+    public void setyPos(double yPos){
+        this.yPos = yPos;
+    }
+
+
+    public int[] getLocation(){
+        return new int[] {(int) this.xPos, (int) this.yPos};
     }
 
     public int[] getDirection(){
@@ -218,24 +224,6 @@ public class Player {
 
     public void setSpeed(double speed){
         this.speed = speed;
-    }
-
-    public void inXBounds(){
-        if(xPos < xMin){
-            xPos = xMin;
-        }
-        if(xPos > xMax){
-            xPos = xMax;
-        }
-    }
-
-    public void inYBounds(){
-        if(yPos < yMin){
-            yPos = yMin;
-        }
-        if(yPos > yMax){
-            yPos = yMax;
-        }
     }
 
     public double[] getHitboxTopLeft(){

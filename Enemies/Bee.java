@@ -14,31 +14,22 @@ import src.Gui;
 //-------------------------------------------------//
 //                   Enemies                       //
 //-------------------------------------------------// 
-public class Slime extends Enemies{
+public class Bee extends Enemies{
     ///////////////
     //Properties
     ///////////////
 
-    int maxDistance = 100; //max distance a slime would hop idle-ly
-    int MAX = 3000; // + 2000 in miliseconds
-    int lastDash;
-    Random rnd = new Random();
-    int rndLength;
-    int startDash;
-    boolean chasing;
-    double[] randomLoc;
-
     ///////////////
     //Constuctor
     //////////////
-    public Slime(double x, double y){
+    public Bee(double x, double y){
         super(x,y);
-        this.health = 100;
-        this.damage = 10;
-        this.speed = 2;
+        this.health = 50;
+        this.damage = 5;
+        this.speed = 4;
         this.width = Gui.TILE_SIZE;
         this.height = Gui.TILE_SIZE;
-        this.eyesight = 400;
+        this.eyesight = 200;
         this.alert = false;
         this.idle = true;
         this.chasing = false;
@@ -92,6 +83,7 @@ public class Slime extends Enemies{
 
 
     // dashing towards, whether that be a idle movement, or a player attack 
+    // TODO: Given a parameter that tells the slime to move that direction
     public void dashToward(){
 
     }

@@ -40,6 +40,11 @@ public class Game implements ActionListener{
     private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
     private ArrayList<Player>  players = new ArrayList<Player>();
 
+    // Bounds
+    private double xMin = 0;
+    private double xMax = 4080;
+    private double yMin = 0;
+    private double yMax = 4080;
 
     ///////////////
     //Constuctor
@@ -95,7 +100,7 @@ public class Game implements ActionListener{
         for(int i = 0; i < this.enemies.size(); i++){
 
             for(int j = 0; j < this.players.size(); j++){
-                enemies.get(i).scanArea(players.get(j));
+                enemies.get(i).scanArea(players.get(j).getLocation());
             }
 
             if(enemies.get(i).getAlert()){
@@ -137,7 +142,7 @@ public class Game implements ActionListener{
         gui.moveCamera(((players.get(0).getxPos() + players.get(1).getxPos()) / 2 - gui.cameraX()) / 10, ((players.get(0).getyPos() + players.get(1).getyPos()) / 2 - gui.cameraY()) / 10);
         gui.drawPlayers(this.players);
         gui.drawEnemies(this.enemies);
-        gui.drawHitboxes(this.players, this.enemies);
+        //gui.drawHitboxes(this.players, this.enemies);
         gui.displayFPS((int)frameRate);
         gui.repaint();
         now = System.currentTimeMillis();
@@ -153,6 +158,21 @@ public class Game implements ActionListener{
 
     public Player getPlayer2(){
         return this.player2;
+    }
+
+    public void inBounds(Player player){
+        if(player.getxPos() > this.xMax){
+            player.setxPos(this.xMax);
+        }
+        if(player.getxPos() < this.xMin){
+            player.setxPos(this.xMin);
+        }
+        if(player.getyPos() > this.yMax){
+            player.setyPos(this.yMax);
+        }
+        if(player.getyPos() < this.yMin){
+            player.setyPos(this.yMin);
+        }
     }
 
     public void updatePlayer(Player player){
@@ -177,6 +197,8 @@ public class Game implements ActionListener{
         if ((int) System.currentTimeMillis() - input.getLastDash(player2) < player.dashLength) {
             handlePlayerDash(player2, input.getPlayerKeys(player2));
         }
+
+        inBounds(player);
         
     }
 

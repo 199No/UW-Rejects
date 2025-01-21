@@ -171,7 +171,7 @@ public class Gui extends JPanel{
 
                     if(players.get(i).getIsDashing()){
                         playerImage = playerDash.getCurFrame();
-                    }else if(!players.get(i).getIsDashing() && playerDash.getCurState() == playerDash.getStates().length-1){
+                    }else if(!players.get(i).getIsDashing() && playerDash.getCurState() == playerDash.getStates().length - 2){
                         System.out.println("dashing ended but animation did not!");
                     }else{                     // TODO: Get a single direction int from player and use that + an array index instead.
                         if(players.get(i).getXDir() == 1){
@@ -244,7 +244,7 @@ public class Gui extends JPanel{
         if(player.playernum == 1){
             return player1DashAnimation;
          }else if(player.playernum == 2){
-            return player1DashAnimation;
+            return player2DashAnimation;
          }
          return null;
     }
