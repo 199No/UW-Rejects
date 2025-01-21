@@ -60,14 +60,20 @@ public abstract class Enemies {
 
     public abstract void die();
 
-    public abstract boolean isAlive();
-
     public abstract boolean scanArea(int[] location);
 
     public abstract void moveToward(double[] lastSeen);
 
     public abstract void update(); // sets and checks all parts of the enemy (ran every frame)
 
+    public boolean isAlive(){
+        if(this.health <= 0){
+        
+            return false;
+        }else{
+            return true;
+        }
+    }
 
     public int getHealth() {
         return health;
