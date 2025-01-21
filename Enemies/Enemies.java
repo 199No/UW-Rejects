@@ -31,10 +31,11 @@ public abstract class Enemies {
     protected boolean chasing; // moving towards/attacking player
     protected boolean idle; // still waiting for patrol movement
     protected boolean patroling; // moving towards a spot, or has a specific path
-
-    private boolean active; //the player is able to be hit if true
     
-    private Rectangle hitbox = new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
+   //Hitbox
+   private boolean active; //the player is able to be hit if true
+   private int[] topLeft; //top left of the hitbox
+   private Rectangle hitbox = new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
     ///////////////
     //Constuctor
     //////////////

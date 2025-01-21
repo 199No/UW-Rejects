@@ -46,8 +46,8 @@ public class Game implements ActionListener{
     //////////////
     public Game() throws AWTException, IOException{
 
-        this.player1 = new Player(750,300.0,100,10,10,2);
-        this.player2 = new Player(500.0, 500.0, 100, 10, 10, 2);
+        this.player1 = new Player(750,300.0,100,10,10,2.5,2);
+        this.player2 = new Player(500.0, 500.0, 100, 10, 10, 2.5,1);
         players.add(player1);
         players.add(player2);
         this.input = new Input();
@@ -68,7 +68,9 @@ public class Game implements ActionListener{
     @Override
 
     public void actionPerformed(ActionEvent e) {
-        // Calculate FPS
+        /////////////////////
+        //// CALCULATE FPS
+        ////////////////////
         now = System.currentTimeMillis();
 
         if(now - lastSecond > 1000){
@@ -77,22 +79,17 @@ public class Game implements ActionListener{
             frameRate = framesLastSecond;
             framesLastSecond = 0;
 
-        } 
-
-        else{
+        } else{
 
             framesLastSecond ++;
 
         }
 
         ////////////////
-        /// Input
-        ///////////////
-    
-
-        // Input updates its copy of the player
-        //update Player based on Input Information
-        updatePlayer();
+        //Update Player 
+        ////////////////
+        updatePlayer(player1);
+        updatePlayer(player2);
 
         // Update enemies
         for(int i = 0; i < this.enemies.size(); i++){
@@ -138,9 +135,9 @@ public class Game implements ActionListener{
             }
         });
         gui.moveCamera(((players.get(0).getxPos() + players.get(1).getxPos()) / 2 - gui.cameraX()) / 10, ((players.get(0).getyPos() + players.get(1).getyPos()) / 2 - gui.cameraY()) / 10);
-        gui.drawPlayers(players);
-        gui.drawEnemies(enemies);
-        gui.drawHitboxes(players, enemies);
+        gui.drawPlayers(this.players);
+        gui.drawEnemies(this.enemies);
+        gui.drawHitboxes(this.players, this.enemies);
         gui.displayFPS((int)frameRate);
         gui.repaint();
         now = System.currentTimeMillis();
@@ -158,22 +155,18 @@ public class Game implements ActionListener{
         return this.player2;
     }
 
-    public void updatePlayer(){
-        //get input information
-        boolean[] keys   = input.getKeys();
+    public void updatePlayer(Player player){
+            
+        // Get input information
+        boolean[] keys = input.getKeys();
         boolean[] shifts = input.getShifts();
         //move player based on shift and keys pressed
 
-        if(!player1.getIsDashing()){
-            this.movement = new boolean[]{keys[this.input.getPlayer1Keys()[0]], keys[this.input.getPlayer1Keys()[1]], keys[this.input.getPlayer1Keys()[2]], keys[this.input.getPlayer1Keys()[3]]};  // W A S D
-            player1.move(movement, shifts[0]);
-        }
+        this.movement = new boolean[]{keys[this.input.getPlayer1Keys()[0]], keys[this.input.getPlayer1Keys()[1]], keys[this.input.getPlayer1Keys()[2]], keys[this.input.getPlayer1Keys()[3]]};  // W A S D
+        player1.move(movement, shifts[0]);
+        this.movement = new boolean[]{keys[this.input.getPlayer2Keys()[0]], keys[this.input.getPlayer2Keys()[1]], keys[this.input.getPlayer2Keys()[2]], keys[this.input.getPlayer2Keys()[3]]};  // I J K L
+        player2.move(movement, shifts[1]);
 
-        if(!player2.getIsDashing()){
-            this.movement = new boolean[]{keys[this.input.getPlayer2Keys()[0]], keys[this.input.getPlayer2Keys()[1]], keys[this.input.getPlayer2Keys()[2]], keys[this.input.getPlayer2Keys()[3]]};  // I J K L
-            player2.move(movement, shifts[1]);
-        }
-        
         //ATTACK
         if(keys[67]){
             //C
@@ -183,26 +176,21 @@ public class Game implements ActionListener{
             //N
             this.player2.attack();
         }
-
-
         //BLOCK
         if(keys[88]){
             //X
             this.player1.block();
         }
-        if(keys[77]){
-            //M
-            this.player2.block();
+        if (keys[blockKey]) {
+            player.block();
         }
         //DASH
-
-        //can the players dash?
+        //can the player dash?
 
         if((int) System.currentTimeMillis() - input.getLastp1Dash() > 5000){
             for(int i = 0; i < this.input.getPlayer1Keys().length; i++){
                 if(this.input.getPlayer1Keys()[i] == input.getDash()){
                     player1.dash();
-                    player1.setLastDash((int) System.currentTimeMillis());
                 }
             }
         }
@@ -211,19 +199,8 @@ public class Game implements ActionListener{
             for(int i = 0; i < this.input.getPlayer2Keys().length; i++){
                 if(this.input.getPlayer2Keys()[i] == input.getDash()){
                     player2.dash();
-                    player2.setLastDash((int) System.currentTimeMillis());
                 }
             }
-        }
-
-        // are the players done dashing?
-
-        if((int) System.currentTimeMillis() - player1.getLastDash() > Player.DASHLENGTH){
-            player1.setIsDashing(false);
-        }
-
-        if((int) System.currentTimeMillis() - player2.getLastDash() > Player.DASHLENGTH){
-            player2.setIsDashing(false);
         }
 
     }

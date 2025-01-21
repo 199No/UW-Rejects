@@ -9,6 +9,7 @@ import src.Player;
 import java.awt.Rectangle;
 import java.util.Random;
 import java.util.ArrayList;
+import src.Gui;
 
 //-------------------------------------------------//
 //                   Enemies                       //
@@ -35,8 +36,8 @@ public class Slime extends Enemies{
         this.health = 10;
         this.damage = 1;
         this.speed = 3;
-        this.width = 24;
-        this.height = 24;
+        this.width = Gui.TILE_SIZE;
+        this.height = Gui.TILE_SIZE;
         this.eyesight = 400;
         this.alert = false;
         this.idle = true;

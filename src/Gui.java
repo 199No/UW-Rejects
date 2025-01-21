@@ -7,6 +7,7 @@ import javax.swing.*;
 import Enemies.Enemies;
 
 import java.awt.*;
+import java.awt.Taskbar.State;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
@@ -27,6 +28,7 @@ public class Gui extends JPanel{
     // Made public so that other classes can see them
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
+    public static final int PLAYERSIZE = 24;
     public static final int TILE_SIZE = 68;
     public static final double FOCAL_LENGTH = 720 / Math.sqrt(2); // 720 / sqrt(2)
     public static final double CAMERA_ANGLE = Math.PI * 0.10;
@@ -39,13 +41,16 @@ public class Gui extends JPanel{
     // You need a frame to draw things on.
     JFrame frame = new JFrame("The Divided Realms INDEV");
     // Preloading. To be deprecated
-    BufferedImage[] playerImages;
+    BufferedImage[] player1Images;
+    BufferedImage[] player2Images;
+
     // The guy she tells you not to worry about (better image loading)
     Images images;
     Images tileImages;
     Rectangle chunkUnloadBoundary = new Rectangle(-(TILE_SIZE * 10), -(TILE_SIZE * 10), Gui.WIDTH + (TILE_SIZE * 20), Gui.HEIGHT + (TILE_SIZE * 20));
     Animation slimeAnimation;
-    StatefulAnimation playerAnimation;
+    StatefulAnimation player1DashAnimation;
+    StatefulAnimation player2DashAnimation;
     ////////// CAMERA ///////////
     double cameraX;
     double cameraY;
@@ -60,20 +65,34 @@ public class Gui extends JPanel{
         // Images for tiles only
         tileImages = new Images("Images/Enviroment/Tiles", Transparency.OPAQUE);
         // Define a constantly running Animation for the slime (soon to be better)
-        slimeAnimation = new Animation(images.getImage("slimeSheet"), 3, 3, 7, 150, true);
+        slimeAnimation = new Animation(images.getImage("slime"), 4, 2, 7, 150, true);
         slimeAnimation.start(); 
-        playerAnimation = new StatefulAnimation(100, 3, 4,
-            new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("Player Dashing"), true);
+        
+        player1Images = new BufferedImage[5];
+        // Load up all the player images (to be deprectated)
+        player1Images[0] = images.getImage("playerIdle").getSubimage(0 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player1Images[1] = images.getImage("playerIdle").getSubimage(1 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player1Images[2] = images.getImage("playerIdle").getSubimage(0 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player1Images[3] = images.getImage("playerIdle").getSubimage(1 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player1Images[4] = images.getImage("playerIdle");
+        player1Images[4] = images.getImage("playerIdle");
 
+
+        player1DashAnimation = new StatefulAnimation(100, 3, 2,
+            new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("playerDash"), true);
         // Honestly this could be a stateful animation.
         // TODO: fix.
-        playerImages = new BufferedImage[5];
+
+        player2Images = new BufferedImage[5];
         // Load up all the player images (to be deprectated)
-        playerImages[0] = images.getImage("Player spritesheet").getSubimage(0, 0, 96, 96);
-        playerImages[1] = images.getImage("Player spritesheet").getSubimage(96, 0, 96, 96);
-        playerImages[2] = images.getImage("Player spritesheet").getSubimage(0, 96, 96, 96);
-        playerImages[3] = images.getImage("Player spritesheet").getSubimage(96, 96, 96, 96);
-        playerImages[4] = images.getImage("Player spritesheet");
+        player2Images[0] = images.getImage("player2Idle").getSubimage(0 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player2Images[1] = images.getImage("player2Idle").getSubimage(1 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player2Images[2] = images.getImage("player2Idle").getSubimage(0 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player2Images[3] = images.getImage("player2Idle").getSubimage(1 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player2Images[4] = images.getImage("player2Idle");
+
+        player2DashAnimation = new StatefulAnimation(100, 3, 2,
+        new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("player2Dash"), true);
 
         this.width = WIDTH;
         this.height = HEIGHT;
@@ -126,7 +145,6 @@ public class Gui extends JPanel{
     public void background(int r, int g, int b){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                System.out.println("feuyhe");
                 g2d.setColor(new Color(r, g, b));
                 g2d.fillRect(0, 0, Gui.WIDTH, Gui.HEIGHT);
             }
@@ -145,35 +163,45 @@ public class Gui extends JPanel{
     public void drawPlayers(ArrayList<Player> players){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                    for(int i = 0; i < players.size(); i++){
-                    BufferedImage playerImage = playerImages[0];
-                    // TODO: Get a single direction int from player and use that + an array index instead.
-                    if(players.get(i).getXDir() == 1){
-                        if(players.get(i).getYDir() == -1){
-                            playerImage = playerImages[2];
+                for(int i = 0; i < players.size(); i++){
+                    BufferedImage[] idle = getPlayerIdle(players.get(i));
+                    StatefulAnimation playerDash = getPlayerDash(players.get(i));
+
+                    BufferedImage playerImage = idle[0];
+
+                    if(players.get(i).getIsDashing()){
+                        playerImage = playerDash.getCurFrame();
+                    }else if(!players.get(i).getIsDashing() && playerDash.getCurState() == playerDash.getStates().length-1){
+                        System.out.println("dashing ended but animation did not!");
+                    }else{                     // TODO: Get a single direction int from player and use that + an array index instead.
+                        if(players.get(i).getXDir() == 1){
+                            if(players.get(i).getYDir() == -1){
+                                playerImage = idle[2];
+                            }
+                            
+                            else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
+                            {
+                                playerImage = idle[0];
+                            }
+                            
                         }
-                        
-                        else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
-                        {
-                            playerImage = playerImages[0];
+                        if(players.get(i).getXDir() == -1){
+                            if(players.get(i).getYDir() == -1){
+                                playerImage = idle[3];
+                            }
+                            
+                            else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
+                            {
+                                playerImage = idle[1];
+                            }
                         }
-                        
-                    }
-                    if(players.get(i).getXDir() == -1){
-                        if(players.get(i).getYDir() == -1){
-                            playerImage = playerImages[3];
-                        }
-                        
-                        else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
-                        {
-                            playerImage = playerImages[1];
-                        }
+                    
                     }
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
                     double[] player3dPos = screenTo3D(playerScreenPos[0], playerScreenPos[1]);
 
                     // How much to vertically scale the final shadow (for adjustments)
-                    double shadowYScaleFactor = 0.8;
+                    double shadorowWidthScaleFactor = 0.8;
                     // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
                     double playerToTileX = (double)TILE_SIZE/(double)playerImage.getWidth();
                     double playerToTileY = (double)TILE_SIZE/(double)playerImage.getHeight();
@@ -186,20 +214,39 @@ public class Gui extends JPanel{
                     shadowTransform.translate(
                                           // Because the image shears from the bottom up it moves the "feet" of the shadow,
                                           // so we account for that and also the imminent scaling of the image.
-                        (player3dPos[0] + playerImage.getWidth() * shearFactor * playerToTileX * shadowYScaleFactor),
+                        (player3dPos[0] + playerImage.getWidth() * shearFactor * playerToTileX * shadorowWidthScaleFactor),
                                                   // Flipping the image puts it above the player's head so we move it to be below the feet instead.
-                        (double)((player3dPos[1] + 2*TILE_SIZE) - playerImage.getHeight() * (1-shadowYScaleFactor) * playerToTileY)
+                        (double)((player3dPos[1] + 2*TILE_SIZE) - playerImage.getHeight() * (1-shadorowWidthScaleFactor) * playerToTileY)
                     );
                     // Shear the image so it is at the right angle
                     shadowTransform.shear(shearFactor, 0);
                     // Rescale the image so it appears the right size
-                    shadowTransform.scale(playerToTileX, -playerToTileY * shadowYScaleFactor);
+                    shadowTransform.scale(playerToTileX, -playerToTileY * shadorowWidthScaleFactor);
                     // Draw the player and its shadow
                     g2d.drawImage(playerImage, (int)player3dPos[0], (int)player3dPos[1], TILE_SIZE, TILE_SIZE, null);
                     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
                 } 
             }
         });
+    }
+
+    public BufferedImage[] getPlayerIdle(Player player){
+        BufferedImage[] idle = new BufferedImage[5];
+        if(player.playernum == 1){
+           idle = player1Images;
+        }else if(player.playernum == 2){
+            idle = player2Images;
+        }
+        return idle;
+    }
+
+    public StatefulAnimation getPlayerDash(Player player){
+        if(player.playernum == 1){
+            return player1DashAnimation;
+         }else if(player.playernum == 2){
+            return player1DashAnimation;
+         }
+         return null;
     }
 
     public void drawEnemies(ArrayList<Enemies> enemies){
@@ -210,11 +257,9 @@ public class Gui extends JPanel{
                 for(int i = 0; i < enemies.size(); i ++){
 
                     BufferedImage slimeImage = slimeAnimation.getFrame();
-                    Rectangle slimeHitbox = enemies.get(i).getHitbox();
                     double[] screenPos = absToScreen(enemies.get(i).getxPos(), enemies.get(i).getyPos());
                     double[] finalPos = screenTo3D(screenPos[0], screenPos[1]);
                     g2d.drawImage(slimeImage, (int)finalPos[0], (int)finalPos[1], TILE_SIZE, TILE_SIZE, null);
-                    g2d.drawRect((int)slimeHitbox.getX(),(int)slimeHitbox.getY(),(int)slimeHitbox.getWidth(),(int)slimeHitbox.getHeight());
                 }
             }
         });
@@ -234,7 +279,7 @@ public class Gui extends JPanel{
                         // Take the y pos of the next tile down and subract the y pos of this tile to get the difference in height between this tile and the next one down.                        
                         double threeDTileSize = Gui.screenTo3D(0, chunkCoords[1] + ((y + 1) * TILE_SIZE) )[1] - threeDCoords[1] + 1;
                         // If this tile is off screen don't draw it.
-                        if(threeDCoords[1] > Gui.WIDTH + 100 || threeDCoords[0] - (Gui.WIDTH / 2) < 0){
+                        if(threeDCoords[1] > Gui.WIDTH + 100){ //|| threeDCoords[0] - (Gui.WIDTH / 2) < 0){
                             return;
                         }
                         // Otherwise, do.
@@ -318,48 +363,42 @@ public class Gui extends JPanel{
         return result;
         
     }
-    public BufferedImage toPersp (BufferedImage image, double A, double B, double C, double D){
-        //x1 = (w1/40 * x) * (((w2/w1-1)/h)*y+1) + y*(k1/h);
+    public BufferedImage toPersp (BufferedImage texture, double A, double B, double C, double D){
+        //x1 = (topWidth/40 * x) * (((bottomWidth/topWidth-1)/h)*y+1) + y*(k1/h);
 
 
-        double x_i, x_f; // X initial and X final - coords for the ends of each row on the trapezoid
-        double k = D - B; // "Overhang" on the trapezoid - how much space between the absolute corner and the beginning of the bottom of the trapezoid
-        double w1 = A - B; // Top width of the trapz
-        double w2 = C - D; // Bottom width of the trapz
-        double h = image.getHeight(); // Height of the trapz
-        double xn; // "new x" - result of the transformation
-        double wy, rx;
-        BufferedImage result = new BufferedImage(Math.abs((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))) + 1), image.getHeight(), Transparency.BITMASK);
-        double imageWidth = result.getWidth();
+        double startX, endX; // X initial and X final - coords for the ends of each row on the trapezoid
+        double k = Math.abs(D - B); // "Overhang" on the trapezoid - how much space between the absolute corner and the beginning of the bottom of the trapezoid
+        double topWidth = Math.abs(A) - Math.abs(B); // Top width of the trapz
+        double bottomWidth = Math.abs(C) - Math.abs(D); // Bottom width of the trapz
+        double h = texture.getHeight(); // Height of the trapz
+        double textureX; // X on the image
+        double rowWidth, rx; // rowWidth = width based on y, rx = how far along rowWidth x is
+        double resultWidth = Math.abs((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))));
+        BufferedImage result = new BufferedImage((int)((resultWidth == 0)? 1 : resultWidth), texture.getHeight(), Transparency.BITMASK);
+
         boolean isInv = (k < 0);
-        for(int y = 0; y < result.getHeight() - 1; y++){
+        for(int y = 0; y < result.getHeight(); y++){
+            
+            rowWidth = (((bottomWidth-topWidth)/h)*y)+topWidth;
 
-            x_i = y * k/h;
-            x_f = x_i + w1 + (y/h)*(w2-w1);
-            for(int x = (int)x_i; x < Math.ceil(x_f); x++){
+            // Find x initial
+            startX = y * k/h;
+            // Find x final
+            endX = startX + rowWidth;
+            // Starting at startX, ending at endX...
+            for(int x = (int)startX; x < Math.ceil(endX); x++){
 
-
-                wy = (((w2-w1)/h)*y)+w1;
                 if(isInv){
-                    rx=((x - k)-x_i)/wy;
+                    rx=((x - k)-startX)/rowWidth;
                 } else {
-                    rx=(x-x_i)/wy;
+                    rx=(x-startX)/rowWidth;
                 }
-                
-                xn=(rx*imageWidth) + ((isInv)? -k : 0);
-                if(xn < 0){
-                    xn = 0;
-                } else if(xn >= image.getWidth()){
-                    xn = image.getWidth() - 1;
-                }
-                if(x < 0){
-                    result.setRGB(0, y, image.getRGB((int)xn, y));
-                }
-                else if(x >= imageWidth){
-                    result.setRGB((int)imageWidth - 1, y, image.getRGB((int)xn, y));
+                // Calculate textureX and clamp it between 0 and image width
+                textureX=Math.min( Math.max( (rx*(texture.getWidth())), 0 ), texture.getWidth() - 1);
 
-                } else {
-                    result.setRGB((int)(x), y, image.getRGB((int)xn, y));
+                if(x >= 0 && x < resultWidth){
+                    result.setRGB((int)(x), y, texture.getRGB((int)Math.floor(textureX), y));
                 }
             }
         }

@@ -26,8 +26,14 @@ public class StatefulAnimation {
         step = 0;
         lastStep = (int)System.currentTimeMillis();
     }
+    public int getCurState(){
+        return this.state;
+    }
     public void setState(int state){
         this.state = state;
+    }
+    public int[][] getStates(){
+        return this.states;
     }
     public void incrementState(int amount){
         this.state += amount;
@@ -44,7 +50,7 @@ public class StatefulAnimation {
         int curFrame = states[state][step];
         return spriteSheet.getSubimage(
             (curFrame % widthFrames) * frameWidth,
-            (curFrame / heightFrames) * frameHeight,
+            (curFrame / widthFrames) * frameHeight,
             frameWidth,
             frameHeight
         );
