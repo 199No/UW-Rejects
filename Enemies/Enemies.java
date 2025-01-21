@@ -62,7 +62,7 @@ public abstract class Enemies {
 
     public abstract boolean isAlive();
 
-    public abstract boolean scanArea(Player player);
+    public abstract boolean scanArea(int[] location);
 
     public abstract void moveToward(double[] lastSeen);
 

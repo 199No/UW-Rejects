@@ -57,33 +57,6 @@ public class Slime extends Enemies{
     //Move idlely after some time.
     public void idleMove(){
 
-
-
-        /* 
-        //move randomly, in random way
-        int doesMove = rnd.nextInt(100) + 1; // 1 in 100 if slime does an idle movement
-
-        if(this.idleMovement && !isDashing){ // looking for when it should move
-            if(doesMove == 1){ // 1 in 100 chance
-                isDashing = true;
-                lastDash = (int) System.currentTimeMillis();
-             
-                double offsetX = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
-                double offsetY = (rnd.nextDouble() * 2 - 1) * maxDistance; // Range: -maxDistance to maxDistance
-
-                // Calculate the target coordinates
-                double targetX = this.getxPos() + offsetX;
-                double targetY = this.getyPos() + offsetY;
-
-                System.out.println("target (" + (int) targetX + "," + (int) targetY + ")");
-                this.direction = new Vector(offsetX, offsetY);
-                //this.randomLoc = new double[]{targetX,targetY};
-                
-            }
-        }else if(this.idleMovement && isDashing){
-            dashToward(direction);
-        }
-        */
     }
 
     public void attack(){
@@ -108,105 +81,29 @@ public class Slime extends Enemies{
     }
 
     //checks to see if the slime can see the player, LOS of player with obstacles, if it can sets the alert to true
-    public boolean scanArea(Player player){ // scans for player around slime, returns true if slime can see the player
-        /* 
-        //check to see if player is even inside the radius of the eyesight of the slime
-        if(calcDistance(player) < eyesight){
-            //the player is inside the circle
-            Vector direction = new Vector(player.getxPos() - this.getxPos(), player.getyPos() - this.getyPos());
-
-            if(!checkObstaclesLOS(direction)){ //check if theres obstacles in the way of LOS // returns true is there is an obstacle
-                if(!idle){
-                    this.alert = true;
-                }
-                this.lastSeen = new double[]{player.getxPos(), player.getyPos()};
-                return true;
-            }
-        }
-        return false;
-        */
+    public boolean scanArea(int[] location){ // scans for players around slime, returns true if slime can see the player
         return false;
     }
-
-    public void update(){  // sets and checks all parts of the enemy (ran every frame)
+    //update slime position and state
+    public void update(){
 
     }
 
     //Check for obstacles in the way of the line of sight
     public boolean checkObstaclesLOS(){
-        /* 
-        //at every point of vector check if there is an obstacle
-        direction.normalize(1);
 
-        //returns true if there is an obstacle
         return false;
-        */
-        return false;
-    }
-    //Caluates the distance between the player and the slime and sees if its in its radius of sight
-    public double calcDistance(Player player) {
-        double dx = this.getxPos() - player.getxPos();
-        double dy = this.getyPos() - player.getyPos();
-        return Math.sqrt(dx * dx + dy * dy);
     }
 
     //Moving towards the last time the player was seen, (not attacking just moving)
     public void moveToward(double[] lastSeen){
 
-        /* 
-        //move toward the point that was given
-         // Target position
-         double targetX = lastSeen[0];
-         double targetY = lastSeen[1];
- 
-         // Create a direction vector
-         Vector direction = new Vector(targetX - this.getxPos(), targetY - this.getyPos());
- 
-         // Normalize the direction vector
-         Vector normalizedDirection = direction.normalize( (int) speed);
- 
-         // Scale the normalized vector by the speed
-         double deltaX = normalizedDirection.getxPos() * speed;
-         double deltaY = normalizedDirection.getyPos() * speed;
- 
-         // Update current position
-         this.setxPos(getxPos() + deltaX);
-         this.setyPos(getyPos() + deltaY);
-
-         if( (int) this.getxPos() - speed <= (int) lastSeen[0] && (int) lastSeen[0] <= (int) this.getxPos() + speed && (int) this.getyPos() - speed <= (int) lastSeen[1] && (int) lastSeen[1] <= this.getyPos() + speed){ // check if slime reached last point saw of LOS
-            System.out.println("lost player LOS");
-            this.alert = false;
-        }
-        */
     }
 
 
     // dashing towards, whether that be a idle movement, or a player attack 
     // TODO: Given a parameter that tells the slime to move that direction
     public void dashToward(){
- 
 
-        /* 
-         // Normalize the direction vector
-         Vector normalizedDirection = direction.normalize( (int) dashLength);
- 
-         // Scale the normalized vector by the speed
-         double deltaX = normalizedDirection.getxPos();
-         double deltaY = normalizedDirection.getyPos();
- 
-         // Update current position
-         this.setxPos(getxPos() + deltaX);
-         this.setyPos(getyPos() + deltaY);
-         System.out.println("(" + (int) this.getxPos() + "," + (int) this.getyPos() + ")");
-         System.out.println("(" + (int) direction.getxPos() + "," + (int) direction.getyPos() + ")");
-         if(isNumberInRange((int) xPos, 30, (int) direction.getxPos()) && isNumberInRange((int) yPos, 30, (int) direction.getyPos())){
-            System.out.println("Slime reached target!");
-            this.chasing = false;
-         }
-        */
-    }
-
-    public static boolean isNumberInRange(int number, int range, int target) {
-        return target >= (number - range) && target <= (number + range);
     }
 }
