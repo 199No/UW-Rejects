@@ -50,9 +50,9 @@ public class Player {
 
     //Dash
     private int dashCooldown; // in miliseconds
-    public int dashLength   = 350 + 500 + 350; // in miliseconds
+    public int dashLength   = 250 + 500 + 250; // in miliseconds
     private boolean isDashing;
-    private int lastDash = 0;
+    private int lastDash = (int) System.currentTimeMillis();
     
     //Hitbox
     private boolean active; //the player is able to be hit if true
@@ -143,6 +143,7 @@ public class Player {
     }
 
     public void dash(int key, int speed) {
+        lastDash = (int) System.currentTimeMillis();
         boolean[] movement = new boolean[4];
         if (key >= 0 && key < movement.length) {
             movement[key] = true;
@@ -155,8 +156,21 @@ public class Player {
         return this.xPos;
     }
 
+    public void setxPos(double xPos){
+        this.xPos = xPos;
+    }
+
     public double getyPos(){
         return this.yPos;
+    }
+
+    public void setyPos(double yPos){
+        this.yPos = yPos;
+    }
+
+
+    public int[] getLocation(){
+        return new int[] {(int) this.xPos, (int) this.yPos};
     }
 
     public int[] getDirection(){
