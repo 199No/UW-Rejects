@@ -159,7 +159,6 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
                     } else if (isPlayer2 && (int) System.currentTimeMillis() - this.lastp2Dash > 5000) {
                         this.lastp2Dash = (int) System.currentTimeMillis();
                         this.p2dash = e.getKeyCode();
-                        System.out.println("dashcodep2: " + e.getKeyCode());
                     }
                 }
                 
