@@ -52,7 +52,6 @@ public class Player {
     private int dashCooldown; // in miliseconds
     public int dashLength   = 250 + 500 + 250; // in miliseconds
     private boolean isDashing;
-    private int lastDash = (int) System.currentTimeMillis();
     
     //Hitbox
     private boolean active; //the player is able to be hit if true
@@ -102,7 +101,7 @@ public class Player {
         applyFriction();
         capVelocity();
         if(isShifting){
-            updatePosition(2 * this.speed);
+            updatePosition(1.5 * this.speed);
         }else{
             updatePosition(this.speed);
         }
@@ -143,7 +142,6 @@ public class Player {
     }
 
     public void dash(int key, int speed) {
-        lastDash = (int) System.currentTimeMillis();
         boolean[] movement = new boolean[4];
         if (key >= 0 && key < movement.length) {
             movement[key] = true;
@@ -216,10 +214,6 @@ public class Player {
 
     public double getSpeed(){
         return speed;
-    }
-
-    public double getLastDash(){
-        return lastDash;
     }
 
     public void setSpeed(double speed){

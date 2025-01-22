@@ -166,39 +166,41 @@ public class Gui extends JPanel{
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 for(int i = 0; i < players.size(); i++){
-                    BufferedImage[] idle = getPlayerIdle(players.get(i));
-                    StatefulAnimation playerDash = getPlayerDash(players.get(i));
 
-                    BufferedImage playerImage = idle[0];
+                    BufferedImage playerImage = getPlayerIdle(players.get(i))[0]; // Default idle animation frame
 
-                    if(players.get(i).getIsDashing()){
-                        playerImage = playerDash.getCurFrame();
-                    }else if(!players.get(i).getIsDashing() && playerDash.getCurState() == 1){
-                        System.out.println("dashing ended but animation did not!");
-                    }else{                     // TODO: Get a single direction int from player and use that + an array index instead.
-                        if(players.get(i).getXDir() == 1){
-                            if(players.get(i).getYDir() == -1){
-                                playerImage = idle[2];
+                    // Handle the dashing state
+                    if (players.get(i).getIsDashing()) {
+                        if (getPlayerDash(players.get(i)).getCurState() == 0) { // Starting dashing animation (state 0)
+
+                            if (getPlayerDash(players.get(i)).getCurStep() == getPlayerDash(players.get(i)).getCurrentStateStepCount()) {
+                                getPlayerDash(players.get(i)).incrementState(); // Move to the next state
                             }
-                            
-                            else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
-                            {
-                                playerImage = idle[0];
-                            }
-                            
+                            playerImage = getPlayerDash(players.get(i)).getCurFrame(true); // Pass true because player is dashing
+
+                        } else if (getPlayerDash(players.get(i)).getCurState() == 1) { // Mid dash (state 1)
+                
+                            playerImage = getPlayerDash(players.get(i)).getCurFrame(true); // Continue looping in state 1 while dashing
+
                         }
-                        if(players.get(i).getXDir() == -1){
-                            if(players.get(i).getYDir() == -1){
-                                playerImage = idle[3];
-                            }
-                            
-                            else // if players.get(i).getYDir() == 1 OR players.get(i).getYDir == 0
-                            {
-                                playerImage = idle[1];
-                            }
+                    } else if (getPlayerDash(players.get(i)).getCurState() == 1) { // Dash completed (state 1 ends when not dashing)
+
+                        if (getPlayerDash(players.get(i)).getCurStep() == getPlayerDash(players.get(i)).getCurrentStateStepCount()) {
+                            getPlayerDash(players.get(i)).incrementState(); // Move to the next state
                         }
-                    
+                        playerImage = getPlayerDash(players.get(i)).getCurFrame(false); // Player is not dashing anymore
+
+                    } else if (getPlayerDash(players.get(i)).getCurState() == 2) { // No dash, find the direction player is facing
+                        if (getPlayerDash(players.get(i)).getCurStep() == getPlayerDash(players.get(i)).getCurrentStateStepCount()) {
+                            getPlayerDash(players.get(i)).incrementState(); // Move to the next state
+                        }
+                        playerImage = getPlayerDash(players.get(i)).getCurFrame(false); // Player is not dashing
+
+                    } else {
+                        // Default idle frame handling (this shouldn't happen unless state 0 or 1 are incorrectly used)
+                        playerImage = getPlayerIdle(players.get(i))[0];
                     }
+
                     double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
 
                     // How much to vertically scale the final shadow (for adjustments)

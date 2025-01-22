@@ -186,20 +186,19 @@ public class Game implements ActionListener{
         boolean[] shifts = input.getShifts();
 
         // Update player movement with input information
-        updatePlayerMovement(player1, input.getPlayer1Keys(), shifts[0], keys);
-        updatePlayerMovement(player2, input.getPlayer2Keys(), shifts[1], keys);
+        updatePlayerMovement(player, input.getPlayerKeys(player), shifts[player.playernum -1], keys);
 
-        // Handle player actions (attack block) with input information
-        handlePlayerActions(player1, keys, 67, 88); // Attack: C, Block: X
-        handlePlayerActions(player2, keys, 78, 77); // Attack: N, Block: M
+        // Handle    player actions (attack block) with input information
+        handlePlayerActions(player, keys, input.getPlayerKeys(player)[5], input.getPlayerKeys(player)[4]); // Attack: 5th key in list, Block: 4th key in list
 
         // Handle player dashing
-        if ((int) System.currentTimeMillis() - input.getLastDash(player1) < player.dashLength) {
-            handlePlayerDash(player1, input.player1Keys);
-        }
 
-        if ((int) System.currentTimeMillis() - input.getLastDash(player2) < player.dashLength) {
-            handlePlayerDash(player2, input.player2Keys);
+        if ((int) System.currentTimeMillis() - input.getLastDash() < player.dashLength) {
+            handlePlayerDash(player, input.getPlayerKeys(player));
+        } else {
+            if(player.getIsDashing()){
+                player.setIsDashing(false);
+            }
         }
 
         inBounds(player);
@@ -215,6 +214,9 @@ public class Game implements ActionListener{
             keys[playerKeys[3]]  // Right
         };
         player.move(movement, shift);
+        ////////////////
+        /// COLLISION
+        ///////////////
         for(int i = 0; i < map.numLoadedChunks(); i++){
             EnvObject[] envObjects = map.getChunk(i).getEnvObjects();
             EnvObject obj;
@@ -263,32 +265,17 @@ public class Game implements ActionListener{
     }
 
     private void handlePlayerDash(Player player, int[] playerKeys) {
-        for (int key = 0; key < playerKeys.length; key++) {
-            if (playerKeys[key] == input.getDash()) {
-                if (!player.getIsDashing()) {
-                    System.out.println("player dashed!");
-                    //first instance of dash
-                    player.dash(key, 8);
+        for(int i = 0; i < playerKeys.length; i++){
+            if(playerKeys[i] == input.getDash()){
+                if(!player.getIsDashing()){
+                    player.dash(playerKeys[i], 8);
                     player.setIsDashing(true);
-                }else if ( (int) System.currentTimeMillis() - player.getLastDash() > player.dashLength) {
-                    System.out.println("player stopped dashing");
-                    player.setIsDashing(false);
                 }else{
-                    System.out.println("Still dashing");
-                    //is dashing, not first instance
-                    player.dash(key, 8);
+                    player.dash(playerKeys[i], 8);
                 }
             }
         }
-    /* 
-        // Check if the player is done dashing
-        if ((int) System.currentTimeMillis() - player.getLastDash() > player.dashLength) {
-            if(player.getIsDashing()){
-            System.out.println("player stopped dashing");
-            player.setIsDashing(false);
-            }
-        }
-    */
+        
     }
 
 }

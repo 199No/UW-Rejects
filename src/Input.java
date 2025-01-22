@@ -35,9 +35,10 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     
     int p1dash; // keyevent used to distinguish which key was pressed
     int p2dash; // keyevent used to distinguish which key was pressed
-    int lastDash = (int) System.currentTimeMillis(); // in mili
+    int dash; // keyevent of last found key
     int lastp1Dash = (int) System.currentTimeMillis(); // in mili
     int lastp2Dash = (int) System.currentTimeMillis(); // in mili
+    int lastdash; // time of last dash
 
     // all keys used, besides shift for player 1
     public int[] player1Keys = {
@@ -154,11 +155,16 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
                 
                     if (isPlayer1 && (int) System.currentTimeMillis() - this.lastp1Dash > 5000) {
                         this.lastp1Dash = (int) System.currentTimeMillis();
+                        this.lastdash = (int) System.currentTimeMillis();
                         this.p1dash = e.getKeyCode();
+                        this.dash = e.getKeyCode();
                         System.out.println("dashcodep1: " + e.getKeyCode());
                     } else if (isPlayer2 && (int) System.currentTimeMillis() - this.lastp2Dash > 5000) {
                         this.lastp2Dash = (int) System.currentTimeMillis();
+                        this.lastdash = (int) System.currentTimeMillis();
                         this.p2dash = e.getKeyCode();
+                        this.dash = e.getKeyCode();
+                        System.out.println("dashcodep2: " + e.getKeyCode());
                     }
                 }
                 
@@ -201,16 +207,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
             released[e.getKeyCode()] = (int) System.currentTimeMillis();
         }
     }
-    public int getDash(){
-        if( (int) lastp1Dash > (int) lastp2Dash ) { //find out which dash was done last
-            return p1dash;
-        }else{
-            return p2dash;
-        }
-    }
-    public int getLastDash(){
-        return this.lastDash;
-    }
+    
     public boolean[] getKeys(){
         return this.keys;
     }
@@ -222,6 +219,20 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     }
     public int[] getPlayer2Keys(){
         return this.player2Keys;
+    }
+    public int[] getPlayerKeys(Player player){
+        if(player.playernum == 1){
+            return getPlayer1Keys();
+        }else{
+            return getPlayer2Keys();
+        }
+
+    }
+    public int getDash(){
+        return this.dash;
+    }
+    public int getLastDash(){
+        return this.lastdash;
     }
 
     public boolean checkPlayer1Keys(int key){
