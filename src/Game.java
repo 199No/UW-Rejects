@@ -7,6 +7,7 @@ import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -221,33 +222,35 @@ public class Game implements ActionListener{
             EnvObject[] envObjects = map.getChunk(i).getEnvObjects();
             EnvObject obj;
             Rectangle pHitbox, objHitbox;
+            Rectangle2D clip;
             for(int k = 0; k < envObjects.length; k++){
                 obj = envObjects[k];
                 pHitbox = player.getHitbox();
                 objHitbox = obj.getHitbox();
                 if(player.getHitbox().intersects(obj.getHitbox())){
-                    // Collision from the left of hitbox
-                    if(pHitbox.getMaxX() > objHitbox.getX()
-                    && pHitbox.getMaxX() < objHitbox.getCenterX()){
-                        player.setxPos(objHitbox.getX() - pHitbox.getWidth());
+                    clip = objHitbox.createIntersection(pHitbox);
+                    // Horizontal collide
+                    if(clip.getHeight() > clip.getWidth()){
+                        // Right collide
+                        if(pHitbox.getX() > objHitbox.getX()){
+                            player.setxPos(objHitbox.getMaxX());
+                        }   
+                        // Left collide
+                        if(pHitbox.getX() < objHitbox.getX()){
+                            player.setxPos(objHitbox.getX() - player.getWidth());
+                        }
                     }
-                    
-                    // Collision from the right of hitbox
-                    if(pHitbox.getX() < objHitbox.getMaxX()
-                    && pHitbox.getX() > objHitbox.getCenterX()){
-                        player.setxPos(objHitbox.getX() + pHitbox.getWidth());
+                    else if (clip.getWidth() > clip.getHeight()){
+                        
+                        // Right collide
+                        if(pHitbox.getY() > objHitbox.getY()){
+                            player.setyPos(objHitbox.getMaxY());
+                        }   
+                        // Left collide
+                        if(pHitbox.getY() < objHitbox.getY()){
+                            player.setyPos(objHitbox.getY() - player.getHeight());
+                        }
                     }
-                    // Collision from the top of hitbox
-                    if(pHitbox.getMaxY() > objHitbox.getY()
-                    && pHitbox.getMaxY() < objHitbox.getCenterY()){
-                        player.setyPos(objHitbox.getY() - pHitbox.getHeight());
-                    }
-                    // Collision from bottom of hitbox
-                    if(pHitbox.getY() < objHitbox.getMaxY()
-                    && pHitbox.getY() > objHitbox.getCenterY()){
-                        player.setyPos(objHitbox.getY() + objHitbox.getHeight());
-                    }
-                    
                 }
             }
         }
