@@ -166,9 +166,7 @@ public class Gui extends JPanel{
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 for(int i = 0; i < players.size(); i++){
-                        if(i == 0){
-                            System.out.println(players.get(i).getxPos());
-                        }                    BufferedImage[] idle = getPlayerIdle(players.get(i));
+                    BufferedImage[] idle = getPlayerIdle(players.get(i));
                     StatefulAnimation playerDash = getPlayerDash(players.get(i));
 
                     BufferedImage playerImage = idle[0];
@@ -228,6 +226,7 @@ public class Gui extends JPanel{
                     // Draw the player and its shadow
                     g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
                     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
+                    
                 } 
             }
         });
@@ -262,6 +261,7 @@ public class Gui extends JPanel{
                     BufferedImage slimeImage = slimeAnimation.getFrame();
                     double[] screenPos = absToScreen(enemies.get(i).getxPos(), enemies.get(i).getyPos());
                     g2d.drawImage(slimeImage, (int)screenPos[0], (int)screenPos[1], TILE_SIZE, TILE_SIZE, null);
+                    g2d.drawImage(toShadow(slimeImage), (int)screenPos[0], (int)(screenPos[1] + 2 * TILE_SIZE), TILE_SIZE, -TILE_SIZE, null);
                 }
             }
         });
@@ -326,7 +326,7 @@ public class Gui extends JPanel{
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 Rectangle hitbox = obj.getHitbox();
-                double[] coords = absToScreen((obj.x() + hitbox.getX()), (obj.y() + hitbox.getY()));
+                double[] coords = absToScreen((hitbox.getX()), (hitbox.getY()));
                 g2d.setColor(Color.RED);
                 g2d.setStroke(new BasicStroke(3));
                 g2d.drawRect((int)coords[0], (int)coords[1], (int)hitbox.getWidth(), (int)hitbox.getHeight());

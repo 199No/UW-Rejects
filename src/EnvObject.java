@@ -91,6 +91,7 @@ public class EnvObject {
                 this.collidable = false;
                 break;
         }
+        hitbox.translate((int)this.xPos, (int)this.yPos);
     }
     public double x(){
         return xPos;

@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.Timer;
@@ -41,6 +42,7 @@ public class Game implements ActionListener{
     Chunk chunk2;
     private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
     private ArrayList<Player>  players = new ArrayList<Player>();
+    private ArrayList<EnvObject> envObjects = new ArrayList<EnvObject>();
 
     // Bounds
     private double xMin = 0;
@@ -144,7 +146,7 @@ public class Game implements ActionListener{
         gui.moveCamera(((players.get(0).getxPos() + players.get(1).getxPos()) / 2 - gui.cameraX()) / 10, ((players.get(0).getyPos() + players.get(1).getyPos()) / 2 - gui.cameraY()) / 10);
         gui.drawPlayers(this.players);
         gui.drawEnemies(this.enemies);
-        //gui.drawHitboxes(this.players, this.enemies);
+        gui.drawHitboxes(this.players, this.enemies);
         gui.displayFPS((int)frameRate);
         gui.repaint();
         now = System.currentTimeMillis();
@@ -213,6 +215,41 @@ public class Game implements ActionListener{
             keys[playerKeys[3]]  // Right
         };
         player.move(movement, shift);
+        for(int i = 0; i < map.numLoadedChunks(); i++){
+            EnvObject[] envObjects = map.getChunk(i).getEnvObjects();
+            EnvObject obj;
+            Rectangle pHitbox, objHitbox;
+            for(int k = 0; k < envObjects.length; k++){
+                obj = envObjects[k];
+                pHitbox = player.getHitbox();
+                objHitbox = obj.getHitbox();
+                if(player.getHitbox().intersects(obj.getHitbox())){
+                    // Collision from the left of hitbox
+                    if(pHitbox.getMaxX() > objHitbox.getX()
+                    && pHitbox.getMaxX() < objHitbox.getCenterX()){
+                        player.setxPos(objHitbox.getX() - pHitbox.getWidth());
+                    }
+                    
+                    // Collision from the right of hitbox
+                    if(pHitbox.getX() < objHitbox.getMaxX()
+                    && pHitbox.getX() > objHitbox.getCenterX()){
+                        player.setxPos(objHitbox.getX() + pHitbox.getWidth());
+                    }
+                    // Collision from the top of hitbox
+                    if(pHitbox.getMaxY() > objHitbox.getY()
+                    && pHitbox.getMaxY() < objHitbox.getCenterY()){
+                        player.setyPos(objHitbox.getY() - pHitbox.getHeight());
+                    }
+                    // Collision from bottom of hitbox
+                    if(pHitbox.getY() < objHitbox.getMaxY()
+                    && pHitbox.getY() > objHitbox.getCenterY()){
+                        player.setyPos(objHitbox.getY() + objHitbox.getHeight());
+                    }
+                    
+                }
+            }
+        }
+
     }
 
     private void handlePlayerActions(Player player, boolean[] keys, int attackKey, int blockKey) {
