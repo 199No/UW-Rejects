@@ -76,7 +76,7 @@ public class Game implements ActionListener{
 //-------------------------------------------------// 
 
     @Override
-
+/* 
     public void actionPerformed(ActionEvent e) {
         /////////////////////
         //// CALCULATE FPS
@@ -113,6 +113,44 @@ public class Game implements ActionListener{
             }else{
                 enemies.get(i).idleMove();
             }
+             ////////////////
+        /// COLLISION
+        ///////////////
+        for(int h = 0; h < map.numLoadedChunks(); h++){
+            EnvObject[] envObjects = map.getChunk(h).getEnvObjects();
+            EnvObject obj;
+            Rectangle eHitbox, objHitbox;
+            Rectangle2D clip;
+            for(int k = 0; k < envObjects.length; k++){
+                obj = envObjects[k];
+                eHitbox = enemies.get(h).getHitbox();
+                objHitbox = obj.getHitbox();
+                if(enemies.get(h).getHitbox().intersects(obj.getHitbox())){
+                    clip = objHitbox.createIntersection(eHitbox);
+                    // Horizontal collide
+                    if(clip.getHeight() > clip.getWidth()){
+                        // Right collide
+                        if(eHitbox.getX() > objHitbox.getX()){
+                            enemies.get(h).setxPos(objHitbox.getMaxX());
+                        }   
+                        // Left collide
+                        if(eHitbox.getX() < objHitbox.getX()){
+                            enemies.get(h).setxPos(objHitbox.getX() - enemies.get(h).getWidth());
+                        }
+                    }
+                    else if (clip.getWidth() > clip.getHeight()){
+                        
+                        // Right collide
+                        if(eHitbox.getY() > objHitbox.getY()){
+                            enemies.get(h).setyPos(objHitbox.getMaxY());
+                        }   
+                        // Left collide
+                        if(eHitbox.getY() < objHitbox.getY()){
+                            enemies.get(h).setyPos(objHitbox.getY() - enemies.get(h).getHeight());
+                        }
+                    }
+                }
+            }
         }
         //gui.addToQueue(new GraphicsRunnable() {
         //    public void draw(Graphics2D g2d){
@@ -123,8 +161,8 @@ public class Game implements ActionListener{
         // Draw the ground
         
         gui.background(0, 0, 0);
-        for(int i = 0; i < map.numLoadedChunks(); i++){
-            gui.drawChunk(map.getChunk(i));
+        for(int c = 0; c < map.numLoadedChunks(); c++){
+            gui.drawChunk(map.getChunk(c));
         }
         
         // Draw dash bars
@@ -149,8 +187,8 @@ public class Game implements ActionListener{
         
 
         // Draw the first layer of the environment (behind both players)
-        for(int i = 0; i < map.numLoadedChunks(); i++){
-            gui.drawEnvLayer1(map.getChunk(i), player1.getyPos(), player2.getyPos());
+        for(int j = 0; j < map.numLoadedChunks(); j++){
+            gui.drawEnvLayer1(map.getChunk(j), player1.getyPos(), player2.getyPos());
         }
 
         // Draw whichever player is farthest back
@@ -161,8 +199,8 @@ public class Game implements ActionListener{
         }  
 
         // Draw the second layer of the environment (between both players)
-        for(int i = 0; i < map.numLoadedChunks(); i++){
-            gui.drawEnvLayer2(map.getChunk(i), player1.getyPos(), player2.getyPos());
+        for(int k = 0; k < map.numLoadedChunks(); k++){
+            gui.drawEnvLayer2(map.getChunk(k), player1.getyPos(), player2.getyPos());
         }
 
         // Draw whichever player is farthest forward
@@ -173,14 +211,151 @@ public class Game implements ActionListener{
         }  
 
         // Draw the third layer of the environemt (in front of both players)
-        for(int i = 0; i < map.numLoadedChunks(); i++){
-            gui.drawEnvLayer3(map.getChunk(i), player1.getyPos(), player2.getyPos());
+        for(int f = 0; f < map.numLoadedChunks(); f++){
+            gui.drawEnvLayer3(map.getChunk(f), player1.getyPos(), player2.getyPos());
         }
 
 
         gui.drawEnemies(this.enemies);
         gui.drawHitboxes(this.players, this.enemies);
         gui.displayFPS((int)frameRate);
+        gui.repaint();
+        now = System.currentTimeMillis();
+     }
+    }
+     */
+
+     public void actionPerformed(ActionEvent e) {
+        /////////////////////
+        //// CALCULATE FPS
+        ////////////////////
+        now = System.currentTimeMillis();
+    
+        if (now - lastSecond > 1000) {
+            lastSecond = now;
+            frameRate = framesLastSecond;
+            framesLastSecond = 0;
+        } else {
+            framesLastSecond++;
+        }
+    
+        ////////////////
+        // Update Player
+        ////////////////
+        updatePlayer(player1);
+        updatePlayer(player2);
+    
+        // Update enemies
+        for (int i = 0; i < this.enemies.size(); i++) {
+            for (int j = 0; j < this.players.size(); j++) {
+                enemies.get(i).scanArea(players.get(j).getLocation());
+            }
+    
+            if (enemies.get(i).getAlert()) {
+                enemies.get(i).moveToward(enemies.get(i).getLastSeen());
+            } else {
+                enemies.get(i).idleMove();
+            }
+    
+            ////////////////
+            /// COLLISION
+            ///////////////
+            for (int h = 0; h < map.numLoadedChunks(); h++) {
+                EnvObject[] envObjects = map.getChunk(h).getEnvObjects();
+                for (int k = 0; k < envObjects.length; k++) {
+                    EnvObject obj = envObjects[k];
+                    Rectangle eHitbox = enemies.get(i).getHitbox();
+                    Rectangle objHitbox = obj.getHitbox();
+    
+                    if (eHitbox.intersects(objHitbox)) {
+                        Rectangle2D clip = objHitbox.createIntersection(eHitbox);
+    
+                        // Horizontal collision
+                        if (clip.getHeight() > clip.getWidth()) {
+                            // Right collision
+                            if (eHitbox.getX() > objHitbox.getX()) {
+                                enemies.get(i).setxPos(objHitbox.getMaxX());
+                            }
+                            // Left collision
+                            if (eHitbox.getX() < objHitbox.getX()) {
+                                enemies.get(i).setxPos(objHitbox.getX() - enemies.get(i).getWidth());
+                            }
+                        } else if (clip.getWidth() > clip.getHeight()) {
+                            // Top collision
+                            if (eHitbox.getY() > objHitbox.getY()) {
+                                enemies.get(i).setyPos(objHitbox.getMaxY());
+                            }
+                            // Bottom collision
+                            if (eHitbox.getY() < objHitbox.getY()) {
+                                enemies.get(i).setyPos(objHitbox.getY() - enemies.get(i).getHeight());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+        // Draw the background (happens before all other draw commands)
+        gui.background(0, 0, 0);
+        for (int c = 0; c < map.numLoadedChunks(); c++) {
+            gui.drawChunk(map.getChunk(c));
+        }
+    
+        // Draw dash bars
+        gui.addToQueue(new GraphicsRunnable() {
+            public void draw(Graphics2D g) {
+                double height1 = (((double) System.currentTimeMillis() - (double) input.getLastp1Dash()) / 5000) * Gui.HEIGHT;
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, 30, Gui.HEIGHT);
+                g.setColor(new Color(3, 148, 252));
+                g.fillRect(0, Gui.HEIGHT - (int) height1, 30, (int) height1);
+    
+                double height2 = (((double) System.currentTimeMillis() - (double) input.getLastp2Dash()) / 5000) * Gui.HEIGHT;
+                g.setColor(Color.BLACK);
+                g.fillRect(Gui.WIDTH - 30, 0, 30, Gui.HEIGHT);
+                g.setColor(new Color(3, 148, 252));
+                g.fillRect(Gui.WIDTH - 30, Gui.HEIGHT - (int) height2, 30, (int) height2);
+            }
+        });
+    
+        // Update camera position
+        gui.moveCamera(
+            ((players.get(0).getxPos() + players.get(1).getxPos()) / 2 - gui.cameraX()) / 10,
+            ((players.get(0).getyPos() + players.get(1).getyPos()) / 2 - gui.cameraY()) / 10
+        );
+    
+        // Draw the first layer of the environment (behind both players)
+        for (int j = 0; j < map.numLoadedChunks(); j++) {
+            gui.drawEnvLayer1(map.getChunk(j), player1.getyPos(), player2.getyPos());
+        }
+    
+        // Draw whichever player is farthest back
+        if (player1.getyPos() < player2.getyPos()) {
+            gui.drawPlayer(players.get(0), input);
+        } else {
+            gui.drawPlayer(players.get(1), input);
+        }
+    
+        // Draw the second layer of the environment (between both players)
+        for (int k = 0; k < map.numLoadedChunks(); k++) {
+            gui.drawEnvLayer2(map.getChunk(k), player1.getyPos(), player2.getyPos());
+        }
+    
+        // Draw whichever player is farthest forward
+        if (player1.getyPos() < player2.getyPos()) {
+            gui.drawPlayer(players.get(1), input);
+        } else {
+            gui.drawPlayer(players.get(0), input);
+        }
+    
+        // Draw the third layer of the environment (in front of both players)
+        for (int f = 0; f < map.numLoadedChunks(); f++) {
+            gui.drawEnvLayer3(map.getChunk(f), player1.getyPos(), player2.getyPos());
+        }
+    
+        gui.drawEnemies(this.enemies);
+        gui.drawHitboxes(this.players, this.enemies);
+        gui.displayFPS((int) frameRate);
         gui.repaint();
         now = System.currentTimeMillis();
     }
