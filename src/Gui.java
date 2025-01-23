@@ -162,46 +162,44 @@ public class Gui extends JPanel{
         });
     }
     // Draw the player based on animations and current state.
-    public void drawPlayers(ArrayList<Player> players){
+    public void drawPlayer(Player player){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                for(int i = 0; i < players.size(); i++){
-
-                    BufferedImage playerImage = getPlayerIdle(players.get(i))[0]; // Default idle animation frame
+                    BufferedImage playerImage = getPlayerIdle(player)[0]; // Default idle animation frame
 
                     // Handle the dashing state
-                    if (players.get(i).getIsDashing()) {
-                        if (getPlayerDash(players.get(i)).getCurState() == 0) { // Starting dashing animation (state 0)
+                    if (player.getIsDashing()) {
+                        if (getPlayerDash(player).getCurState() == 0) { // Starting dashing animation (state 0)
 
-                            if (getPlayerDash(players.get(i)).getCurStep() == getPlayerDash(players.get(i)).getCurrentStateStepCount()) {
-                                getPlayerDash(players.get(i)).incrementState(); // Move to the next state
+                            if (getPlayerDash(player).getCurStep() == getPlayerDash(player).getCurrentStateStepCount()) {
+                                getPlayerDash(player).incrementState(); // Move to the next state
                             }
-                            playerImage = getPlayerDash(players.get(i)).getCurFrame(true); // Pass true because player is dashing
+                            playerImage = getPlayerDash(player).getCurFrame(true); // Pass true because player is dashing
 
-                        } else if (getPlayerDash(players.get(i)).getCurState() == 1) { // Mid dash (state 1)
+                        } else if (getPlayerDash(player).getCurState() == 1) { // Mid dash (state 1)
                 
-                            playerImage = getPlayerDash(players.get(i)).getCurFrame(true); // Continue looping in state 1 while dashing
+                            playerImage = getPlayerDash(player).getCurFrame(true); // Continue looping in state 1 while dashing
 
                         }
-                    } else if (getPlayerDash(players.get(i)).getCurState() == 1) { // Dash completed (state 1 ends when not dashing)
+                    } else if (getPlayerDash(player).getCurState() == 1) { // Dash completed (state 1 ends when not dashing)
 
-                        if (getPlayerDash(players.get(i)).getCurStep() == getPlayerDash(players.get(i)).getCurrentStateStepCount()) {
-                            getPlayerDash(players.get(i)).incrementState(); // Move to the next state
+                        if (getPlayerDash(player).getCurStep() == getPlayerDash(player).getCurrentStateStepCount()) {
+                            getPlayerDash(player).incrementState(); // Move to the next state
                         }
-                        playerImage = getPlayerDash(players.get(i)).getCurFrame(false); // Player is not dashing anymore
+                        playerImage = getPlayerDash(player).getCurFrame(false); // Player is not dashing anymore
 
-                    } else if (getPlayerDash(players.get(i)).getCurState() == 2) { // No dash, find the direction player is facing
-                        if (getPlayerDash(players.get(i)).getCurStep() == getPlayerDash(players.get(i)).getCurrentStateStepCount()) {
-                            getPlayerDash(players.get(i)).incrementState(); // Move to the next state
+                    } else if (getPlayerDash(player).getCurState() == 2) { // No dash, find the direction player is facing
+                        if (getPlayerDash(player).getCurStep() == getPlayerDash(player).getCurrentStateStepCount()) {
+                            getPlayerDash(player).incrementState(); // Move to the next state
                         }
-                        playerImage = getPlayerDash(players.get(i)).getCurFrame(false); // Player is not dashing
+                        playerImage = getPlayerDash(player).getCurFrame(false); // Player is not dashing
 
                     } else {
                         // Default idle frame handling (this shouldn't happen unless state 0 or 1 are incorrectly used)
-                        playerImage = getPlayerIdle(players.get(i))[0];
+                        playerImage = getPlayerIdle(player)[0];
                     }
 
-                    double[] playerScreenPos = absToScreen(players.get(i).getxPos(), players.get(i).getyPos());
+                    double[] playerScreenPos = absToScreen(player.getxPos(), player.getyPos());
 
                     // How much to vertically scale the final shadow (for adjustments)
                     double shadorowWidthScaleFactor = 0.8;
@@ -230,7 +228,7 @@ public class Gui extends JPanel{
                     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
                     
                 } 
-            }
+            
         });
     }
 
@@ -297,10 +295,54 @@ public class Gui extends JPanel{
 
                     }
                 }
+            }
+        });
+    }
+    
+    public void drawEnvLayer1(Chunk c, double player1y, double player2y){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                EnvObject[] envObjects = c.getEnvObjects();
                 for(int i = 0; i < envObjects.length; i++){
-                    double[] objCoords = absToScreen(envObjects[i].x(), envObjects[i].y());
-                    g2d.drawImage(envObjects[i].getImage(), (int)objCoords[0], (int)objCoords[1], (int)envObjects[i].width(), (int)(envObjects[i].height()), null);
-                    drawHitbox(envObjects[i]);
+                    if(envObjects[i].getHitbox().getY() < Math.min(player1y, player2y)){
+                        double[] objCoords = absToScreen(envObjects[i].x(), envObjects[i].y());
+                        g2d.drawImage(envObjects[i].getImage(), (int)objCoords[0], (int)objCoords[1], (int)envObjects[i].width(), (int)(envObjects[i].height()), null);
+                        drawHitbox(envObjects[i]);
+                    }
+
+                }
+            }
+        });
+    }
+        
+    public void drawEnvLayer2(Chunk c, double player1y, double player2y){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                EnvObject[] envObjects = c.getEnvObjects();
+                double objY;
+                for(int i = 0; i < envObjects.length; i++){
+                    objY = envObjects[i].getHitbox().getY();
+                    if(objY < Math.max(player1y, player2y) && objY > Math.min(player1y, player2y)){
+                        double[] objCoords = absToScreen(envObjects[i].x(), envObjects[i].y());
+                        g2d.drawImage(envObjects[i].getImage(), (int)objCoords[0], (int)objCoords[1], (int)envObjects[i].width(), (int)(envObjects[i].height()), null);
+                        drawHitbox(envObjects[i]);
+                    }
+
+                }
+            }
+        });
+    }
+        
+    public void drawEnvLayer3(Chunk c, double player1y, double player2y){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                EnvObject[] envObjects = c.getEnvObjects();
+                for(int i = 0; i < envObjects.length; i++){
+                    if(envObjects[i].getHitbox().getY() > Math.max(player1y, player2y)){
+                        double[] objCoords = absToScreen(envObjects[i].x(), envObjects[i].y());
+                        g2d.drawImage(envObjects[i].getImage(), (int)objCoords[0], (int)objCoords[1], (int)envObjects[i].width(), (int)(envObjects[i].height()), null);
+                        drawHitbox(envObjects[i]);
+                    }
 
                 }
             }
@@ -420,6 +462,13 @@ public class Gui extends JPanel{
         }
         return result;
     }
+    
+    /////////////////////////////////////////////////////
+    /// UTILITY
+    /////////////////////////////////////////////////////
+    
+    
+    
     // Absolute (pixels) to screenspace
     public static double[] absToScreen(double x, double y){
         return new double[] {x - sCameraX + WIDTH / 2, (y - sCameraY + HEIGHT / 2) * HEIGHT_SCALE};

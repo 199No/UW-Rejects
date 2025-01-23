@@ -144,8 +144,40 @@ public class Game implements ActionListener{
 
             }
         });
+        // Update camera position
         gui.moveCamera(((players.get(0).getxPos() + players.get(1).getxPos()) / 2 - gui.cameraX()) / 10, ((players.get(0).getyPos() + players.get(1).getyPos()) / 2 - gui.cameraY()) / 10);
-        gui.drawPlayers(this.players);
+        
+
+        // Draw the first layer of the environment (behind both players)
+        for(int i = 0; i < map.numLoadedChunks(); i++){
+            gui.drawEnvLayer1(map.getChunk(i), player1.getyPos(), player2.getyPos());
+        }
+
+        // Draw whichever player is farthest back
+        if(player1.getyPos() < player2.getyPos()){
+            gui.drawPlayer(players.get(0));
+        } else {
+            gui.drawPlayer(players.get(1));
+        }  
+
+        // Draw the second layer of the environment (between both players)
+        for(int i = 0; i < map.numLoadedChunks(); i++){
+            gui.drawEnvLayer2(map.getChunk(i), player1.getyPos(), player2.getyPos());
+        }
+
+        // Draw whichever player is farthest forward
+        if(player1.getyPos() < player2.getyPos()){
+            gui.drawPlayer(players.get(1));
+        } else {
+            gui.drawPlayer(players.get(0));
+        }  
+        
+        // Draw the third layer of the environemt (in front of both players)
+        for(int i = 0; i < map.numLoadedChunks(); i++){
+            gui.drawEnvLayer3(map.getChunk(i), player1.getyPos(), player2.getyPos());
+        }
+
+
         gui.drawEnemies(this.enemies);
         gui.drawHitboxes(this.players, this.enemies);
         gui.displayFPS((int)frameRate);
