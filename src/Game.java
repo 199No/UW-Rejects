@@ -290,13 +290,26 @@ public class Game implements ActionListener{
     }
 
     private void handlePlayerActions(Player player, boolean[] keys, int attackKey, int blockKey) {
-        //if input has the action keys pressed execute the player methods
-        if (keys[attackKey]) {
-            player.attack();
+         // Check if the attack is currently on cooldown
+    if (player.getIsAttacking() && (int) System.currentTimeMillis() - player.getLastAttack() > player.getAttackCooldown()) {
+        player.setIsAttacking(false);
+    }
+
+    // Restrict attack action
+    if (keys[attackKey]) {
+        if (!player.getIsAttacking() &&  // Player is not already attacking
+            !player.getIsBlocking() &&  // Player is not blocking
+            (int) System.currentTimeMillis() - player.getLastAttack() > player.getAttackCooldown()) { // Cooldown check
+            player.attack(); // Trigger attack
         }
-        if (keys[blockKey]) {
-            player.block();
+    }
+
+    // Restrict block action
+    if (keys[blockKey]) {
+        if (!player.getIsAttacking()) { // Ensure player is not attacking
+            player.block(); // Trigger block
         }
+    }
     }
 
     private void handlePlayerDash(Player player, int[] playerKeys) {

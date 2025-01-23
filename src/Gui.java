@@ -397,6 +397,12 @@ public class Gui extends JPanel{
                     g2d.drawImage(images.getImage("Square1"), (int) location[0] + players.get(p).getWidth()/4, (int) location[1] + players.get(p).getHeight()/4, players.get(p).getWidth()/2, players.get(p).getHeight()/2, null);
                 }
 
+                for(int p = 0; p < players.size(); p++){
+                    double[] hitbox = players.get(p).getSwingHitboxTopLeft();
+                    double[] location = absToScreen(hitbox[0], hitbox[1]);
+                    g2d.drawImage(images.getImage("Square1"), (int) location[0] + players.get(p).swingWidth, (int) location[1] + players.get(p).swingHeight, players.get(p).swingWidth, players.get(p).swingHeight, null);
+                }
+
                 for(int e = 0; e < enemies.size(); e++){
                     double[] hitbox = enemies.get(e).getHitboxTopLeft();
                     double[] location = absToScreen(hitbox[0], hitbox[1]);

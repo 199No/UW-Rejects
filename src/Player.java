@@ -28,6 +28,8 @@ public class Player {
     private double yVel;
     private int xDir; // -1 (left), 0 (neutral), 1 (right)
     private int yDir; // -1 (Up),   0 (neutral), 1 (down)
+    private int facingDirX = 1; // 1 = right, -1 = left, 0 = no horizontal facing
+    private int facingDirY = 0; // 1 = down, -1 = up, 0 = no vertical facing
 
     private final int width = Gui.TILE_SIZE;
     private final int height = Gui.TILE_SIZE;
@@ -40,9 +42,9 @@ public class Player {
 
     //Attack
     private int attackCooldown; // in miliseconds
-    private int attackLength; // in miliseconds
+    private int attackLength = 1000; // in miliseconds
     private boolean isAttacking; //is swinging
-    private int lastAttack;
+    private int lastAttack = (int) System.currentTimeMillis();
 
     //Block
     private int blockCooldown; // in miliseconds
@@ -59,6 +61,9 @@ public class Player {
     private int[] topLeft; //top left of the hitbox
     private Rectangle hitbox = new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
 
+    public int swingWidth  = Gui.TILE_SIZE / 2;
+    public int swingHeight = Gui.TILE_SIZE / 2;
+    private Rectangle swingHitbox = new Rectangle( swingWidth, swingHeight,  (int) getxPos(),  (int) getyPos() );
     ///////////////
     //Constuctor
     //////////////
@@ -114,6 +119,14 @@ public class Player {
         if (movement[1]) this.xVel -= this.speed; // Left
         if (movement[2]) this.yVel += this.speed; // Down
         if (movement[3]) this.xVel += this.speed; // Right
+
+        if (xDir != 0) {
+            facingDirX = xDir;
+            facingDirY = 0; // Prioritize horizontal facing
+        } else if (yDir != 0) {
+            facingDirY = yDir;
+            facingDirX = 0; // Vertical facing
+        }
     }
 
     // Apply friction to the velocities
@@ -134,11 +147,38 @@ public class Player {
         this.yPos += this.yVel * speed;
     }
 
-    public  void attack(){
-        if(!isAttacking && (int) System.currentTimeMillis() - lastAttack > attackLength){
-            this.isAttacking = true;
-            System.out.println("attack!");
+    public void attack() {
+
+        this.isAttacking = true;
+        System.out.println("attack!");
+    
+        // Call the method to spawn a hitbox based on the player's direction
+        spawnHitbox();
+    }
+    
+    public void spawnHitbox() {
+        int hitboxX = 0;
+        int hitboxY = 0;
+    
+        // Calculate hitbox position based on facing direction
+        if (facingDirX == 1) { // Facing right
+            hitboxX = (int) getxPos() + getWidth();
+            hitboxY = (int) getyPos() + getHeight() / 2 - swingHeight / 2;
+        } else if (facingDirX == -1) { // Facing left
+            hitboxX = (int) getxPos() - swingWidth;
+            hitboxY = (int) getyPos() + getHeight() / 2 - swingHeight / 2;
+        } else if (facingDirY == -1) { // Facing up
+            hitboxX = (int) getxPos() + getWidth() / 2 - swingWidth / 2;
+            hitboxY = (int) getyPos() - swingHeight;
+        } else if (facingDirY == 1) { // Facing down
+            hitboxX = (int) getxPos() + getWidth() / 2 - swingWidth / 2;
+            hitboxY = (int) getyPos() + getHeight();
         }
+    
+        // Create a new hitbox
+        swingHitbox = new Rectangle(hitboxX, hitboxY, swingWidth, swingHeight);
+    
+        System.out.println("Hitbox spawned at (" + hitboxX + ", " + hitboxY + ")");
     }
 
     public void block(){
@@ -169,6 +209,7 @@ public class Player {
     public void setyPos(double yPos){
         this.yPos = yPos;
     }
+
     public int getXDir(){
         if(xVel > 0){
             return 1;
@@ -178,6 +219,7 @@ public class Player {
             return 0;
         }
     }
+
     public int getYDir(){
         if(yVel > 0){
             return 1;
@@ -188,8 +230,6 @@ public class Player {
         }
     }
     
-
-
     public int[] getLocation(){
         return new int[] {(int) this.xPos, (int) this.yPos};
     }
@@ -198,15 +238,7 @@ public class Player {
         //0,2 for index when grabbing a image from a 2d array of player images
         return new int[]{xDir + 1, yDir + 1};
     }
-    /* 
-    public int getXDir(){
-        return xDir;
-    }
-    
-    public int getYDir(){
-        return yDir;
-    }
-    */
+   
     public int getWidth(){
         return this.width;
     }
@@ -234,7 +266,24 @@ public class Player {
     public int getDashLength(){
         return this.dashLength;
     }
-
+    public boolean getIsAttacking(){
+        return this.isAttacking;
+    }
+    public boolean getIsBlocking(){
+        return this.isBlocking;
+    }
+    public int getLastAttack(){
+        return this.lastAttack;
+    }
+    public int getAttackLength(){
+        return this.attackLength;
+    }
+    public int getAttackCooldown(){
+        return this.attackCooldown;
+    }
+    public void setIsAttacking(boolean bool){
+        this.isAttacking = bool; 
+    }
     public double getSpeed(){
         return speed;
     }
@@ -245,6 +294,9 @@ public class Player {
 
     public double[] getHitboxTopLeft(){
         return new double[]{getxPos(), getyPos()};
+    }
+    public double[] getSwingHitboxTopLeft(){
+        return new double[]{this.swingHitbox.getX(), this.swingHitbox.getY()};
     }
 
     public Rectangle getHitbox(){
