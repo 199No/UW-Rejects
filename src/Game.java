@@ -247,24 +247,25 @@ public class Game implements ActionListener{
     
         // Update enemies
         for (int i = 0; i < this.enemies.size(); i++) {
-            for (int j = 0; j < this.players.size(); j++) {
-                enemies.get(i).scanArea(players.get(j).getLocation());
+            Enemies enemy = enemies.get(i);
+            for (int p = 0; p < this.players.size(); p++) {
+                enemy.scanArea(players.get(p).getLocation());
             }
     
-            if (enemies.get(i).getAlert()) {
-                enemies.get(i).moveToward(enemies.get(i).getLastSeen());
+            if (enemy.getAlert()) {
+                enemy.moveToward(enemy.getLastSeen());
             } else {
-                enemies.get(i).idleMove();
+                enemy.idleMove();
             }
     
             ////////////////
             /// COLLISION
             ///////////////
-            for (int h = 0; h < map.numLoadedChunks(); h++) {
-                EnvObject[] envObjects = map.getChunk(h).getEnvObjects();
-                for (int k = 0; k < envObjects.length; k++) {
-                    EnvObject obj = envObjects[k];
-                    Rectangle eHitbox = enemies.get(i).getHitbox();
+            for (int c = 0; c < map.numLoadedChunks(); c++) {
+                EnvObject[] envObjects = map.getChunk(c).getEnvObjects();
+                for (int j = 0; j < envObjects.length; j++) {
+                    EnvObject obj = envObjects[j];
+                    Rectangle eHitbox = enemy.getHitbox();
                     Rectangle objHitbox = obj.getHitbox();
     
                     if (eHitbox.intersects(objHitbox)) {
@@ -274,20 +275,20 @@ public class Game implements ActionListener{
                         if (clip.getHeight() > clip.getWidth()) {
                             // Right collision
                             if (eHitbox.getX() > objHitbox.getX()) {
-                                enemies.get(i).setxPos(objHitbox.getMaxX());
+                                enemy.setxPos(objHitbox.getMaxX());
                             }
                             // Left collision
                             if (eHitbox.getX() < objHitbox.getX()) {
-                                enemies.get(i).setxPos(objHitbox.getX() - enemies.get(i).getWidth());
+                                enemy.setxPos(objHitbox.getX() - enemy.getWidth());
                             }
                         } else if (clip.getWidth() > clip.getHeight()) {
                             // Top collision
                             if (eHitbox.getY() > objHitbox.getY()) {
-                                enemies.get(i).setyPos(objHitbox.getMaxY());
+                                enemy.setyPos(objHitbox.getMaxY());
                             }
                             // Bottom collision
                             if (eHitbox.getY() < objHitbox.getY()) {
-                                enemies.get(i).setyPos(objHitbox.getY() - enemies.get(i).getHeight());
+                                enemy.setyPos(objHitbox.getY() - enemy.getHeight());
                             }
                         }
                     }
@@ -325,8 +326,8 @@ public class Game implements ActionListener{
         );
     
         // Draw the first layer of the environment (behind both players)
-        for (int j = 0; j < map.numLoadedChunks(); j++) {
-            gui.drawEnvLayer1(map.getChunk(j), player1.getyPos(), player2.getyPos());
+        for (int c = 0; c < map.numLoadedChunks(); c++) {
+            gui.drawEnvLayer1(map.getChunk(c), player1.getyPos(), player2.getyPos());
         }
     
         // Draw whichever player is farthest back
@@ -337,8 +338,8 @@ public class Game implements ActionListener{
         }
     
         // Draw the second layer of the environment (between both players)
-        for (int k = 0; k < map.numLoadedChunks(); k++) {
-            gui.drawEnvLayer2(map.getChunk(k), player1.getyPos(), player2.getyPos());
+        for (int c = 0; c < map.numLoadedChunks(); c++) {
+            gui.drawEnvLayer2(map.getChunk(c), player1.getyPos(), player2.getyPos());
         }
     
         // Draw whichever player is farthest forward
