@@ -200,8 +200,32 @@ public class Gui extends JPanel{
                         
                     }
                     else {
-                        // Default idle frame handling (this shouldn't happen unless state 0 or 1 are incorrectly used)
-                        playerImage = getPlayerIdle(player)[0];
+                        if (player.getYDir() == -1) {
+                            // Player is facing up
+                            if (player.getXDir() == -1) {
+                                // Moving left while facing up
+                                playerImage = getPlayerIdle(player)[2];
+                            } else if (player.getXDir() == 1) {
+                                // Moving right while facing up
+                                playerImage = getPlayerIdle(player)[3];
+                            } else {
+                                // Default to right-facing up when no horizontal movement
+                                playerImage = getPlayerIdle(player)[3];
+                            }
+                        } else {
+                            // Player is not facing up
+                            if (player.getXDir() == -1) {
+                                // Moving left
+                                playerImage = getPlayerIdle(player)[1];
+                            } else if (player.getXDir() == 1) {
+                                // Moving right
+                                playerImage = getPlayerIdle(player)[0];
+                            } else {
+                                // Default to idle right-facing when no movement
+                                playerImage = getPlayerIdle(player)[0];
+                            }
+                        }
+
                     }
 
                     double[] playerScreenPos = absToScreen(player.getxPos(), player.getyPos());

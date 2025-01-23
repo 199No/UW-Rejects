@@ -42,6 +42,7 @@ public class Player {
     private int attackCooldown; // in miliseconds
     private int attackLength; // in miliseconds
     private boolean isAttacking; //is swinging
+    private int lastAttack;
 
     //Block
     private int blockCooldown; // in miliseconds
@@ -134,7 +135,10 @@ public class Player {
     }
 
     public  void attack(){
-        System.out.println("attack!");
+        if(!isAttacking && (int) System.currentTimeMillis() - lastAttack > attackLength){
+            this.isAttacking = true;
+            System.out.println("attack!");
+        }
     }
 
     public void block(){
@@ -165,6 +169,25 @@ public class Player {
     public void setyPos(double yPos){
         this.yPos = yPos;
     }
+    public int getXDir(){
+        if(xVel > 0){
+            return 1;
+        }else if(xVel < 0){
+            return -1;
+        }else{
+            return 0;
+        }
+    }
+    public int getYDir(){
+        if(yVel > 0){
+            return 1;
+        }else if(yVel < 0){
+            return -1;
+        }else{
+            return 0;
+        }
+    }
+    
 
 
     public int[] getLocation(){
@@ -175,7 +198,7 @@ public class Player {
         //0,2 for index when grabbing a image from a 2d array of player images
         return new int[]{xDir + 1, yDir + 1};
     }
-
+    /* 
     public int getXDir(){
         return xDir;
     }
@@ -183,7 +206,7 @@ public class Player {
     public int getYDir(){
         return yDir;
     }
-
+    */
     public int getWidth(){
         return this.width;
     }
