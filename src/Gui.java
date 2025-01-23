@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.Taskbar.State;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 //-------------------------------------------------//
 //                      Gui                        //
@@ -187,7 +188,7 @@ public class Gui extends JPanel{
                         dashAnimation.setFrameTime(100); // Go back to default frame time, to make second phase loop
                         playerImage = dashAnimation.getCurFrame();
                     } 
-                    
+
                     // Third phase (ending dash)
                     else if(timeSinceLastDash >= 750 && timeSinceLastDash < 1000){ 
                         if(dashAnimation.getCurState() != 2){ // If animation is not in third phase make it so
@@ -206,7 +207,7 @@ public class Gui extends JPanel{
                     double[] playerScreenPos = absToScreen(player.getxPos(), player.getyPos());
 
                     // How much to vertically scale the final shadow (for adjustments)
-                    double shadorowWidthScaleFactor = 0.8;
+                    double shadowScaleFactor = 0.8;
                     // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
                     double playerToTileX = (double)TILE_SIZE/(double)playerImage.getWidth();
                     double playerToTileY = (double)TILE_SIZE/(double)playerImage.getHeight();
@@ -219,14 +220,14 @@ public class Gui extends JPanel{
                     shadowTransform.translate(
                                           // Because the image shears from the bottom up it moves the "feet" of the shadow,
                                           // so we account for that and also the imminent scaling of the image.
-                        (playerScreenPos[0] + playerImage.getWidth() * shearFactor * playerToTileX * shadorowWidthScaleFactor),
+                        (playerScreenPos[0] + playerImage.getWidth() * shearFactor * playerToTileX * shadowScaleFactor),
                                                   // Flipping the image puts it above the player's head so we move it to be below the feet instead.
-                        (double)((playerScreenPos[1] + 2*TILE_SIZE) - playerImage.getHeight() * (1-shadorowWidthScaleFactor) * playerToTileY)
+                        (double)((playerScreenPos[1] + 2*TILE_SIZE) - playerImage.getHeight() * (1-shadowScaleFactor) * playerToTileY)
                     );
                     // Shear the image so it is at the right angle
                     shadowTransform.shear(shearFactor, 0);
                     // Rescale the image so it appears the right size
-                    shadowTransform.scale(playerToTileX, -playerToTileY * shadorowWidthScaleFactor);
+                    shadowTransform.scale(playerToTileX, -playerToTileY * shadowScaleFactor);
                     // Draw the player and its shadow
                     g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
                     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
@@ -302,16 +303,30 @@ public class Gui extends JPanel{
             }
         });
     }
-    
+    public void drawEnvObject(EnvObject e, Graphics2D g2d){
+        double shearFactor = -0.5;
+        BufferedImage result = config.createCompatibleImage(e.getImage().getWidth(), e.getImage().getHeight(), Transparency.TRANSLUCENT);
+        AffineTransform shadowTransform = AffineTransform.getShearInstance(shearFactor, 0);
+        AffineTransformOp shadowTransformOp = new AffineTransformOp(shadowTransform, AffineTransformOp.TYPE_BILINEAR);
+        double[] objCoords = absToScreen(e.x(), e.y());
+        g2d.drawImage(e.getImage(), (int)objCoords[0], (int)objCoords[1], (int)e.width(), (int)(e.height()), null);
+        g2d.drawImage( 
+            toShadow(shadowTransformOp.filter(e.getImage(), result)),
+            (int)(objCoords[0] + e.getImage().getWidth() * shearFactor),
+            (int)(objCoords[1] + 2 * e.getImage().getHeight()),
+            (int)e.width(),
+            -(int)e.height(),
+            null
+        );
+        drawHitbox(e);
+    }
     public void drawEnvLayer1(Chunk c, double player1y, double player2y){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 EnvObject[] envObjects = c.getEnvObjects();
                 for(int i = 0; i < envObjects.length; i++){
                     if(envObjects[i].getHitbox().getY() < Math.min(player1y, player2y)){
-                        double[] objCoords = absToScreen(envObjects[i].x(), envObjects[i].y());
-                        g2d.drawImage(envObjects[i].getImage(), (int)objCoords[0], (int)objCoords[1], (int)envObjects[i].width(), (int)(envObjects[i].height()), null);
-                        drawHitbox(envObjects[i]);
+                        drawEnvObject(envObjects[i], g2d);
                     }
 
                 }
@@ -327,9 +342,7 @@ public class Gui extends JPanel{
                 for(int i = 0; i < envObjects.length; i++){
                     objY = envObjects[i].getHitbox().getY();
                     if(objY < Math.max(player1y, player2y) && objY > Math.min(player1y, player2y)){
-                        double[] objCoords = absToScreen(envObjects[i].x(), envObjects[i].y());
-                        g2d.drawImage(envObjects[i].getImage(), (int)objCoords[0], (int)objCoords[1], (int)envObjects[i].width(), (int)(envObjects[i].height()), null);
-                        drawHitbox(envObjects[i]);
+                        drawEnvObject(envObjects[i], g2d);
                     }
 
                 }
@@ -343,9 +356,7 @@ public class Gui extends JPanel{
                 EnvObject[] envObjects = c.getEnvObjects();
                 for(int i = 0; i < envObjects.length; i++){
                     if(envObjects[i].getHitbox().getY() > Math.max(player1y, player2y)){
-                        double[] objCoords = absToScreen(envObjects[i].x(), envObjects[i].y());
-                        g2d.drawImage(envObjects[i].getImage(), (int)objCoords[0], (int)objCoords[1], (int)envObjects[i].width(), (int)(envObjects[i].height()), null);
-                        drawHitbox(envObjects[i]);
+                        drawEnvObject(envObjects[i], g2d);
                     }
 
                 }
@@ -415,7 +426,7 @@ public class Gui extends JPanel{
 
         // Set the composite rule to only affect non-transparent pixels
         // See https://ssp.impulsetrain.com/porterduff.html
-        g.setComposite(AlphaComposite.SrcIn.derive(0.2f));
+        g.setComposite(AlphaComposite.SrcIn.derive(0.9f));
 
         // Set the desired color and fill the entire image
         g.setColor(color);
