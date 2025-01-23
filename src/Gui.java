@@ -29,7 +29,7 @@ public class Gui extends JPanel{
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
     public static final double HEIGHT_SCALE = (double)2/(double)3;
-    public static final int PLAYERSIZE = 24;
+    public static final int PLAYER_SIZE = 24;
     public static final int TILE_SIZE = 60;
     public static final double FOCAL_LENGTH = 720 / Math.sqrt(2); // 720 / sqrt(2)
     public static final double CAMERA_ANGLE = Math.PI * 0.05;
@@ -71,29 +71,29 @@ public class Gui extends JPanel{
         
         player1Images = new BufferedImage[5];
         // Load up all the player images (to be deprectated)
-        player1Images[0] = images.getImage("playerIdle").getSubimage(0 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
-        player1Images[1] = images.getImage("playerIdle").getSubimage(1 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
-        player1Images[2] = images.getImage("playerIdle").getSubimage(0 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
-        player1Images[3] = images.getImage("playerIdle").getSubimage(1 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player1Images[0] = images.getImage("playerIdle").getSubimage(0 * PLAYER_SIZE, 0 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
+        player1Images[1] = images.getImage("playerIdle").getSubimage(1 * PLAYER_SIZE, 0 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
+        player1Images[2] = images.getImage("playerIdle").getSubimage(0 * PLAYER_SIZE, 1 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
+        player1Images[3] = images.getImage("playerIdle").getSubimage(1 * PLAYER_SIZE, 1 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
         player1Images[4] = images.getImage("playerIdle");
         player1Images[4] = images.getImage("playerIdle");
 
 
         player1DashAnimation = new StatefulAnimation(100, 3, 2,
-            new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("playerDash"), true);
+            new int[][] {{0,1,2,3}, {4,5}, {4,3,2,1}}, images.getImage("playerDash"), true);
         // Honestly this could be a stateful animation.
         // TODO: fix.
 
         player2Images = new BufferedImage[5];
         // Load up all the player images (to be deprectated)
-        player2Images[0] = images.getImage("player2Idle").getSubimage(0 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
-        player2Images[1] = images.getImage("player2Idle").getSubimage(1 * PLAYERSIZE, 0 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
-        player2Images[2] = images.getImage("player2Idle").getSubimage(0 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
-        player2Images[3] = images.getImage("player2Idle").getSubimage(1 * PLAYERSIZE, 1 * PLAYERSIZE, PLAYERSIZE, PLAYERSIZE);
+        player2Images[0] = images.getImage("player2Idle").getSubimage(0 * PLAYER_SIZE, 0 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
+        player2Images[1] = images.getImage("player2Idle").getSubimage(1 * PLAYER_SIZE, 0 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
+        player2Images[2] = images.getImage("player2Idle").getSubimage(0 * PLAYER_SIZE, 1 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
+        player2Images[3] = images.getImage("player2Idle").getSubimage(1 * PLAYER_SIZE, 1 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
         player2Images[4] = images.getImage("player2Idle");
 
         player2DashAnimation = new StatefulAnimation(100, 3, 2,
-        new int[][] {{0,1,2,3}, {4,5}, {6,7,8,9}}, images.getImage("player2Dash"), true);
+        new int[][] {{0,1,2,3}, {4,5}, {4,3,2,1}}, images.getImage("player2Dash"), true);
 
         this.width = WIDTH;
         this.height = HEIGHT;
@@ -106,7 +106,6 @@ public class Gui extends JPanel{
         frame.setVisible(true);
         this.setVisible(true);
 
-        frame.addMouseMotionListener(input);
         frame.addKeyListener(input);
         frame.setFocusable(true);
 
@@ -162,39 +161,44 @@ public class Gui extends JPanel{
         });
     }
     // Draw the player based on animations and current state.
-    public void drawPlayer(Player player){
+    public void drawPlayer(Player player, Input input){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
+                    double timeSinceLastDash = (int)System.currentTimeMillis() - input.getLastDash(player);
                     BufferedImage playerImage = getPlayerIdle(player)[0]; // Default idle animation frame
+                    StatefulAnimation dashAnimation = getPlayerDash(player);
 
-                    // Handle the dashing state
-                    if (player.getIsDashing()) {
-                        if (getPlayerDash(player).getCurState() == 0) { // Starting dashing animation (state 0)
-
-                            if (getPlayerDash(player).getCurStep() == getPlayerDash(player).getCurrentStateStepCount()) {
-                                getPlayerDash(player).incrementState(); // Move to the next state
-                            }
-                            playerImage = getPlayerDash(player).getCurFrame(true); // Pass true because player is dashing
-
-                        } else if (getPlayerDash(player).getCurState() == 1) { // Mid dash (state 1)
-                
-                            playerImage = getPlayerDash(player).getCurFrame(true); // Continue looping in state 1 while dashing
-
+                    // First phase of dash (going into dash)
+                    if(timeSinceLastDash >= 0 && timeSinceLastDash < 250){ 
+                        if(dashAnimation.getCurState() != 0){ // If animation is not in first phase make it so
+                            dashAnimation.setState(0);  // Go to beginning of first phase anim
+                            System.out.println("First phase dash");
                         }
-                    } else if (getPlayerDash(player).getCurState() == 1) { // Dash completed (state 1 ends when not dashing)
+                        dashAnimation.setFrameTime(250 / 4); // First phase lasts 250 ms, has 4 frames
+                        playerImage = dashAnimation.getCurFrame();
+                    } 
 
-                        if (getPlayerDash(player).getCurStep() == getPlayerDash(player).getCurrentStateStepCount()) {
-                            getPlayerDash(player).incrementState(); // Move to the next state
+                    // Second phase (dashing)
+                    else if(timeSinceLastDash >= 250 && timeSinceLastDash < 750){ 
+                        if(dashAnimation.getCurState() != 1){ // If animation is not in second phase make it so
+                            dashAnimation.setState(1);  // Go to beginning of second phase anim
+                            System.out.println("2nd phase dash");
                         }
-                        playerImage = getPlayerDash(player).getCurFrame(false); // Player is not dashing anymore
-
-                    } else if (getPlayerDash(player).getCurState() == 2) { // No dash, find the direction player is facing
-                        if (getPlayerDash(player).getCurStep() == getPlayerDash(player).getCurrentStateStepCount()) {
-                            getPlayerDash(player).incrementState(); // Move to the next state
+                        dashAnimation.setFrameTime(100); // Go back to default frame time, to make second phase loop
+                        playerImage = dashAnimation.getCurFrame();
+                    } 
+                    
+                    // Third phase (ending dash)
+                    else if(timeSinceLastDash >= 750 && timeSinceLastDash < 1000){ 
+                        if(dashAnimation.getCurState() != 2){ // If animation is not in third phase make it so
+                            dashAnimation.setState(2);  // Go to beginning of third phase anim
+                            System.out.println("Thirs phase dash");
                         }
-                        playerImage = getPlayerDash(player).getCurFrame(false); // Player is not dashing
-
-                    } else {
+                        dashAnimation.setFrameTime(250 / 4); // Third phase lasts 250 ms, has 4 frames
+                        playerImage = dashAnimation.getCurFrame();
+                        
+                    }
+                    else {
                         // Default idle frame handling (this shouldn't happen unless state 0 or 1 are incorrectly used)
                         playerImage = getPlayerIdle(player)[0];
                     }

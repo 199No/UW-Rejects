@@ -155,9 +155,9 @@ public class Game implements ActionListener{
 
         // Draw whichever player is farthest back
         if(player1.getyPos() < player2.getyPos()){
-            gui.drawPlayer(players.get(0));
+            gui.drawPlayer(players.get(0), input);
         } else {
-            gui.drawPlayer(players.get(1));
+            gui.drawPlayer(players.get(1), input);
         }  
 
         // Draw the second layer of the environment (between both players)
@@ -167,11 +167,11 @@ public class Game implements ActionListener{
 
         // Draw whichever player is farthest forward
         if(player1.getyPos() < player2.getyPos()){
-            gui.drawPlayer(players.get(1));
+            gui.drawPlayer(players.get(1), input);
         } else {
-            gui.drawPlayer(players.get(0));
+            gui.drawPlayer(players.get(0), input);
         }  
-        
+
         // Draw the third layer of the environemt (in front of both players)
         for(int i = 0; i < map.numLoadedChunks(); i++){
             gui.drawEnvLayer3(map.getChunk(i), player1.getyPos(), player2.getyPos());

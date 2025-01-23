@@ -13,13 +13,11 @@ package src;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
-import java.awt.MouseInfo;
 import java.awt.event.*;
-import java.util.Arrays;
 //-------------------------------------------------//
 //                    Input                        //
 //-------------------------------------------------// 
-public class Input implements MouseListener, KeyListener, MouseMotionListener{
+public class Input implements KeyListener{
     ///////////////
     //Properties
     //////////////
@@ -56,10 +54,6 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     //Comstuctor
     //////////////
     public Input(){
-        lastX = MouseInfo.getPointerInfo().getLocation().getX();
-        lastY = MouseInfo.getPointerInfo().getLocation().getY();
-        mouseX = MouseInfo.getPointerInfo().getLocation().getX();
-        mouseY = MouseInfo.getPointerInfo().getLocation().getY();
         automatedMove = false;
         movedX = 0;
         movedY = 0;
@@ -71,70 +65,13 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     public double mouseY(){
         return mouseY;
     }
-    public void updateMouse(){
-        // If the user moves the mouse...
-        if(!automatedMove && mouseLocked){
-            // Update last pos
-            lastX = mouseX;
-            lastY = mouseY;
-            // Get current pos
-            mouseX = MouseInfo.getPointerInfo().getLocation().getX();
-            mouseY = MouseInfo.getPointerInfo().getLocation().getY();
-            // Make sure the mouse is farther than 200 px away from the borders of the screen if the mouse is locked.
-            if(mouseLocked && (mouseX < 200 || mouseX > 1080 || mouseY < 200 || mouseY > 520)){
-                // If so...
-                // Calculate x and y dist from the center
-                movedX = 640 - mouseX;
-                movedY = 360 - mouseY;
-                // Notify the program that this was a robot moving the mouse.
-                automatedMove = true;
-            }
-        } else if(automatedMove && mouseLocked){
-            // Adjust for the shift to the center, so that the camera doesn't "jump" when the mouse gets moved to center.
-            lastX = mouseX + movedX;
-            lastY = mouseY + movedY;
-            // Get new mouseX and Y.
-            mouseX = MouseInfo.getPointerInfo().getLocation().getX();
-            mouseY = MouseInfo.getPointerInfo().getLocation().getY();
-            // Reset automatedMove.
-            automatedMove = false;
-        }
-    }
 
     public boolean getKey(int keyCode){
         return keys[keyCode];
     }
-    public double dMouseX(){
-        return mouseX - lastX;
-    }
-    public double dMouseY(){
-        return mouseY - lastY;
-    }
 //-------------------------------------------------//
 //                    Methods                      //
 //-------------------------------------------------// 
-
-    @Override
-    public void mouseMoved(MouseEvent e){}
-
-    @Override
-    public void mouseClicked(MouseEvent e) {}
-    
-    @Override
-    public void mousePressed(MouseEvent e) {}
-
-    @Override
-    public void mouseReleased(MouseEvent e) {}
-
-    @Override
-    public void mouseEntered(MouseEvent e) {}
-
-    @Override
-    public void mouseExited(MouseEvent e) {}
-
-    @Override
-    public void mouseDragged(MouseEvent e){}
-
     @Override
     public void keyTyped(KeyEvent e) {}
 
@@ -186,13 +123,6 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     @Override
     public void keyReleased(KeyEvent e) {
 
-        if(e.getKeyCode() == 27){
-            mouseLocked = !mouseLocked;
-            lastX = MouseInfo.getPointerInfo().getLocation().getX();
-            lastY = MouseInfo.getPointerInfo().getLocation().getY();
-            mouseX = lastX;
-            mouseY = lastY;
-        }
 
         if(e.getKeyCode() < keys.length){
             keys[e.getKeyCode()] = false;
