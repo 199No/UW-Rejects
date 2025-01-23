@@ -107,7 +107,7 @@ public class Player {
         applyFriction();
         capVelocity();
         if(isShifting){
-            updatePosition(1.5 * this.speed);
+            updatePosition(1.2 * this.speed);
         }else{
             updatePosition(this.speed);
         }
@@ -115,6 +115,9 @@ public class Player {
 
     // Apply movement based on the movement array
     private void applyMovement(boolean[] movement) {
+        xDir = getXDir();
+        yDir = getYDir();
+        System.out.println(xDir + ", " + yDir);
         if (movement[0]) this.yVel -= this.speed; // Up
         if (movement[1]) this.xVel -= this.speed; // Left
         if (movement[2]) this.yVel += this.speed; // Down

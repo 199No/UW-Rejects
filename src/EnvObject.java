@@ -12,6 +12,7 @@ public class EnvObject {
     int type;
     boolean collidable;
     double width, height;
+    boolean isFlat;
     public EnvObject(double xPos, double yPos, int type){
         this.xPos = xPos;
         this.yPos = yPos;
@@ -28,6 +29,7 @@ public class EnvObject {
                 width = Gui.TILE_SIZE;
                 height = Gui.TILE_SIZE * Gui.HEIGHT_SCALE;
                 this.collidable = true;
+                isFlat = true;
                 break;
             case 2:
                 // Small airwall
@@ -40,6 +42,7 @@ public class EnvObject {
                 width = Gui.TILE_SIZE;
                 height = Gui.TILE_SIZE * Gui.HEIGHT_SCALE;
                 this.collidable = true;
+                isFlat = true;
                 break;
             case 3:
                 image = images.getImage("tree1");
@@ -48,6 +51,7 @@ public class EnvObject {
                 width = Gui.TILE_SIZE * 3;
                 height = Gui.TILE_SIZE * 3;
                 this.collidable = true;
+                isFlat = false;
                 break;
                 
             case 4:
@@ -56,6 +60,7 @@ public class EnvObject {
                 width = Gui.TILE_SIZE * 3;
                 height = Gui.TILE_SIZE * 3;
                 this.collidable = true;
+                isFlat = false;
                 break;
 
             case 5:
@@ -65,6 +70,7 @@ public class EnvObject {
                 width = Gui.TILE_SIZE;
                 height = Gui.TILE_SIZE;
                 this.collidable = false;
+                isFlat = false;
                 break;
                 
             case 6:
@@ -74,6 +80,7 @@ public class EnvObject {
                 width = Gui.TILE_SIZE;
                 height = Gui.TILE_SIZE;
                 this.collidable = false;
+                isFlat = false;
                 break;
             case 7:
                 // Blue flower
@@ -82,6 +89,7 @@ public class EnvObject {
                 width = Gui.TILE_SIZE;
                 height = Gui.TILE_SIZE;
                 this.collidable = false;  
+                isFlat = false;
                 break;      
             case 8:
                 image = images.getImage("lilypad");
@@ -89,6 +97,7 @@ public class EnvObject {
                 width = Gui.TILE_SIZE;
                 height = Gui.TILE_SIZE * Gui.HEIGHT_SCALE;
                 this.collidable = false;
+                isFlat = false;
                 break;
         }
         hitbox.translate((int)this.xPos, (int)this.yPos);
@@ -107,6 +116,9 @@ public class EnvObject {
     }
     public BufferedImage getImage(){
         return image;
+    }
+    public boolean isFlat(){
+        return isFlat;
     }
     public Rectangle getHitbox(){
         return hitbox;
