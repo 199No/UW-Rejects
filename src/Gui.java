@@ -67,7 +67,7 @@ public class Gui extends JPanel{
         // Images for tiles only
         tileImages = new Images("Images/Enviroment/Tiles", Transparency.OPAQUE);
         // Define a constantly running Animation for the slime (soon to be better)
-        slimeAnimation = new Animation(images.getImage("slime"), 4, 2, 7, 150, true);
+        slimeAnimation = new Animation(images.getImage("slime"), 4, 2, 7, 100, true);
         slimeAnimation.start(); 
         
         player1Images = new BufferedImage[5];
@@ -204,10 +204,10 @@ public class Gui extends JPanel{
                             // Player is facing up
                             if (player.getXDir() == -1) {
                                 // Moving left while facing up
-                                playerImage = getPlayerIdle(player)[2];
+                                playerImage = getPlayerIdle(player)[3];
                             } else if (player.getXDir() == 1) {
                                 // Moving right while facing up
-                                playerImage = getPlayerIdle(player)[3];
+                                playerImage = getPlayerIdle(player)[2];
                             } else {
                                 // Default to right-facing up when no horizontal movement
                                 playerImage = getPlayerIdle(player)[3];
@@ -328,20 +328,32 @@ public class Gui extends JPanel{
         });
     }
     public void drawEnvObject(EnvObject e, Graphics2D g2d){
+        // How much to shear the shadow (basically shadow angle)
         double shearFactor = -0.5;
-        BufferedImage result = config.createCompatibleImage(e.getImage().getWidth(), e.getImage().getHeight(), Transparency.TRANSLUCENT);
-        AffineTransform shadowTransform = AffineTransform.getShearInstance(shearFactor, 0);
-        AffineTransformOp shadowTransformOp = new AffineTransformOp(shadowTransform, AffineTransformOp.TYPE_BILINEAR);
+
         double[] objCoords = absToScreen(e.x(), e.y());
+
+        // How much to vertically scale the final shadow (for adjustments)
+        double shadowScaleFactor = 0.8;
+        // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
+        double playerToTileX = (double)e.width()/(double)e.getImage().getWidth();
+        double playerToTileY = (double)e.height()/(double)e.getImage().getHeight();
+
+        // Get an affine transform to work with
+        AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
+        shadowTransform.translate(objCoords[0] + e.getImage().getWidth() * shearFactor * playerToTileX * shadowScaleFactor, 
+                                  (double)((objCoords[1] + 2*e.height()) - e.getImage().getHeight() * (1-shadowScaleFactor) * playerToTileY)
+                                );
+        // Shear the image so it is at the right angle
+        shadowTransform.shear(shearFactor, 0);
+        // Rescale the image so it appears the right size
+        shadowTransform.scale(playerToTileX, -playerToTileY * shadowScaleFactor);
+        // Draw the player and its shadow
         g2d.drawImage(e.getImage(), (int)objCoords[0], (int)objCoords[1], (int)e.width(), (int)(e.height()), null);
-        g2d.drawImage( 
-            toShadow(shadowTransformOp.filter(e.getImage(), result)),
-            (int)(objCoords[0] + e.getImage().getWidth() * shearFactor),
-            (int)(objCoords[1] + 2 * e.getImage().getHeight()),
-            (int)e.width(),
-            -(int)e.height(),
-            null
-        );
+        if(!e.isFlat()){
+            g2d.drawImage(toShadow(e.getImage()), shadowTransform, null);
+        }
+
         drawHitbox(e);
     }
     public void drawEnvLayer1(Chunk c, double player1y, double player2y){
@@ -456,7 +468,7 @@ public class Gui extends JPanel{
 
         // Set the composite rule to only affect non-transparent pixels
         // See https://ssp.impulsetrain.com/porterduff.html
-        g.setComposite(AlphaComposite.SrcIn.derive(0.9f));
+        g.setComposite(AlphaComposite.SrcIn.derive(0.2f));
 
         // Set the desired color and fill the entire image
         g.setColor(color);
