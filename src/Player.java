@@ -42,7 +42,7 @@ public class Player {
 
     //Attack
     private int attackCooldown; // in miliseconds
-    private int attackLength = 1000; // in miliseconds
+    private int attackLength = 1500; // in miliseconds
     private boolean isAttacking; //is swinging
     private int lastAttack = (int) System.currentTimeMillis();
 
@@ -150,6 +150,8 @@ public class Player {
     public void attack() {
 
         this.isAttacking = true;
+        lastAttack = (int) System.currentTimeMillis();
+        System.out.println(lastAttack);
         System.out.println("attack!");
     
         // Call the method to spawn a hitbox based on the player's direction
