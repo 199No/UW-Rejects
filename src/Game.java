@@ -61,7 +61,13 @@ public class Game implements ActionListener{
         players.add(player1);
         players.add(player2);
         this.input = new Input();
-        enemies.add(createSlime(750, 300));
+        enemies.add(createSlime(100, 300));
+        enemies.add(createSlime(700, 400));
+        enemies.add(createSlime(750, 5000));
+        enemies.add(createSlime(6000, 600));
+        enemies.add(createSlime(5000, 5000));
+        enemies.add(createSlime(5000, 300));
+
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
         // Only these four lines should happen after this comment otherwise stuff will break
@@ -208,6 +214,8 @@ public class Game implements ActionListener{
     
         gui.drawEnemies(this.enemies);
         gui.drawHitboxes(this.players, this.enemies);
+        checkHitboxes(this.players, this.enemies);
+        despawnSwingHitbox(this.players);
         gui.displayFPS((int) frameRate);
         gui.repaint();
         now = System.currentTimeMillis();
@@ -239,6 +247,20 @@ public class Game implements ActionListener{
             player.setyPos(this.yMin);
         }
     }
+    public void inBounds(Enemies enemy){
+        if(enemy.getxPos() > this.xMax){
+            enemy.setxPos(this.xMax);
+        }
+        if(enemy.getxPos() < this.xMin){
+            enemy.setxPos(this.xMin);
+        }
+        if(enemy.getyPos() > this.yMax){
+            enemy.setyPos(this.yMax);
+        }
+        if(enemy.getyPos() < this.yMin){
+            enemy.setyPos(this.yMin);
+        }
+    }
 
     public void updatePlayer(Player player){
             
@@ -264,6 +286,34 @@ public class Game implements ActionListener{
 
         inBounds(player);
         
+    }
+    public void checkHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies) {
+
+        for(int p = 0; p < players.size(); p++){
+        for (int i = 0; i < enemies.size(); i++) {
+            Enemies enemy = enemies.get(i);
+
+            // Check if the swing hitbox intersects the enemy's hitbox
+            if (players.get(p).getSwingHitbox().intersects(enemy.getHitbox())) {
+                // Deal damage to the enemy
+                enemy.takeDamage(players.get(p).getDamage());
+
+                // Optionally, handle enemy death
+                if (!enemy.isAlive()) {
+                    System.out.println("Enemy defeated!");
+                    enemies.remove(i);
+                    i--; // Adjust index after removal
+                }
+            }
+        }
+    }
+    }
+    public void despawnSwingHitbox(ArrayList<Player> players){
+        for(int p = 0; p < players.size(); p++){
+            if((int) System.currentTimeMillis() - players.get(p).getLastAttack() > players.get(p).getAttackLength()){
+                players.get(p).getSwingHitbox().setBounds(-1000, 1000, 1, 1);
+            }
+        }
     }
 
     private void updatePlayerMovement(Player player, int[] playerKeys, boolean shift, boolean[] keys) {

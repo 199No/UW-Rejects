@@ -9,24 +9,22 @@ import java.awt.Rectangle;
 import java.util.Random;
 import java.util.ArrayList;
 import src.Gui;
-
 //-------------------------------------------------//
 //                   Enemies                       //
 //-------------------------------------------------// 
+
 public class Slime extends Enemies {
     ///////////////
     // Properties
     ///////////////
-
     int maxDistance = 100; // Max distance a slime will hop idly
-    int MAX = 3000; // Cooldown in milliseconds (+/- variation)
-    int lastDash;
-    Random rnd = new Random();
-    int rndLength;
-    int startDash;
-    boolean chasing;
+    int MAX_IDLE_COOLDOWN = 3000; // Cooldown in milliseconds
+    long lastIdleMoveTime;
+    boolean chasingPlayer = false;
+    Player targetPlayer = null;
     double[] randomLoc = {0, 0};
     boolean moving = false;
+    private Random rnd = new Random(); // Add a Random instance
 
     ///////////////
     // Constructor
@@ -41,7 +39,6 @@ public class Slime extends Enemies {
         this.eyesight = 400;
         this.alert = false;
         this.idle = true;
-        this.chasing = false;
     }
 
     //-------------------------------------------------//
@@ -55,87 +52,98 @@ public class Slime extends Enemies {
         }
     }
 
-    // Move idly after some time
     public void idleMove() {
         long currentTime = System.currentTimeMillis();
 
-        // Check if it's time for the slime to move again
-        if (!moving && (currentTime - lastDash) > MAX) {
+        // Wait before moving again
+        if (!moving && (currentTime - lastIdleMoveTime) > MAX_IDLE_COOLDOWN) {
             // Generate a random location within maxDistance
             double offsetX = (rnd.nextDouble() * 2 - 1) * maxDistance;
             double offsetY = (rnd.nextDouble() * 2 - 1) * maxDistance;
             randomLoc[0] = this.xPos + offsetX;
             randomLoc[1] = this.yPos + offsetY;
-            
-            // Clamp the random location to ensure it's within the game bounds
+
+            // Clamp to game bounds
             randomLoc[0] = Math.max(0, Math.min(randomLoc[0], Gui.WIDTH - this.width));
             randomLoc[1] = Math.max(0, Math.min(randomLoc[1], Gui.HEIGHT - this.height));
 
             moving = true;
-            lastDash = (int) currentTime;
+            lastIdleMoveTime = currentTime;
         }
 
-        // If moving, continue towards the random location
+        // Move towards the random location
         if (moving) {
-            double dx = randomLoc[0] - this.xPos;
-            double dy = randomLoc[1] - this.yPos;
+            moveToward(randomLoc);
+        }
+    }
+
+    public boolean scanArea(Player player) {
+        double dx = player.getxPos() - this.xPos;
+        double dy = player.getyPos() - this.yPos;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance <= this.eyesight) {
+            this.alert = true;
+            this.targetPlayer = player;
+            return true;
+        }
+        return false;
+    }
+
+    public void attack() { // move towards player
+        if (targetPlayer != null) {
+            double[] playerLoc = {targetPlayer.getxPos(), targetPlayer.getyPos()};
+            moveToward(playerLoc);
+
+            // Check if player is out of range
+            double dx = targetPlayer.getxPos() - this.xPos;
+            double dy = targetPlayer.getyPos() - this.yPos;
             double distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance <= speed) {
-                // Reached destination
-                this.xPos = randomLoc[0];
-                this.yPos = randomLoc[1];
-                moving = false;
-            } else {
-                // Move towards destination
-                this.xPos += (dx / distance) * speed;
-                this.yPos += (dy / distance) * speed;
+            if (distance > this.eyesight) {
+                // Lose sight of the player
+                this.alert = false;
+                this.targetPlayer = null;
             }
         }
     }
 
-    public void attack() {
-        // Attack logic, to be implemented
+    public void moveToward(double[] targetLoc) {
+        double dx = targetLoc[0] - this.xPos;
+        double dy = targetLoc[1] - this.yPos;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance <= speed) {
+            // Reached target
+            this.xPos = targetLoc[0];
+            this.yPos = targetLoc[1];
+            moving = false;
+        } else {
+            // Move closer to the target
+            this.xPos += (dx / distance) * speed;
+            this.yPos += (dy / distance) * speed;
+        }
     }
 
-    public void die() {
-        // Play death animation
-        // Remove from the list of enemies
-        // Drop loot or give XP, if applicable
-    }
+    @Override
+    public void update(ArrayList<int[]> playerLocations) {
+        // Check all players to see if one is within eyesight
+        for (int[] playerLocation : playerLocations) {
+            if (scanArea(playerLocation)) {
+                chasing = true;
+                break;
+            }
+        }
 
-    public boolean scanArea(int[] location) {
-        // Scan for players and set alert to true if visible
-        return false;
-    }
-
-    public void update() {
-        // Update slime's position and state
-        if (alert) {
+        // Handle movement based on state
+        if (chasing) {
             moveToward(this.getLastSeen());
         } else {
             idleMove();
         }
     }
 
-    public boolean checkObstaclesLOS() {
-        // Check for obstacles in the line of sight
-        return false;
-    }
-
-    public void moveToward(double[] lastSeen) {
-        // Move towards the last known location of the player
-        double dx = lastSeen[0] - this.xPos;
-        double dy = lastSeen[1] - this.yPos;
-        double distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance > 0) {
-            this.xPos += (dx / distance) * speed;
-            this.yPos += (dy / distance) * speed;
-        }
-    }
-
-    public void dashToward() {
-        // Dash towards a location or player
+    public void die() {
+        // Handle slime death
     }
 }

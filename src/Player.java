@@ -42,7 +42,7 @@ public class Player {
 
     //Attack
     private int attackCooldown; // in miliseconds
-    private int attackLength = 1500; // in miliseconds
+    private int attackLength = 100; // in miliseconds
     private boolean isAttacking; //is swinging
     private int lastAttack = (int) System.currentTimeMillis();
 
@@ -61,8 +61,8 @@ public class Player {
     private int[] topLeft; //top left of the hitbox
     private Rectangle hitbox = new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
 
-    public int swingWidth  = Gui.TILE_SIZE / 2;
-    public int swingHeight = Gui.TILE_SIZE / 2;
+    public int swingWidth  = 40;
+    public int swingHeight = Gui.TILE_SIZE * 2;
     private Rectangle swingHitbox = new Rectangle( swingWidth, swingHeight,  (int) getxPos(),  (int) getyPos() );
     ///////////////
     //Constuctor
@@ -107,7 +107,7 @@ public class Player {
         applyFriction();
         capVelocity();
         if(isShifting){
-            updatePosition(1.2 * this.speed);
+            updatePosition(1.5 * this.speed);
         }else{
             updatePosition(this.speed);
         }
@@ -167,21 +167,21 @@ public class Player {
     
         // Calculate hitbox position based on facing direction
         if (facingDirX == 1) { // Facing right
-            hitboxX = (int) getxPos() + getWidth();
-            hitboxY = (int) getyPos() + getHeight() / 2 - swingHeight / 2;
+            hitboxX = (int) getxPos(); // + getWidth();
+            hitboxY = (int) getyPos(); // + getHeight() / 2 - swingHeight / 2;
         } else if (facingDirX == -1) { // Facing left
-            hitboxX = (int) getxPos() - swingWidth;
-            hitboxY = (int) getyPos() + getHeight() / 2 - swingHeight / 2;
+            hitboxX = (int) getxPos(); // - swingWidth;
+            hitboxY = (int) getyPos(); //+ getHeight() / 2 - swingHeight / 2;
         } else if (facingDirY == -1) { // Facing up
-            hitboxX = (int) getxPos() + getWidth() / 2 - swingWidth / 2;
-            hitboxY = (int) getyPos() - swingHeight;
+            hitboxX = (int) getxPos(); // + getWidth() / 2 - swingWidth / 2;
+            hitboxY = (int) getyPos(); // - swingHeight;
         } else if (facingDirY == 1) { // Facing down
-            hitboxX = (int) getxPos() + getWidth() / 2 - swingWidth / 2;
-            hitboxY = (int) getyPos() + getHeight();
+            hitboxX = (int) getxPos(); //+ getWidth() / 2 - swingWidth / 2;
+            hitboxY = (int) getyPos(); //+ getHeight();
         }
     
         // Create a new hitbox
-        swingHitbox = new Rectangle(hitboxX, hitboxY, swingWidth, swingHeight);
+        swingHitbox = new Rectangle((int) getxPos(), (int) getyPos(), swingWidth, swingHeight);
     
         System.out.println("Hitbox spawned at (" + hitboxX + ", " + hitboxY + ")");
     }
@@ -302,6 +302,12 @@ public class Player {
     }
     public double[] getSwingHitboxTopLeft(){
         return new double[]{this.swingHitbox.getX(), this.swingHitbox.getY()};
+    }
+    public Rectangle getSwingHitbox(){
+        return this.swingHitbox;
+    }
+    public int getDamage(){
+        return this.damage;
     }
 
     public Rectangle getHitbox(){
