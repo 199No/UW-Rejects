@@ -228,6 +228,11 @@ public class Gui extends JPanel{
 
                     }
 
+                    
+                    // Get an affine transform to work with
+                    AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
+                    
+
                     double[] playerScreenPos = absToScreen(player.getxPos(), player.getyPos());
 
                     // How much to vertically scale the final shadow (for adjustments)
@@ -238,8 +243,6 @@ public class Gui extends JPanel{
                     // How much to shear the shadow (basically shadow angle)
                     double shearFactor = -0.5;
 
-                    // Get an affine transform to work with
-                    AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
                     // Move the shadow image to where it needs to be
                     shadowTransform.translate(
                                           // Because the image shears from the bottom up it moves the "feet" of the shadow,
@@ -253,8 +256,17 @@ public class Gui extends JPanel{
                     // Rescale the image so it appears the right size
                     shadowTransform.scale(playerToTileX, -playerToTileY * shadowScaleFactor);
                     // Draw the player and its shadow
-                    g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
-                    g2d.drawImage(toShadow(playerImage), shadowTransform, null);
+                    
+                    if(player.getXDir() <= 0 && player.getIsDashing()){
+                        g2d.drawImage(playerImage, (int)playerScreenPos[0] + TILE_SIZE, (int)playerScreenPos[1], -TILE_SIZE, TILE_SIZE, null);
+                        shadowTransform.scale(-1, 1);
+                        shadowTransform.translate(-TILE_SIZE / playerToTileX, 0);
+                        g2d.drawImage(toShadow(playerImage), shadowTransform, null);
+                    } else {
+                        g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
+                        g2d.drawImage(toShadow(playerImage), shadowTransform, null);
+
+                    }
                     
                 } 
             
