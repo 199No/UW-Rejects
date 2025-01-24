@@ -60,11 +60,29 @@ public abstract class Enemies {
 
     public abstract void die();
 
-    public abstract boolean scanArea(int[] location);
-
     public abstract void moveToward(double[] lastSeen);
 
-    public abstract void update(); // sets and checks all parts of the enemy (ran every frame)
+    public abstract void update(ArrayList<int[]> PlayerLocations); // sets and checks all parts of the enemy (ran every frame)
+
+    // Existing properties and methods...
+
+    public boolean scanArea(int[] playerLocation) {
+        // Calculate the distance to the player's location
+        double dx = playerLocation[0] - this.xPos;
+        double dy = playerLocation[1] - this.yPos;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Check if the player is within eyesight
+        if (distance <= this.eyesight) {
+            this.alert = true;
+            this.lastSeen = new double[]{playerLocation[0], playerLocation[1]}; // Update last seen location
+            return true;
+        } else {
+            this.alert = false;
+            return false;
+        }
+    }
+
 
     public boolean isAlive(){
         if(this.health <= 0){
