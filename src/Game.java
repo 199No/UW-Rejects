@@ -27,7 +27,7 @@ public class Game implements ActionListener{
     //Properties
     ///////////////
     
-    public static final boolean inDebugMode = true;
+    public static final boolean inDebugMode = false;
     Timer gameTimer;
     Gui gui;
     Player player1;
@@ -43,7 +43,6 @@ public class Game implements ActionListener{
     Chunk chunk2;
     private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
     private ArrayList<Player>  players = new ArrayList<Player>();
-    private ArrayList<EnvObject> envObjects = new ArrayList<EnvObject>();
 
     // Bounds
     private double xMin = 0;

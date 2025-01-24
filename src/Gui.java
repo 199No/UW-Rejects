@@ -7,10 +7,8 @@ import javax.swing.*;
 import Enemies.Enemies;
 
 import java.awt.*;
-import java.awt.Taskbar.State;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 //-------------------------------------------------//
 //                      Gui                        //
@@ -96,7 +94,7 @@ public class Gui extends JPanel{
 
         player2DashAnimation = new StatefulAnimation(100, 3, 2,
         new int[][] {{0,1,2,3}, {4,5}, {4,3,2,1}}, images.getImage("player2Dash"), true);
-        waterAnimation = new Animation(images.getImage("waterTile"), 3, 1, 3, 100, true);
+        waterAnimation = new Animation(images.getImage("waterTile"), 3, 1, 3, 250, true);
         waterAnimation.start();
         this.width = WIDTH;
         this.height = HEIGHT;
@@ -269,7 +267,9 @@ public class Gui extends JPanel{
                         g2d.drawImage(toShadow(playerImage), shadowTransform, null);
 
                     }
-                    
+                    if(Game.inDebugMode){
+                        g2d.drawString("" + (int)(player.getxPos() / TILE_SIZE) + ", " + (int)(player.getyPos() / TILE_SIZE), (int)absToScreenX(player.getxPos() + 10), (int)absToScreenY(player.getyPos() - 30));
+                    }
                 } 
             
         });
@@ -315,21 +315,8 @@ public class Gui extends JPanel{
             BufferedImage tileImage;
             public void draw(Graphics2D g2d){
                 double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
-                EnvObject[] envObjects = c.getEnvObjects();
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
-                        // Apply 3d transform to this tile coords
-                        //double[] threeDCoords = Gui.screenTo3D(chunkCoords[0] + (x * TILE_SIZE), chunkCoords[1] + (y * TILE_SIZE));
-                        // Take the y pos of the next tile down and subract the y pos of this tile to get the difference in height between this tile and the next one down.                        
-                        //double threeDTileSize = Gui.screenTo3D(0, chunkCoords[1] + ((y + 1) * TILE_SIZE) )[1] - threeDCoords[1] + 1;
-                        // If this tile is off screen don't draw it.
-                        //if(threeDCoords[1] > Gui.WIDTH + 100){ //|| threeDCoords[0] - (Gui.WIDTH / 2) < 0){
-                        //    return;
-                        //}
-                        // Otherwise, do.
-                        //A = screenTo3D(threeDCoords[0] + TILE_SIZE - (Gui.WIDTH / 2), threeDCoords[1])[0];
-                        //B = screenTo3D(threeDCoords[0] - (Gui.WIDTH / 2), threeDCoords[1])[0];
-                        
                         tileImage =
                         tileImages.getImage(c.getTile(x, y)-1);
                         if(c.getTile(x, y) - 1 == 17){
@@ -419,23 +406,24 @@ public class Gui extends JPanel{
     public void drawHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
+                if(Game.inDebugMode){
+                    for(int p = 0; p < players.size(); p++){
+                        double[] hitbox = players.get(p).getHitboxTopLeft();
+                        double[] location = absToScreen(hitbox[0], hitbox[1]);
+                        g2d.drawImage(images.getImage("Square1"), (int) location[0] + players.get(p).getWidth()/4, (int) location[1] + players.get(p).getHeight()/4, players.get(p).getWidth()/2, players.get(p).getHeight()/2, null);
+                    }
 
-                for(int p = 0; p < players.size(); p++){
-                    double[] hitbox = players.get(p).getHitboxTopLeft();
-                    double[] location = absToScreen(hitbox[0], hitbox[1]);
-                    g2d.drawImage(images.getImage("Square1"), (int) location[0] + players.get(p).getWidth()/4, (int) location[1] + players.get(p).getHeight()/4, players.get(p).getWidth()/2, players.get(p).getHeight()/2, null);
-                }
+                    for(int p = 0; p < players.size(); p++){
+                        double[] hitbox = {players.get(p).getSwingHitbox().getX(), players.get(p).getSwingHitbox().getY()};
+                        double[] location = absToScreen(hitbox[0], hitbox[1]);
+                        g2d.drawImage(images.getImage("Square1"), (int) (location[0] +  players.get(p).getSwingHitbox().getWidth()), (int) (location[1] + players.get(p).getSwingHitbox().getHeight()), players.get(p).swingWidth, players.get(p).swingHeight, null);
+                    }
 
-                for(int p = 0; p < players.size(); p++){
-                    double[] hitbox = {players.get(p).getSwingHitbox().getX(), players.get(p).getSwingHitbox().getY()};
-                    double[] location = absToScreen(hitbox[0], hitbox[1]);
-                    g2d.drawImage(images.getImage("Square1"), (int) (location[0] +  players.get(p).getSwingHitbox().getWidth()), (int) (location[1] + players.get(p).getSwingHitbox().getHeight()), players.get(p).swingWidth, players.get(p).swingHeight, null);
-                }
-
-                for(int e = 0; e < enemies.size(); e++){
-                    double[] hitbox = enemies.get(e).getHitboxTopLeft();
-                    double[] location = absToScreen(hitbox[0], hitbox[1]);
-                    g2d.drawImage(images.getImage("Square1"), (int) location[0] + enemies.get(e).getWidth()/4, (int) location[1] + enemies.get(e).getHeight()/4, enemies.get(e).getWidth()/2, enemies.get(e).getHeight()/2, null);
+                    for(int e = 0; e < enemies.size(); e++){
+                        double[] hitbox = enemies.get(e).getHitboxTopLeft();
+                        double[] location = absToScreen(hitbox[0], hitbox[1]);
+                        g2d.drawImage(images.getImage("Square1"), (int) location[0] + enemies.get(e).getWidth()/4, (int) location[1] + enemies.get(e).getHeight()/4, enemies.get(e).getWidth()/2, enemies.get(e).getHeight()/2, null);
+                    }
                 }
             }
         });
@@ -443,11 +431,13 @@ public class Gui extends JPanel{
     public void drawHitbox(EnvObject obj){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                Rectangle hitbox = obj.getHitbox();
-                double[] coords = absToScreen((hitbox.getX()), (hitbox.getY()));
-                g2d.setColor(Color.RED);
-                g2d.setStroke(new BasicStroke(3));
-                g2d.drawRect((int)coords[0], (int)coords[1], (int)hitbox.getWidth(), (int)hitbox.getHeight());
+                if(Game.inDebugMode){
+                    Rectangle hitbox = obj.getHitbox();
+                    double[] coords = absToScreen((hitbox.getX()), (hitbox.getY()));
+                    g2d.setColor(Color.RED);
+                    g2d.setStroke(new BasicStroke(3));
+                    g2d.drawRect((int)coords[0], (int)coords[1], (int)hitbox.getWidth(), (int)hitbox.getHeight());
+                }
             }
         });
     }
@@ -544,6 +534,12 @@ public class Gui extends JPanel{
     
     
     // Absolute (pixels) to screenspace
+    public static double absToScreenX(double x){
+        return x - sCameraX + WIDTH / 2;
+    }   
+    public static double absToScreenY(double y){
+        return (y - sCameraY + HEIGHT / 2) * HEIGHT_SCALE;
+    }   
     public static double[] absToScreen(double x, double y){
         return new double[] {x - sCameraX + WIDTH / 2, (y - sCameraY + HEIGHT / 2) * HEIGHT_SCALE};
     }   

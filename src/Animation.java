@@ -1,7 +1,5 @@
 package src;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 public class Animation {
     private int startTime; // Animation start time
     private int widthFrames; // How many frames horizontally the sheet is wide
