@@ -22,7 +22,9 @@ import javax.swing.Timer;
 //-------------------------------------------------// 
 
 public class Game implements ActionListener{
-
+    public static void main(String[] args) throws AWTException, IOException{
+        new Game();
+    }
     ///////////////
     //Properties
     ///////////////
