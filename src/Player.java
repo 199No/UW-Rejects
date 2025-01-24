@@ -61,7 +61,7 @@ public class Player {
     private int[] topLeft; //top left of the hitbox
     private Rectangle hitbox = new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
 
-    public int swingWidth  = 40;
+    public int swingWidth  = Gui.TILE_SIZE * 2;
     public int swingHeight = Gui.TILE_SIZE * 2;
     private Rectangle swingHitbox = new Rectangle( swingWidth, swingHeight,  (int) getxPos(),  (int) getyPos() );
     ///////////////
@@ -182,6 +182,7 @@ public class Player {
         // Create a new hitbox
         swingHitbox = new Rectangle((int) getxPos(), (int) getyPos(), swingWidth, swingHeight);
     
+        System.out.println("Player positon at (" + (int) this.getxPos() + ", " + (int) this.getyPos() );
         System.out.println("Hitbox spawned at (" + hitboxX + ", " + hitboxY + ")");
     }
 
