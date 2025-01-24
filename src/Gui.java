@@ -53,6 +53,7 @@ public class Gui extends JPanel{
     Animation slimeAnimation;
     StatefulAnimation player1DashAnimation;
     StatefulAnimation player2DashAnimation;
+    Animation waterAnimation;
     ////////// CAMERA ///////////
     double cameraX;
     double cameraY;
@@ -95,7 +96,8 @@ public class Gui extends JPanel{
 
         player2DashAnimation = new StatefulAnimation(100, 3, 2,
         new int[][] {{0,1,2,3}, {4,5}, {4,3,2,1}}, images.getImage("player2Dash"), true);
-
+        waterAnimation = new Animation(images.getImage("waterTile"), 3, 1, 3, 100, true);
+        waterAnimation.start();
         this.width = WIDTH;
         this.height = HEIGHT;
         this.cameraX = 0;
@@ -330,6 +332,9 @@ public class Gui extends JPanel{
                         
                         tileImage =
                         tileImages.getImage(c.getTile(x, y)-1);
+                        if(c.getTile(x, y) - 1 == 17){
+                            tileImage = waterAnimation.getFrame();
+                        }
                         //g2d.setColor(Color.GREEN);
                         //g2d.fillOval((int)threeDCoords[0] - 2, (int)threeDCoords[1] - 2, 4, 4);
                         g2d.drawImage(tileImage, (int)(chunkCoords[0] + (x * TILE_SIZE)), (int)(chunkCoords[1] + (y * (TILE_SIZE * 2/3))), TILE_SIZE, (TILE_SIZE * 2/3), null);
