@@ -117,7 +117,6 @@ public class Player {
     private void applyMovement(boolean[] movement) {
         xDir = getXDir();
         yDir = getYDir();
-        System.out.println(xDir + ", " + yDir);
         if (movement[0]) this.yVel -= this.speed; // Up
         if (movement[1]) this.xVel -= this.speed; // Left
         if (movement[2]) this.yVel += this.speed; // Down
