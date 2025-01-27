@@ -14,7 +14,7 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.Timer;
-
+//unrejar
 
 
 //-------------------------------------------------//
@@ -22,13 +22,11 @@ import javax.swing.Timer;
 //-------------------------------------------------// 
 
 public class Game implements ActionListener{
-    public static void main(String[] args) throws AWTException, IOException{
-        new Game();
-    }
+
     ///////////////
     //Properties
     ///////////////
-    
+    //very unrejar
     public static final boolean inDebugMode = false;
     Timer gameTimer;
     Gui gui;
