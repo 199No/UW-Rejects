@@ -20,10 +20,6 @@ public class Gui extends JPanel{
     GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment()
                                         .getDefaultScreenDevice()
                                             .getDefaultConfiguration();
-    
-    // Width and height of the draw area
-    int width;
-    int height;
     // Made public so that other classes can see them
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
@@ -96,8 +92,6 @@ public class Gui extends JPanel{
         new int[][] {{0,1,2,3}, {4,5}, {4,3,2,1}}, images.getImage("player2Dash"), true);
         waterAnimation = new Animation(images.getImage("waterTile"), 3, 1, 3, 250, true);
         waterAnimation.start();
-        this.width = WIDTH;
-        this.height = HEIGHT;
         this.cameraX = 0;
         this.cameraY = 0;
         // JFrame setup
@@ -199,6 +193,8 @@ public class Gui extends JPanel{
                         playerImage = dashAnimation.getCurFrame();
                         
                     }
+
+                    // TODO: replace with "playerImage = playerIamges[player.getDirection()]"
                     else {
                         if (player.getYDir() == -1) {
                             // Player is facing up
@@ -228,7 +224,7 @@ public class Gui extends JPanel{
 
                     }
 
-                    
+                    // TODO: Make this a function call
                     // Get an affine transform to work with
                     AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
                     
@@ -274,7 +270,7 @@ public class Gui extends JPanel{
             
         });
     }
-
+    // TODO: Make this an array
     public BufferedImage[] getPlayerIdle(Player player){
         BufferedImage[] idle = new BufferedImage[5];
         if(player.playernum == 1){
@@ -284,7 +280,7 @@ public class Gui extends JPanel{
         }
         return idle;
     }
-
+    // TODO: Make this an array too
     public StatefulAnimation getPlayerDash(Player player){
         if(player.playernum == 1){
             return player1DashAnimation;
@@ -293,7 +289,7 @@ public class Gui extends JPanel{
          }
          return null;
     }
-
+    // TODO: Make this a function call
     public void drawEnemies(ArrayList<Enemies> enemies){
         //given an arraylist type enemies
         //draw enemies based on their x and y positon {use getxPos() getyPos()}
@@ -310,6 +306,7 @@ public class Gui extends JPanel{
         });
 
     }
+
     public void drawChunk(Chunk c){
         drawQueue.add(new GraphicsRunnable() {
             BufferedImage tileImage;
@@ -331,6 +328,7 @@ public class Gui extends JPanel{
             }
         });
     }
+    // TODO: Make a function call
     public void drawEnvObject(EnvObject e, Graphics2D g2d){
         // How much to shear the shadow (basically shadow angle)
         double shearFactor = -0.5;
@@ -360,6 +358,7 @@ public class Gui extends JPanel{
 
         drawHitbox(e);
     }
+    // TODO: List of stuff
     public void drawEnvLayer1(Chunk c, double player1y, double player2y){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
@@ -403,15 +402,13 @@ public class Gui extends JPanel{
             }
         });
     }
+    // TODO: Make a single function
     public void drawHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 if(Game.inDebugMode){
                     // Draw player hitboxes
                     for(int p = 0; p < players.size(); p++){
-                        double[] hitbox = players.get(p).getHitboxTopLeft();
-                        double[] location = absToScreen(hitbox[0], hitbox[1]);
-                        g2d.drawImage(images.getImage("Square1"), (int) location[0] + players.get(p).getWidth()/4, (int) location[1] + players.get(p).getHeight()/4, players.get(p).getWidth()/2, players.get(p).getHeight()/2, null);
                     }
                     // Draw player attack hitboxes
                     for(int p = 0; p < players.size(); p++){
@@ -441,6 +438,12 @@ public class Gui extends JPanel{
                 }
             }
         });
+    }
+    public void drawHitbox(Player player, Graphics2D g2d){
+        
+        double[] hitbox = player.getHitboxTopLeft();
+        double[] location = absToScreen(hitbox[0], hitbox[1]);
+        g2d.drawImage(images.getImage("Square1"), (int) location[0] + player.getHitbox().getWidth(), (int) location[1] + players.get(p).getHeight()/4, players.get(p).getWidth()/2, players.get(p).getHeight()/2, null);
     }
     //////////////////////////////////////////////////
     /// CAMERA
@@ -485,47 +488,6 @@ public class Gui extends JPanel{
         
         return result;
         
-    }
-    public BufferedImage toPersp (BufferedImage texture, double A, double B, double C, double D){
-        //x1 = (topWidth/40 * x) * (((bottomWidth/topWidth-1)/h)*y+1) + y*(k1/h);
-
-
-        double startX, endX; // X initial and X final - coords for the ends of each row on the trapezoid
-        double k = Math.abs(D - B); // "Overhang" on the trapezoid - how much space between the absolute corner and the beginning of the bottom of the trapezoid
-        double topWidth = Math.abs(A) - Math.abs(B); // Top width of the trapz
-        double bottomWidth = Math.abs(C) - Math.abs(D); // Bottom width of the trapz
-        double h = texture.getHeight(); // Height of the trapz
-        double textureX; // X on the image
-        double rowWidth, rx; // rowWidth = width based on y, rx = how far along rowWidth x is
-        double resultWidth = Math.abs((int)(Math.max(Math.abs(A), Math.abs(C)) - Math.min(Math.abs(B), Math.abs(D))));
-        BufferedImage result = new BufferedImage((int)((resultWidth == 0)? 1 : resultWidth), texture.getHeight(), Transparency.BITMASK);
-
-        boolean isInv = (k < 0);
-        for(int y = 0; y < result.getHeight(); y++){
-            
-            rowWidth = (((bottomWidth-topWidth)/h)*y)+topWidth;
-
-            // Find x initial
-            startX = y * k/h;
-            // Find x final
-            endX = startX + rowWidth;
-            // Starting at startX, ending at endX...
-            for(int x = (int)startX; x < Math.ceil(endX); x++){
-
-                if(isInv){
-                    rx=((x - k)-startX)/rowWidth;
-                } else {
-                    rx=(x-startX)/rowWidth;
-                }
-                // Calculate textureX and clamp it between 0 and image width
-                textureX=Math.min( Math.max( (rx*(texture.getWidth())), 0 ), texture.getWidth() - 1);
-
-                if(x >= 0 && x < resultWidth){
-                    result.setRGB((int)(x), y, texture.getRGB((int)Math.floor(textureX), y));
-                }
-            }
-        }
-        return result;
     }
     
     /////////////////////////////////////////////////////
