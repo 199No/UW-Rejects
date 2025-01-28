@@ -240,6 +240,49 @@ public class Gui extends JPanel{
                 } 
             
         });
+    }    // TODO: List of stuff
+    public void drawEnvLayer1(Chunk c, double player1y, double player2y){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                EnvObject[] envObjects = c.getEnvObjects();
+                for(int i = 0; i < envObjects.length; i++){
+                    if(envObjects[i].getAbsHitbox().getY() < Math.min(player1y, player2y)){
+                        drawEnvObject(envObjects[i], g2d);
+                    }
+
+                }
+            }
+        });
+    }
+        
+    public void drawEnvLayer2(Chunk c, double player1y, double player2y){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                EnvObject[] envObjects = c.getEnvObjects();
+                double objY;
+                for(int i = 0; i < envObjects.length; i++){
+                    objY = envObjects[i].getAbsHitbox().getY();
+                    if(objY < Math.max(player1y, player2y) && objY > Math.min(player1y, player2y)){
+                        drawEnvObject(envObjects[i], g2d);
+                    }
+
+                }
+            }
+        });
+    }
+        
+    public void drawEnvLayer3(Chunk c, double player1y, double player2y){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                EnvObject[] envObjects = c.getEnvObjects();
+                for(int i = 0; i < envObjects.length; i++){
+                    if(envObjects[i].getAbsHitbox().getY() > Math.max(player1y, player2y)){
+                        drawEnvObject(envObjects[i], g2d);
+                    }
+
+                }
+            }
+        });
     }
     public void drawShadow(Entity e){
 

@@ -43,7 +43,7 @@ public class Game implements ActionListener{
     Chunk chunk2;
     private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
     private ArrayList<Player>  players = new ArrayList<Player>();
-
+    private ArrayList<Entity> entities = new ArrayList<Entity>();
     // Bounds
     private double xMin = 0;
     private double xMax = 4080;
@@ -211,7 +211,6 @@ public class Game implements ActionListener{
         for(int i = 0; i < enemies.size(); i++){
             
         }
-        gui.drawHitboxes(this.players, this.enemies);
         checkHitboxes(this.players, this.enemies);
         despawnSwingHitbox(this.players);
         gui.displayFPS((int) frameRate);
