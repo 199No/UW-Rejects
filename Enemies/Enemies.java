@@ -61,5 +61,14 @@ public abstract class Enemies extends Entity {
     public double[] getLastSeen(){
         return this.lastSeen;
     }
+    public boolean getAlert(){
+        return this.alert;
+    }
+    public boolean getIsAlive(){
+        if(this.health > 0){
+            return true;
+        }
+        return false;
+    }
 
 }
