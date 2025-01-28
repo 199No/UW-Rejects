@@ -32,8 +32,6 @@ public class Gui extends JPanel{
     // You need a frame to draw things on.
     JFrame frame = new JFrame("The Divided Realms INDEV");
     // TODO: Make this a stateful animation.
-    BufferedImage[] player1Images;
-    BufferedImage[] player2Images;
 
     // General images
     Images images;
@@ -43,8 +41,8 @@ public class Gui extends JPanel{
     Rectangle chunkUnloadBoundary = new Rectangle(-(TILE_SIZE * 10), -(TILE_SIZE * 10), Gui.WIDTH + (TILE_SIZE * 20), Gui.HEIGHT + (TILE_SIZE * 20));
 
     Animation slimeAnimation;
-    StatefulAnimation player1DashAnimation;
-    StatefulAnimation player2DashAnimation;
+    StatefulAnimation[] playerDashAnimations;
+    StatefulAnimation[] playerIdleAnimations;
     StatefulAnimation player1Idle;
     StatefulAnimation player2Idle;
     Animation waterAnimation;
@@ -63,28 +61,25 @@ public class Gui extends JPanel{
         images = new Images("Images", Transparency.BITMASK);
         // Images for tiles only
         tileImages = new Images("Images/Enviroment/Tiles", Transparency.OPAQUE);
+
         // Define a constantly running Animation for the slime (soon to be better)
         slimeAnimation = new Animation(images.getImage("slime"), 4, 2, 7, 100, true);
         slimeAnimation.start(); 
 
-        player1Idle = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, images.getImage("playerIdle"), true);
-        player2Idle = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, images.getImage("player2Idle"), true);
-        player1DashAnimation = new StatefulAnimation(63, 3, 2,
-                        // Four sections for each 250 ms stage of the animation
-            new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, images.getImage("playerDash"), true);
-        // Honestly this could be a stateful animation.
-        // TODO: fix.
+        playerIdleAnimations = new StatefulAnimation[] {
 
-        player2Images = new BufferedImage[5];
-        // Load up all the player images (to be deprectated)
-        player2Images[0] = images.getImage("player2Idle").getSubimage(0 * PLAYER_SIZE, 0 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
-        player2Images[1] = images.getImage("player2Idle").getSubimage(1 * PLAYER_SIZE, 0 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
-        player2Images[2] = images.getImage("player2Idle").getSubimage(0 * PLAYER_SIZE, 1 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
-        player2Images[3] = images.getImage("player2Idle").getSubimage(1 * PLAYER_SIZE, 1 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
-        player2Images[4] = images.getImage("player2Idle");
+            new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, images.getImage("playerIdle"), true),
+            new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, images.getImage("player2Idle"), true)
+        };
 
-        player2DashAnimation = new StatefulAnimation(63, 3, 2,
-        new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, images.getImage("player2Dash"), true);
+        playerDashAnimations = new StatefulAnimation[] {
+            // Player 1 dash
+            new StatefulAnimation(63, 3, 2, new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, images.getImage("playerDash"), true),
+            // Player 2 dash
+            new StatefulAnimation(63, 3, 2, new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, images.getImage("player2Dash"), true)
+
+        };
+
         waterAnimation = new Animation(images.getImage("waterTile"), 3, 1, 3, 250, true);
         waterAnimation.start();
         this.cameraX = 0;
@@ -151,120 +146,94 @@ public class Gui extends JPanel{
         });
     }
     public BufferedImage getPlayerImage(Player player, Input input){
-        BufferedImage playerImage = getPlayerIdle(player)[0]; // Default idle animation frame
+        BufferedImage playerImage = playerDashAnimations[player.playernum - 1].getCurFrame(); // Default idle animation frame
+
+        // Handle dash animation
         if(player.getIsDashing()){
-            StatefulAnimation dashAnimation = getPlayerDash(player);
+            StatefulAnimation dashAnimation = playerDashAnimations[player.playernum - 1];
                                // time since last dash 
             int currentState = (int)(((int)System.currentTimeMillis() - input.getLastDash(player)) / 250);
+
             if(dashAnimation.getCurState() != currentState) dashAnimation.setState(currentState);
+
             playerImage = dashAnimation.getCurFrame();
         }
+        else /* if player is not dashing */{
+            StatefulAnimation idleAnim = playerIdleAnimations[player.playernum - 1];
+            if (player.getYDir() == -1) {
+                // Player is facing up
+                if (player.getXDir() == -1) {
+                    // Moving left while facing up
+                    idleAnim.setState(3);
+                } else if (player.getXDir() == 1) {
+                    // Moving right while facing up
+                    idleAnim.setState(2);
+                } else {
+                    // Default to right-facing up when no horizontal movement
+                    idleAnim.setState(3);
+                }
+            } else {
+                // Player is not facing up
+                if (player.getXDir() == -1) {
+                    // Moving left
+                    idleAnim.setState(1);
+                } else if (player.getXDir() == 1) {
+                    // Moving right
+                    idleAnim.setState(0);
+                } else {
+                    // Default to idle right-facing when no movement
+                    idleAnim.setState(0);
+                }
+            }
+            playerImage = idleAnim.getCurFrame();
+        }
+        return playerImage;
     }
+
     // Draw the player based on animations and current state.
     public void drawPlayer(Player player, Input input){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
 
-                    // // First phase of dash (going into dash)
-                    // if(timeSinceLastDash >= 0 && timeSinceLastDash < 250){ 
-                    //     if(dashAnimation.getCurState() != 0){ // If animation is not in first phase make it so
-                    //         dashAnimation.setState(0);  // Go to beginning of first phase anim
-                    //         System.out.println("First phase dash");
-                    //     }
-                    //     dashAnimation.setFrameTime(250 / 4); // First phase lasts 250 ms, has 4 frames
-                    //     playerImage = dashAnimation.getCurFrame();
-                    // } 
-
-                    // // Second phase (dashing)
-                    // else if(timeSinceLastDash >= 250 && timeSinceLastDash < 750){ 
-                    //     if(dashAnimation.getCurState() != 1){ // If animation is not in second phase make it so
-                    //         dashAnimation.setState(1);  // Go to beginning of second phase anim
-                    //         System.out.println("2nd phase dash");
-                    //     }
-                    //     dashAnimation.setFrameTime(100); // Go back to default frame time, to make second phase loop
-                    //     playerImage = dashAnimation.getCurFrame();
-                    // } 
-
-                    // // Third phase (ending dash)
-                    // else if(timeSinceLastDash >= 750 && timeSinceLastDash < 1000){ 
-                    //     if(dashAnimation.getCurState() != 2){ // If animation is not in third phase make it so
-                    //         dashAnimation.setState(2);  // Go to beginning of third phase anim
-                    //         System.out.println("Thirs phase dash");
-                    //     }
-                    //     dashAnimation.setFrameTime(250 / 4); // Third phase lasts 250 ms, has 4 frames
-                    //     playerImage = dashAnimation.getCurFrame();
-                        
-                    // }
-
-                    // TODO: replace with "playerImage = playerIamges[player.getDirection()]"
-                    else {
-                        if (player.getYDir() == -1) {
-                            // Player is facing up
-                            if (player.getXDir() == -1) {
-                                // Moving left while facing up
-                                playerImage = getPlayerIdle(player)[3];
-                            } else if (player.getXDir() == 1) {
-                                // Moving right while facing up
-                                playerImage = getPlayerIdle(player)[2];
-                            } else {
-                                // Default to right-facing up when no horizontal movement
-                                playerImage = getPlayerIdle(player)[3];
-                            }
-                        } else {
-                            // Player is not facing up
-                            if (player.getXDir() == -1) {
-                                // Moving left
-                                playerImage = getPlayerIdle(player)[1];
-                            } else if (player.getXDir() == 1) {
-                                // Moving right
-                                playerImage = getPlayerIdle(player)[0];
-                            } else {
-                                // Default to idle right-facing when no movement
-                                playerImage = getPlayerIdle(player)[0];
-                            }
-                        }
-
-                    }
-
                     // TODO: Make this a function call
-                    // Get an affine transform to work with
-                    AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
+                    // // Get an affine transform to work with
+                    // AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
                     
 
-                    double[] playerScreenPos = absToScreen(player.getxPos(), player.getyPos());
+                    // double[] playerScreenPos = absToScreen(player.getxPos(), player.getyPos());
 
-                    // How much to vertically scale the final shadow (for adjustments)
-                    double shadowScaleFactor = 0.8;
-                    // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
-                    double playerToTileX = (double)TILE_SIZE/(double)playerImage.getWidth();
-                    double playerToTileY = (double)TILE_SIZE/(double)playerImage.getHeight();
-                    // How much to shear the shadow (basically shadow angle)
-                    double shearFactor = -0.5;
+                    // // How much to vertically scale the final shadow (for adjustments)
+                    // double shadowScaleFactor = 0.8;
+                    // // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
+                    // double playerToTileX = (double)TILE_SIZE/(double)playerImage.getWidth();
+                    // double playerToTileY = (double)TILE_SIZE/(double)playerImage.getHeight();
+                    // // How much to shear the shadow (basically shadow angle)
+                    // double shearFactor = -0.5;
 
-                    // Move the shadow image to where it needs to be
-                    shadowTransform.translate(
-                                          // Because the image shears from the bottom up it moves the "feet" of the shadow,
-                                          // so we account for that and also the imminent scaling of the image.
-                        (playerScreenPos[0] + playerImage.getWidth() * shearFactor * playerToTileX * shadowScaleFactor),
-                                                  // Flipping the image puts it above the player's head so we move it to be below the feet instead.
-                        (double)((playerScreenPos[1] + 2*TILE_SIZE) - playerImage.getHeight() * (1-shadowScaleFactor) * playerToTileY)
-                    );
-                    // Shear the image so it is at the right angle
-                    shadowTransform.shear(shearFactor, 0);
-                    // Rescale the image so it appears the right size
-                    shadowTransform.scale(playerToTileX, -playerToTileY * shadowScaleFactor);
-                    // Draw the player and its shadow
+                    // // Move the shadow image to where it needs to be
+                    // shadowTransform.translate(
+                    //                       // Because the image shears from the bottom up it moves the "feet" of the shadow,
+                    //                       // so we account for that and also the imminent scaling of the image.
+                    //     (playerScreenPos[0] + playerImage.getWidth() * shearFactor * playerToTileX * shadowScaleFactor),
+                    //                               // Flipping the image puts it above the player's head so we move it to be below the feet instead.
+                    //     (double)((playerScreenPos[1] + 2*TILE_SIZE) - playerImage.getHeight() * (1-shadowScaleFactor) * playerToTileY)
+                    // );
+                    // // Shear the image so it is at the right angle
+                    // shadowTransform.shear(shearFactor, 0);
+                    // // Rescale the image so it appears the right size
+                    // shadowTransform.scale(playerToTileX, -playerToTileY * shadowScaleFactor);
+                    // // Draw the player and its shadow
                     
-                    if(player.getXDir() <= 0 && player.getIsDashing()){
-                        g2d.drawImage(playerImage, (int)playerScreenPos[0] + TILE_SIZE, (int)playerScreenPos[1], -TILE_SIZE, TILE_SIZE, null);
-                        shadowTransform.scale(-1, 1);
-                        shadowTransform.translate(-TILE_SIZE / playerToTileX, 0);
-                        g2d.drawImage(toShadow(playerImage), shadowTransform, null);
-                    } else {
-                        g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
-                        g2d.drawImage(toShadow(playerImage), shadowTransform, null);
+                    // if(player.getXDir() <= 0 && player.getIsDashing()){
+                    //     g2d.drawImage(playerImage, (int)playerScreenPos[0] + TILE_SIZE, (int)playerScreenPos[1], -TILE_SIZE, TILE_SIZE, null);
+                    //     shadowTransform.scale(-1, 1);
+                    //     shadowTransform.translate(-TILE_SIZE / playerToTileX, 0);
+                    //     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
+                    // } else {
+                    //     g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
+                    //     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
 
-                    }
+                    // }
                     if(Game.inDebugMode){
                         g2d.drawString("" + (int)(player.getxPos() / TILE_SIZE) + ", " + (int)(player.getyPos() / TILE_SIZE), (int)absToScreenX(player.getxPos() + 10), (int)absToScreenY(player.getyPos() - 30));
                     }
@@ -272,25 +241,10 @@ public class Gui extends JPanel{
             
         });
     }
-    // TODO: Make this an array
-    public BufferedImage[] getPlayerIdle(Player player){
-        BufferedImage[] idle = new BufferedImage[5];
-        if(player.playernum == 1){
-           idle = player1Images;
-        }else if(player.playernum == 2){
-            idle = player2Images;
-        }
-        return idle;
+    public void drawShadow(Entity e){
+
     }
-    // TODO: Make this an array too
-    public StatefulAnimation getPlayerDash(Player player){
-        if(player.playernum == 1){
-            return player1DashAnimation;
-         }else if(player.playernum == 2){
-            return player2DashAnimation;
-         }
-         return null;
-    }
+
     public void drawEntity(){
 
     }
@@ -365,74 +319,6 @@ public class Gui extends JPanel{
         }
 
         drawHitbox(e);
-    }
-    // TODO: List of stuff
-    public void drawEnvLayer1(Chunk c, double player1y, double player2y){
-        drawQueue.add(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
-                EnvObject[] envObjects = c.getEnvObjects();
-                for(int i = 0; i < envObjects.length; i++){
-                    if(envObjects[i].getAbsHitbox().getY() < Math.min(player1y, player2y)){
-                        drawEnvObject(envObjects[i], g2d);
-                    }
-
-                }
-            }
-        });
-    }
-        
-    public void drawEnvLayer2(Chunk c, double player1y, double player2y){
-        drawQueue.add(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
-                EnvObject[] envObjects = c.getEnvObjects();
-                double objY;
-                for(int i = 0; i < envObjects.length; i++){
-                    objY = envObjects[i].getAbsHitbox().getY();
-                    if(objY < Math.max(player1y, player2y) && objY > Math.min(player1y, player2y)){
-                        drawEnvObject(envObjects[i], g2d);
-                    }
-
-                }
-            }
-        });
-    }
-        
-    public void drawEnvLayer3(Chunk c, double player1y, double player2y){
-        drawQueue.add(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
-                EnvObject[] envObjects = c.getEnvObjects();
-                for(int i = 0; i < envObjects.length; i++){
-                    if(envObjects[i].getAbsHitbox().getY() > Math.max(player1y, player2y)){
-                        drawEnvObject(envObjects[i], g2d);
-                    }
-
-                }
-            }
-        });
-    }
-    // TODO: Make a single function
-    public void drawHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies){
-        drawQueue.add(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
-                if(Game.inDebugMode){
-                    // Draw player hitboxes
-                    for(int p = 0; p < players.size(); p++){
-                    }
-                    // Draw player attack hitboxes
-                    for(int p = 0; p < players.size(); p++){
-                        double[] hitbox = {players.get(p).getSwingHitbox().getX(), players.get(p).getSwingHitbox().getY()};
-                        double[] location = absToScreen(hitbox[0], hitbox[1]);
-                        g2d.drawImage(images.getImage("Square1"), (int) (location[0] - TILE_SIZE /2 ), (int) (location[1] - TILE_SIZE /2 ), (int) (players.get(p).getSwingHitbox().getWidth()), (int) (players.get(p).getSwingHitbox().getHeight()), null);  
-                    }
-                    // Draw enemy hitboxes
-                    for(int e = 0; e < enemies.size(); e++){
-                        double[] hitbox = enemies.get(e).getHitboxTopLeft();
-                        double[] location = absToScreen(hitbox[0], hitbox[1]);
-                        g2d.drawImage(images.getImage("Square1"), (int) location[0] + enemies.get(e).getWidth()/4, (int) location[1] + enemies.get(e).getHeight()/4, enemies.get(e).getWidth()/2, enemies.get(e).getHeight()/2, null);
-                    }
-                }
-            }
-        });
     }
     public void drawHitbox(Entity e){
         drawQueue.add(new GraphicsRunnable() {
@@ -514,12 +400,5 @@ public class Gui extends JPanel{
     public static double[] chunkToScreen(double xChunks, double yChunks){
         return new double[] {(xChunks * TILE_SIZE * 10 - sCameraX) + WIDTH / 2, ((yChunks * TILE_SIZE * 10 - sCameraY) + HEIGHT / 2) * HEIGHT_SCALE};
     }
-    // Screenspace (2D, pixels) to 2.5D (pixels)
-    public static double[] screenTo3D(double x, double y){
-        return new double[] {
-            -x * FOCAL_LENGTH / ((y + Z_OFFSET) * Math.cos(CAMERA_ANGLE)) + Gui.WIDTH/2,
-            ((Y_OFFSET)* Math.sin(CAMERA_ANGLE)) * (FOCAL_LENGTH / ((y + Z_OFFSET) * Math.cos(CAMERA_ANGLE)))
 
-        };
-    }
 }
