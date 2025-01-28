@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 //-------------------------------------------------//
 //                    Player                       //
 //-------------------------------------------------// 
-public class Player {
+public class Player extends Entity{
     ///////////////
     //Properties
     //////////////
@@ -59,7 +59,8 @@ public class Player {
     //Hitbox
     private boolean active; //the player is able to be hit if true
     private int[] topLeft; //top left of the hitbox
-    private Rectangle hitbox = new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
+    // Commented out because was throwing errors -Oliver
+    // private Rectangle hitbox = new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
 
     public int swingWidth  = Gui.TILE_SIZE * 2;
     public int swingHeight = Gui.TILE_SIZE * 2;
@@ -68,6 +69,7 @@ public class Player {
     //Constuctor
     //////////////
     public Player(double x, double y, int hp, int d, int dmg, double s, int playernum) {
+        super(x, y, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(Gui.TILE_SIZE/4, Gui.TILE_SIZE/4, Gui.TILE_SIZE / 2, Gui.TILE_SIZE / 2));
         System.out.println("Player!");
 
         this.playernum = playernum;
@@ -243,14 +245,14 @@ public class Player {
         //0,2 for index when grabbing a image from a 2d array of player images
         return new int[]{xDir + 1, yDir + 1};
     }
-   
-    public int getWidth(){
-        return this.width;
-    }
+    // Commented out because Entity has a getWidth method -Oliver
+    // public int getWidth(){
+    //     return this.width;
+    // }
 
-    public int getHeight(){
-        return this.height;
-    }
+    // public int getHeight(){
+    //     return this.height;
+    // }
 
     public int getDashCooldown(){
         return this.dashCooldown;
@@ -308,10 +310,10 @@ public class Player {
     }
     public int getDamage(){
         return this.damage;
-    }
-
-    public Rectangle getHitbox(){
-        return new Rectangle((int) this.getxPos(), (int) this.getyPos(), this.getWidth(), this.getHeight());
-    }
+    }   
+    // Commented out bc Entity has this method and it was causing errors -Oliver
+    // public Rectangle getHitbox(){
+    //     return new Rectangle((int) this.getxPos(), (int) this.getyPos(), this.getWidth(), this.getHeight());
+    // }
 
 }

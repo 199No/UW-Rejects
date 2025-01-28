@@ -1,7 +1,7 @@
 package src;
 
 import java.awt.AWTException;
-
+import java.awt.Rectangle;
 import java.io.IOException;
 
 public class Main {

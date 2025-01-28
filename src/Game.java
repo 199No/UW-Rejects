@@ -123,7 +123,7 @@ public class Game implements ActionListener{
                 for (int j = 0; j < envObjects.length; j++) {
                     EnvObject obj = envObjects[j];
                     Rectangle eHitbox = enemy.getHitbox();
-                    Rectangle objHitbox = obj.getHitbox();
+                    Rectangle objHitbox = obj.getAbsHitbox();
     
                     if (eHitbox.intersects(objHitbox)) {
                         Rectangle2D clip = objHitbox.createIntersection(eHitbox);
@@ -212,6 +212,9 @@ public class Game implements ActionListener{
         }
     
         gui.drawEnemies(this.enemies);
+        for(int i = 0; i < enemies.size(); i++){
+            
+        }
         gui.drawHitboxes(this.players, this.enemies);
         checkHitboxes(this.players, this.enemies);
         despawnSwingHitbox(this.players);
@@ -324,6 +327,7 @@ public class Game implements ActionListener{
             keys[playerKeys[3]]  // Right
         };
         player.move(movement, shift);
+
         ////////////////
         /// COLLISION
         ///////////////
@@ -334,9 +338,9 @@ public class Game implements ActionListener{
             Rectangle2D clip;
             for(int k = 0; k < envObjects.length; k++){
                 obj = envObjects[k];
-                pHitbox = player.getHitbox();
-                objHitbox = obj.getHitbox();
-                if(player.getHitbox().intersects(obj.getHitbox())){
+                pHitbox = player.getAbsHitbox();
+                objHitbox = obj.getAbsHitbox();
+                if(pHitbox.intersects(objHitbox)){
                     clip = objHitbox.createIntersection(pHitbox);
                     // Horizontal collide
                     if(clip.getHeight() > clip.getWidth()){

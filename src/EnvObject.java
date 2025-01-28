@@ -4,8 +4,20 @@ import java.awt.Rectangle;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 
-public class EnvObject {
+public class EnvObject extends Entity{
     private static Images images = new Images("Images/Enviroment", Transparency.BITMASK);
+    private static double[][] possibleDimensions = new double[][] {
+        {0, 0},
+        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
+        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
+        {Gui.TILE_SIZE * 3, Gui.TILE_SIZE * 3},
+        {Gui.TILE_SIZE * 3, Gui.TILE_SIZE * 3},
+        {Gui.TILE_SIZE, Gui.TILE_SIZE},
+        {Gui.TILE_SIZE, Gui.TILE_SIZE},
+        {Gui.TILE_SIZE, Gui.TILE_SIZE},
+        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE}
+
+    };
     Rectangle hitbox;
     BufferedImage image;
     double xPos, yPos;
@@ -14,6 +26,7 @@ public class EnvObject {
     double width, height;
     boolean isFlat;
     public EnvObject(double xPos, double yPos, int type){
+        super(xPos, yPos, possibleDimensions[type][0], possibleDimensions[type][1], EnvObject.createHitbox(type));
         this.xPos = xPos;
         this.yPos = yPos;
         this.type = type;
@@ -25,12 +38,8 @@ public class EnvObject {
                 } else {
                     image = new BufferedImage(5, 5, Transparency.BITMASK);
                 }
-                hitbox = new Rectangle(0, 0, Gui.TILE_SIZE, (int)(Gui.TILE_SIZE * Gui.HEIGHT_SCALE));
-                width = Gui.TILE_SIZE;
-                height = Gui.TILE_SIZE * Gui.HEIGHT_SCALE;
                 this.collidable = true;
                 isFlat = true;
-                break;
             case 2:
                 // Small airwall
                 if(Game.inDebugMode){
@@ -38,81 +47,37 @@ public class EnvObject {
                 } else {
                     image = new BufferedImage(5, 5, Transparency.BITMASK);
                 }
-                hitbox = new Rectangle(Gui.TILE_SIZE / 4, (Gui.TILE_SIZE / 4), Gui.TILE_SIZE / 2, (int)(Gui.TILE_SIZE / 2 * Gui.HEIGHT_SCALE));
-                width = Gui.TILE_SIZE;
-                height = Gui.TILE_SIZE * Gui.HEIGHT_SCALE;
                 this.collidable = true;
                 isFlat = true;
-                break;
             case 3:
                 image = images.getImage("tree1");
-                hitbox = new Rectangle(Gui.TILE_SIZE, Gui.TILE_SIZE * 3, Gui.TILE_SIZE, Gui.TILE_SIZE);
-                
-                width = Gui.TILE_SIZE * 3;
-                height = Gui.TILE_SIZE * 3;
                 this.collidable = true;
                 isFlat = false;
-                break;
-                
             case 4:
                 image = images.getImage("tree2");
-                hitbox = new Rectangle(Gui.TILE_SIZE, Gui.TILE_SIZE * 2, Gui.TILE_SIZE, Gui.TILE_SIZE);
-                width = Gui.TILE_SIZE * 3;
-                height = Gui.TILE_SIZE * 3;
                 this.collidable = true;
                 isFlat = false;
-                break;
-
             case 5:
                 // Pink flower
                 image = images.getImage("flowers").getSubimage(0, 0, 24, 24);
-                hitbox = new Rectangle(0, 0, 1, 1);
-                width = Gui.TILE_SIZE;
-                height = Gui.TILE_SIZE;
                 this.collidable = false;
                 isFlat = false;
-                break;
-                
             case 6:
                 // Purple flower
                 image = images.getImage("flowers").getSubimage(24, 0, 24, 24);
-                hitbox = new Rectangle(0, 0, 1, 1);
-                width = Gui.TILE_SIZE;
-                height = Gui.TILE_SIZE;
                 this.collidable = false;
                 isFlat = false;
-                break;
             case 7:
                 // Blue flower
                 image = images.getImage("flowers").getSubimage(0, 24, 24, 24);
-                hitbox = new Rectangle(0, 0, 1, 1);
-                width = Gui.TILE_SIZE;
-                height = Gui.TILE_SIZE;
                 this.collidable = false;  
                 isFlat = false;
-                break;      
             case 8:
                 image = images.getImage("lilypad");
-                hitbox = new Rectangle(0, 0, 1, 1);
-                width = Gui.TILE_SIZE;
-                height = Gui.TILE_SIZE * Gui.HEIGHT_SCALE;
                 this.collidable = false;
                 isFlat = false;
-                break;
         }
         hitbox.translate((int)this.xPos, (int)this.yPos);
-    }
-    public double x(){
-        return xPos;
-    }
-    public double y(){
-        return yPos;
-    }
-    public double width(){
-        return width;
-    }
-    public double height(){
-        return height;
     }
     public BufferedImage getImage(){
         return image;
@@ -120,7 +85,35 @@ public class EnvObject {
     public boolean isFlat(){
         return isFlat;
     }
-    public Rectangle getHitbox(){
-        return hitbox;
+    public static Rectangle createHitbox(int type){
+        switch(type){
+            case 1:
+                return new Rectangle(0, 0, Gui.TILE_SIZE, (int)(Gui.TILE_SIZE * Gui.HEIGHT_SCALE));
+            case 2:
+                return new Rectangle(Gui.TILE_SIZE / 4, (Gui.TILE_SIZE / 4), Gui.TILE_SIZE / 2, (int)(Gui.TILE_SIZE / 2 * Gui.HEIGHT_SCALE));
+
+            case 3:
+                return new Rectangle(Gui.TILE_SIZE, Gui.TILE_SIZE * 3, Gui.TILE_SIZE, Gui.TILE_SIZE);
+                                
+            case 4:
+                return new Rectangle(Gui.TILE_SIZE, Gui.TILE_SIZE * 2, Gui.TILE_SIZE, Gui.TILE_SIZE);
+                
+
+            case 5:
+                return new Rectangle(0, 0, 1, 1);
+                
+                
+            case 6:
+                return new Rectangle(0, 0, 1, 1);
+                
+            case 7:
+                // Blue flower
+                return new Rectangle(0, 0, 1, 1);
+                      
+            case 8:
+                return new Rectangle(0, 0, 1, 1);
+                
+        }
+        return new Rectangle();
     }
 }

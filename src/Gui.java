@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 //-------------------------------------------------//
 //                      Gui                        //
 //-------------------------------------------------// 
+// TODO: Make Gui a static class
 public class Gui extends JPanel{
     ///////////////
     //Properties
@@ -26,33 +27,34 @@ public class Gui extends JPanel{
     public static final double HEIGHT_SCALE = (double)2/(double)3;
     public static final int PLAYER_SIZE = 24;
     public static final int TILE_SIZE = 60;
-    public static final double FOCAL_LENGTH = 720 / Math.sqrt(2); // 720 / sqrt(2)
-    public static final double CAMERA_ANGLE = Math.PI * 0.05;
-    public static final double Y_OFFSET = -3200;
-    public static final double Z_OFFSET = -1720;
-    // Where things get queued up to be drawn. 
-    // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
-    // Fixes timing issues.
+    // Queues up all the draw commands in a frame so that they can all be executed at the end of the frame at the correct time.
     ArrayList<GraphicsRunnable> drawQueue;
     // You need a frame to draw things on.
     JFrame frame = new JFrame("The Divided Realms INDEV");
-    // Preloading. To be deprecated
+    // TODO: Make this a stateful animation.
     BufferedImage[] player1Images;
     BufferedImage[] player2Images;
 
-    // The guy she tells you not to worry about (better image loading)
+    // General images
     Images images;
+    // Images only for tiles
     Images tileImages;
+
     Rectangle chunkUnloadBoundary = new Rectangle(-(TILE_SIZE * 10), -(TILE_SIZE * 10), Gui.WIDTH + (TILE_SIZE * 20), Gui.HEIGHT + (TILE_SIZE * 20));
+
     Animation slimeAnimation;
     StatefulAnimation player1DashAnimation;
     StatefulAnimation player2DashAnimation;
+    StatefulAnimation player1Idle;
+    StatefulAnimation player2Idle;
     Animation waterAnimation;
+
     ////////// CAMERA ///////////
     double cameraX;
     double cameraY;
     static double sCameraX;
     static double sCameraY; // Static version of camera coords
+
     ///////////////
     //Constuctor
     //////////////
@@ -64,19 +66,12 @@ public class Gui extends JPanel{
         // Define a constantly running Animation for the slime (soon to be better)
         slimeAnimation = new Animation(images.getImage("slime"), 4, 2, 7, 100, true);
         slimeAnimation.start(); 
-        
-        player1Images = new BufferedImage[5];
-        // Load up all the player images (to be deprectated)
-        player1Images[0] = images.getImage("playerIdle").getSubimage(0 * PLAYER_SIZE, 0 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
-        player1Images[1] = images.getImage("playerIdle").getSubimage(1 * PLAYER_SIZE, 0 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
-        player1Images[2] = images.getImage("playerIdle").getSubimage(0 * PLAYER_SIZE, 1 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
-        player1Images[3] = images.getImage("playerIdle").getSubimage(1 * PLAYER_SIZE, 1 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
-        player1Images[4] = images.getImage("playerIdle");
-        player1Images[4] = images.getImage("playerIdle");
 
-
-        player1DashAnimation = new StatefulAnimation(100, 3, 2,
-            new int[][] {{0,1,2,3}, {4,5}, {4,3,2,1}}, images.getImage("playerDash"), true);
+        player1Idle = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, images.getImage("playerIdle"), true);
+        player2Idle = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, images.getImage("player2Idle"), true);
+        player1DashAnimation = new StatefulAnimation(63, 3, 2,
+                        // Four sections for each 250 ms stage of the animation
+            new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, images.getImage("playerDash"), true);
         // Honestly this could be a stateful animation.
         // TODO: fix.
 
@@ -88,8 +83,8 @@ public class Gui extends JPanel{
         player2Images[3] = images.getImage("player2Idle").getSubimage(1 * PLAYER_SIZE, 1 * PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
         player2Images[4] = images.getImage("player2Idle");
 
-        player2DashAnimation = new StatefulAnimation(100, 3, 2,
-        new int[][] {{0,1,2,3}, {4,5}, {4,3,2,1}}, images.getImage("player2Dash"), true);
+        player2DashAnimation = new StatefulAnimation(63, 3, 2,
+        new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, images.getImage("player2Dash"), true);
         waterAnimation = new Animation(images.getImage("waterTile"), 3, 1, 3, 250, true);
         waterAnimation.start();
         this.cameraX = 0;
@@ -155,44 +150,51 @@ public class Gui extends JPanel{
             }
         });
     }
+    public BufferedImage getPlayerImage(Player player, Input input){
+        BufferedImage playerImage = getPlayerIdle(player)[0]; // Default idle animation frame
+        if(player.getIsDashing()){
+            StatefulAnimation dashAnimation = getPlayerDash(player);
+                               // time since last dash 
+            int currentState = (int)(((int)System.currentTimeMillis() - input.getLastDash(player)) / 250);
+            if(dashAnimation.getCurState() != currentState) dashAnimation.setState(currentState);
+            playerImage = dashAnimation.getCurFrame();
+        }
+    }
     // Draw the player based on animations and current state.
     public void drawPlayer(Player player, Input input){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                    double timeSinceLastDash = (int)System.currentTimeMillis() - input.getLastDash(player);
-                    BufferedImage playerImage = getPlayerIdle(player)[0]; // Default idle animation frame
-                    StatefulAnimation dashAnimation = getPlayerDash(player);
 
-                    // First phase of dash (going into dash)
-                    if(timeSinceLastDash >= 0 && timeSinceLastDash < 250){ 
-                        if(dashAnimation.getCurState() != 0){ // If animation is not in first phase make it so
-                            dashAnimation.setState(0);  // Go to beginning of first phase anim
-                            System.out.println("First phase dash");
-                        }
-                        dashAnimation.setFrameTime(250 / 4); // First phase lasts 250 ms, has 4 frames
-                        playerImage = dashAnimation.getCurFrame();
-                    } 
+                    // // First phase of dash (going into dash)
+                    // if(timeSinceLastDash >= 0 && timeSinceLastDash < 250){ 
+                    //     if(dashAnimation.getCurState() != 0){ // If animation is not in first phase make it so
+                    //         dashAnimation.setState(0);  // Go to beginning of first phase anim
+                    //         System.out.println("First phase dash");
+                    //     }
+                    //     dashAnimation.setFrameTime(250 / 4); // First phase lasts 250 ms, has 4 frames
+                    //     playerImage = dashAnimation.getCurFrame();
+                    // } 
 
-                    // Second phase (dashing)
-                    else if(timeSinceLastDash >= 250 && timeSinceLastDash < 750){ 
-                        if(dashAnimation.getCurState() != 1){ // If animation is not in second phase make it so
-                            dashAnimation.setState(1);  // Go to beginning of second phase anim
-                            System.out.println("2nd phase dash");
-                        }
-                        dashAnimation.setFrameTime(100); // Go back to default frame time, to make second phase loop
-                        playerImage = dashAnimation.getCurFrame();
-                    } 
+                    // // Second phase (dashing)
+                    // else if(timeSinceLastDash >= 250 && timeSinceLastDash < 750){ 
+                    //     if(dashAnimation.getCurState() != 1){ // If animation is not in second phase make it so
+                    //         dashAnimation.setState(1);  // Go to beginning of second phase anim
+                    //         System.out.println("2nd phase dash");
+                    //     }
+                    //     dashAnimation.setFrameTime(100); // Go back to default frame time, to make second phase loop
+                    //     playerImage = dashAnimation.getCurFrame();
+                    // } 
 
-                    // Third phase (ending dash)
-                    else if(timeSinceLastDash >= 750 && timeSinceLastDash < 1000){ 
-                        if(dashAnimation.getCurState() != 2){ // If animation is not in third phase make it so
-                            dashAnimation.setState(2);  // Go to beginning of third phase anim
-                            System.out.println("Thirs phase dash");
-                        }
-                        dashAnimation.setFrameTime(250 / 4); // Third phase lasts 250 ms, has 4 frames
-                        playerImage = dashAnimation.getCurFrame();
+                    // // Third phase (ending dash)
+                    // else if(timeSinceLastDash >= 750 && timeSinceLastDash < 1000){ 
+                    //     if(dashAnimation.getCurState() != 2){ // If animation is not in third phase make it so
+                    //         dashAnimation.setState(2);  // Go to beginning of third phase anim
+                    //         System.out.println("Thirs phase dash");
+                    //     }
+                    //     dashAnimation.setFrameTime(250 / 4); // Third phase lasts 250 ms, has 4 frames
+                    //     playerImage = dashAnimation.getCurFrame();
                         
-                    }
+                    // }
 
                     // TODO: replace with "playerImage = playerIamges[player.getDirection()]"
                     else {
@@ -289,6 +291,12 @@ public class Gui extends JPanel{
          }
          return null;
     }
+    public void drawEntity(){
+
+    }
+
+
+
     // TODO: Make this a function call
     public void drawEnemies(ArrayList<Enemies> enemies){
         //given an arraylist type enemies
@@ -333,25 +341,25 @@ public class Gui extends JPanel{
         // How much to shear the shadow (basically shadow angle)
         double shearFactor = -0.5;
 
-        double[] objCoords = absToScreen(e.x(), e.y());
+        double[] objCoords = absToScreen(e.getX(), e.getY());
 
         // How much to vertically scale the final shadow (for adjustments)
         double shadowScaleFactor = 0.8;
         // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
-        double playerToTileX = (double)e.width()/(double)e.getImage().getWidth();
-        double playerToTileY = (double)e.height()/(double)e.getImage().getHeight();
+        double playerToTileX = (double)e.getWidth()/(double)e.getImage().getWidth();
+        double playerToTileY = (double)e.getHeight()/(double)e.getImage().getHeight();
 
         // Get an affine transform to work with
         AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
         shadowTransform.translate(objCoords[0] + e.getImage().getWidth() * shearFactor * playerToTileX * shadowScaleFactor, 
-                                  (double)((objCoords[1] + 2*e.height()) - e.getImage().getHeight() * (1-shadowScaleFactor) * playerToTileY)
+                                  (double)((objCoords[1] + 2*e.getHeight()) - e.getImage().getHeight() * (1-shadowScaleFactor) * playerToTileY)
                                 );
         // Shear the image so it is at the right angle
         shadowTransform.shear(shearFactor, 0);
         // Rescale the image so it appears the right size
         shadowTransform.scale(playerToTileX, -playerToTileY * shadowScaleFactor);
         // Draw the player and its shadow
-        g2d.drawImage(e.getImage(), (int)objCoords[0], (int)objCoords[1], (int)e.width(), (int)(e.height()), null);
+        g2d.drawImage(e.getImage(), (int)objCoords[0], (int)objCoords[1], (int)e.getWidth(), (int)(e.getHeight()), null);
         if(!e.isFlat()){
             g2d.drawImage(toShadow(e.getImage()), shadowTransform, null);
         }
@@ -364,7 +372,7 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 EnvObject[] envObjects = c.getEnvObjects();
                 for(int i = 0; i < envObjects.length; i++){
-                    if(envObjects[i].getHitbox().getY() < Math.min(player1y, player2y)){
+                    if(envObjects[i].getAbsHitbox().getY() < Math.min(player1y, player2y)){
                         drawEnvObject(envObjects[i], g2d);
                     }
 
@@ -379,7 +387,7 @@ public class Gui extends JPanel{
                 EnvObject[] envObjects = c.getEnvObjects();
                 double objY;
                 for(int i = 0; i < envObjects.length; i++){
-                    objY = envObjects[i].getHitbox().getY();
+                    objY = envObjects[i].getAbsHitbox().getY();
                     if(objY < Math.max(player1y, player2y) && objY > Math.min(player1y, player2y)){
                         drawEnvObject(envObjects[i], g2d);
                     }
@@ -394,7 +402,7 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 EnvObject[] envObjects = c.getEnvObjects();
                 for(int i = 0; i < envObjects.length; i++){
-                    if(envObjects[i].getHitbox().getY() > Math.max(player1y, player2y)){
+                    if(envObjects[i].getAbsHitbox().getY() > Math.max(player1y, player2y)){
                         drawEnvObject(envObjects[i], g2d);
                     }
 
@@ -426,11 +434,11 @@ public class Gui extends JPanel{
             }
         });
     }
-    public void drawHitbox(EnvObject obj){
+    public void drawHitbox(Entity e){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 if(Game.inDebugMode){
-                    Rectangle hitbox = obj.getHitbox();
+                    Rectangle hitbox = e.getAbsHitbox();
                     double[] coords = absToScreen((hitbox.getX()), (hitbox.getY()));
                     g2d.setColor(Color.RED);
                     g2d.setStroke(new BasicStroke(3));
@@ -438,12 +446,6 @@ public class Gui extends JPanel{
                 }
             }
         });
-    }
-    public void drawHitbox(Player player, Graphics2D g2d){
-        
-        double[] hitbox = player.getHitboxTopLeft();
-        double[] location = absToScreen(hitbox[0], hitbox[1]);
-        g2d.drawImage(images.getImage("Square1"), (int) location[0] + player.getHitbox().getWidth(), (int) location[1] + players.get(p).getHeight()/4, players.get(p).getWidth()/2, players.get(p).getHeight()/2, null);
     }
     //////////////////////////////////////////////////
     /// CAMERA
