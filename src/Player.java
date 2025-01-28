@@ -218,6 +218,10 @@ public class Player extends Entity{
         return new int[]{xDir + 1, yDir + 1};
     }
 
+    public double[] getLocation(){
+        return new double[]{getX(),getY()};
+    }
+
     public int getDashCooldown(){
         return this.dashCooldown;
     }
