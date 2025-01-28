@@ -19,6 +19,7 @@ public class Slime extends Enemies {
     ///////////////
     int maxDistance = 100; // Max distance a slime will hop idly
     int MAX_IDLE_COOLDOWN = 3000; // Cooldown in milliseconds
+    int MIN_IDLE_COOLDOWN = 1000;
     long lastIdleMoveTime;
     boolean chasingPlayer = false;
     Player targetPlayer = null;
@@ -29,8 +30,8 @@ public class Slime extends Enemies {
     ///////////////
     // Constructor
     ///////////////
-    public Slime(double x, double y) {
-        super(x, y);
+    public Slime(double x, double y, double width, double height, Rectangle hitbox) {
+        super(x, y, width, height, hitbox);
         this.health = 100;
         this.damage = 10;
         this.speed = 2;
@@ -56,7 +57,7 @@ public class Slime extends Enemies {
         long currentTime = System.currentTimeMillis();
 
         // Wait before moving again
-        if (!moving && (currentTime - lastIdleMoveTime) > MAX_IDLE_COOLDOWN) {
+        if (!moving && (currentTime - lastIdleMoveTime) > MAX_IDLE_COOLDOWN && (currentTime - lastIdleMoveTime) < MIN_IDLE_COOLDOWN) {
             // Generate a random location within maxDistance
             double offsetX = (rnd.nextDouble() * 2 - 1) * maxDistance;
             double offsetY = (rnd.nextDouble() * 2 - 1) * maxDistance;
@@ -78,8 +79,8 @@ public class Slime extends Enemies {
     }
 
     public boolean scanArea(Player player) {
-        double dx = player.getxPos() - this.xPos;
-        double dy = player.getyPos() - this.yPos;
+        double dx = player.getX() - this.xPos;
+        double dy = player.getY() - this.yPos;
         double distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance <= this.eyesight) {
@@ -92,12 +93,12 @@ public class Slime extends Enemies {
 
     public void attack() { // move towards player
         if (targetPlayer != null) {
-            double[] playerLoc = {targetPlayer.getxPos(), targetPlayer.getyPos()};
+            double[] playerLoc = {targetPlayer.getX(), targetPlayer.getY()};
             moveToward(playerLoc);
 
             // Check if player is out of range
-            double dx = targetPlayer.getxPos() - this.xPos;
-            double dy = targetPlayer.getyPos() - this.yPos;
+            double dx = targetPlayer.getX() - this.xPos;
+            double dy = targetPlayer.getY() - this.yPos;
             double distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance > this.eyesight) {
@@ -140,6 +141,24 @@ public class Slime extends Enemies {
             moveToward(this.getLastSeen());
         } else {
             idleMove();
+        }
+    }
+
+    @Override
+    public boolean scanArea(int[] playerLocation){
+        // Calculate the distance to the player's location
+        double dx = playerLocation[0] - this.xPos;
+        double dy = playerLocation[1] - this.yPos;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Check if the player is within eyesight
+        if (distance <= this.eyesight) {
+            this.alert = true;
+            this.lastSeen = new double[]{playerLocation[0], playerLocation[1]}; // Update last seen location
+            return true;
+        } else {
+            this.alert = false;
+            return false;
         }
     }
 

@@ -1,5 +1,5 @@
 package src;
-import java.util.ArrayList;
+
 import java.awt.Rectangle;
 
 //-------------------------------------------------//
@@ -16,10 +16,6 @@ public class Player extends Entity{
     private double speed;
     private double maxSpeed;
 
-    //multipliers
-    private double damageMultiplier;
-    private double speedMultiplier;
-    private double XPMultiplier;
 
     //positioning
     private double xPos;
@@ -31,8 +27,8 @@ public class Player extends Entity{
     private int facingDirX = 1; // 1 = right, -1 = left, 0 = no horizontal facing
     private int facingDirY = 0; // 1 = down, -1 = up, 0 = no vertical facing
 
-    private final int width = Gui.TILE_SIZE;
-    private final int height = Gui.TILE_SIZE;
+    private final double width = Gui.TILE_SIZE;
+    private final double height = Gui.TILE_SIZE;
 
     //misc
     private int temperature;
@@ -58,13 +54,9 @@ public class Player extends Entity{
     
     //Hitbox
     private boolean active; //the player is able to be hit if true
-    private int[] topLeft; //top left of the hitbox
-    // Commented out because was throwing errors -Oliver
-    // private Rectangle hitbox = new Rectangle(getWidth()/2, getHeight()/2, (int) getxPos() + getWidth(), (int) getyPos() + getHeight());
-
     public int swingWidth  = Gui.TILE_SIZE * 2;
     public int swingHeight = Gui.TILE_SIZE * 2;
-    private Rectangle swingHitbox = new Rectangle( swingWidth, swingHeight,  (int) getxPos(),  (int) getyPos() );
+    private Rectangle swingHitbox = new Rectangle( swingWidth, swingHeight,  (int) getX(),  (int) getY() );
     ///////////////
     //Constuctor
     //////////////
@@ -168,23 +160,23 @@ public class Player extends Entity{
     
         // Calculate hitbox position based on facing direction
         if (facingDirX == 1) { // Facing right
-            hitboxX = (int) getxPos(); // + getWidth();
-            hitboxY = (int) getyPos(); // + getHeight() / 2 - swingHeight / 2;
+            hitboxX = (int) getX(); // + getWidth();
+            hitboxY = (int) getY(); // + getHeight() / 2 - swingHeight / 2;
         } else if (facingDirX == -1) { // Facing left
-            hitboxX = (int) getxPos(); // - swingWidth;
-            hitboxY = (int) getyPos(); //+ getHeight() / 2 - swingHeight / 2;
+            hitboxX = (int) getX(); // - swingWidth;
+            hitboxY = (int) getY(); //+ getHeight() / 2 - swingHeight / 2;
         } else if (facingDirY == -1) { // Facing up
-            hitboxX = (int) getxPos(); // + getWidth() / 2 - swingWidth / 2;
-            hitboxY = (int) getyPos(); // - swingHeight;
+            hitboxX = (int) getX(); // + getWidth() / 2 - swingWidth / 2;
+            hitboxY = (int) getY(); // - swingHeight;
         } else if (facingDirY == 1) { // Facing down
-            hitboxX = (int) getxPos(); //+ getWidth() / 2 - swingWidth / 2;
-            hitboxY = (int) getyPos(); //+ getHeight();
+            hitboxX = (int) getX(); //+ getWidth() / 2 - swingWidth / 2;
+            hitboxY = (int) getY(); //+ getHeight();
         }
     
         // Create a new hitbox
-        swingHitbox = new Rectangle((int) getxPos(), (int) getyPos(), swingWidth, swingHeight);
+        swingHitbox = new Rectangle((int) getX(), (int) getY(), swingWidth, swingHeight);
     
-        System.out.println("Player positon at (" + (int) this.getxPos() + ", " + (int) this.getyPos() );
+        System.out.println("Player positon at (" + (int) getX() + ", " + (int) getY() );
         System.out.println("Hitbox spawned at (" + hitboxX + ", " + hitboxY + ")");
     }
 
@@ -199,22 +191,6 @@ public class Player extends Entity{
         }
         applyMovement(movement);
         updatePosition(speed);
-    }
-
-    public double getxPos(){
-        return this.xPos;
-    }
-
-    public void setxPos(double xPos){
-        this.xPos = xPos;
-    }
-
-    public double getyPos(){
-        return this.yPos;
-    }
-
-    public void setyPos(double yPos){
-        this.yPos = yPos;
     }
 
     public int getXDir(){
@@ -236,23 +212,11 @@ public class Player extends Entity{
             return 0;
         }
     }
-    
-    public int[] getLocation(){
-        return new int[] {(int) this.xPos, (int) this.yPos};
-    }
 
     public int[] getDirection(){
         //0,2 for index when grabbing a image from a 2d array of player images
         return new int[]{xDir + 1, yDir + 1};
     }
-    // Commented out because Entity has a getWidth method -Oliver
-    // public int getWidth(){
-    //     return this.width;
-    // }
-
-    // public int getHeight(){
-    //     return this.height;
-    // }
 
     public int getDashCooldown(){
         return this.dashCooldown;
@@ -299,21 +263,15 @@ public class Player extends Entity{
         this.speed = speed;
     }
 
-    public double[] getHitboxTopLeft(){
-        return new double[]{getxPos(), getyPos()};
-    }
     public double[] getSwingHitboxTopLeft(){
         return new double[]{this.swingHitbox.getX(), this.swingHitbox.getY()};
     }
+
     public Rectangle getSwingHitbox(){
         return this.swingHitbox;
     }
     public int getDamage(){
         return this.damage;
     }   
-    // Commented out bc Entity has this method and it was causing errors -Oliver
-    // public Rectangle getHitbox(){
-    //     return new Rectangle((int) this.getxPos(), (int) this.getyPos(), this.getWidth(), this.getHeight());
-    // }
 
 }
