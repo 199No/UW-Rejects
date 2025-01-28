@@ -235,7 +235,7 @@ public class Gui extends JPanel{
 
                     // }
                     if(Game.inDebugMode){
-                        g2d.drawString("" + (int)(player.getxPos() / TILE_SIZE) + ", " + (int)(player.getyPos() / TILE_SIZE), (int)absToScreenX(player.getxPos() + 10), (int)absToScreenY(player.getyPos() - 30));
+                        g2d.drawString("" + (int)(player.getX() / TILE_SIZE) + ", " + (int)(player.getY() / TILE_SIZE), (int)absToScreenX(player.getX() + 10), (int)absToScreenY(player.getY() - 30));
                     }
                 } 
             
@@ -260,7 +260,7 @@ public class Gui extends JPanel{
                 for(int i = 0; i < enemies.size(); i ++){
 
                     BufferedImage slimeImage = slimeAnimation.getFrame();
-                    double[] screenPos = absToScreen(enemies.get(i).getxPos(), enemies.get(i).getyPos());
+                    double[] screenPos = absToScreen(enemies.get(i).getX(), enemies.get(i).getY());
                     g2d.drawImage(slimeImage, (int)screenPos[0], (int)screenPos[1], TILE_SIZE, TILE_SIZE, null);
                     g2d.drawImage(toShadow(slimeImage), (int)screenPos[0], (int)(screenPos[1] + 2 * TILE_SIZE), TILE_SIZE, -TILE_SIZE, null);
                 }
