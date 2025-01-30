@@ -1,6 +1,11 @@
 package src;
 
 import java.awt.Rectangle;
+import java.awt.Transparency;
+import java.awt.image.BufferedImage;
+import java.util.concurrent.TransferQueue;
+
+import javax.swing.plaf.nimbus.State;
 
 //-------------------------------------------------//
 //                    Player                       //
@@ -57,6 +62,11 @@ public class Player extends Entity{
     public int swingWidth  = Gui.TILE_SIZE * 2;
     public int swingHeight = Gui.TILE_SIZE * 2;
     private Rectangle swingHitbox = new Rectangle( swingWidth, swingHeight,  (int) getX(),  (int) getY() );
+
+    //Animation
+    
+    StatefulAnimation idleAnim = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, new Images("Images/Misc", Transparency.BITMASK).getImage("player" + playernum + "Idle"), true);
+    StatefulAnimation dashAnimation = new StatefulAnimation(63, 3, 2, new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, new Images("Images/Misc", Transparency.BITMASK).getImage("player" + playernum + "Dash"), true);
     ///////////////
     //Constuctor
     //////////////
@@ -277,5 +287,50 @@ public class Player extends Entity{
     public int getDamage(){
         return this.damage;
     }   
+    public int getLastDash(){
+        
+    }
+    public BufferedImage getImage(){
+        BufferedImage playerImage = dashAnimation.getCurFrame(); // Default idle animation frame
+
+        // Handle dash animation
+        if(isDashing){
+                               // time since last dash 
+            int currentState = (int)(((int)System.currentTimeMillis() - input.getLastDash(player)) / 250);
+
+            if(dashAnimation.getCurState() != currentState) dashAnimation.setState(currentState);
+
+            playerImage = dashAnimation.getCurFrame();
+        }
+        else /* if player is not dashing */{
+            StatefulAnimation idleAnim = playerIdleAnimations[player.playernum - 1];
+            if (player.getYDir() == -1) {
+                // Player is facing up
+                if (player.getXDir() == -1) {
+                    // Moving left while facing up
+                    idleAnim.setState(3);
+                } else if (player.getXDir() == 1) {
+                    // Moving right while facing up
+                    idleAnim.setState(2);
+                } else {
+                    // Default to right-facing up when no horizontal movement
+                    idleAnim.setState(3);
+                }
+            } else {
+                // Player is not facing up
+                if (player.getXDir() == -1) {
+                    // Moving left
+                    idleAnim.setState(1);
+                } else if (player.getXDir() == 1) {
+                    // Moving right
+                    idleAnim.setState(0);
+                } else {
+                    // Default to idle right-facing when no movement
+                    idleAnim.setState(0);
+                }
+            }
+            playerImage = idleAnim.getCurFrame();
+        }
+    }
 
 }
