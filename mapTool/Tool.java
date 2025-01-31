@@ -8,11 +8,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.awt.Rectangle;
 public class Tool implements ActionListener {
+    public static final boolean inEnvMode = true;
     Input input;
     Gui gui;
     Timer timer; // Provides a "pulse" every 1/60th of a second for frame timing
     int[][] chunk = new int[10][10];
-    // Which tile  type is the "paint" right now
+    int[][] envChunk = new int[10][10];
+    // Which tile type is the "paint" right now
     int selectedType;
     // For input on the chunk
     Rectangle chunkRectangle = new Rectangle(100, 100, 500, 500);
@@ -57,17 +59,8 @@ public class Tool implements ActionListener {
         // Draw the newly drawn bits to the screen.
         gui.repaint();
     }
-
-    // Takes user input and loads a chunk from a file into the chunk variable.
-    // TODO: Make the user input part a different method.
-    public void loadChunk(){
-        // A single line of text in the file
-        String line;
-        // A row of chunks represented as an array of Strings
-        String[] row;
-        // The chunk to load represented as a String
-        String[] rawChunk;
-
+    public void getUserInput(){
+        
         // Get user input
         System.out.println("Which chunk do you want to load? (x,y)");
         String[] userInput = consoleInput.nextLine().split(",");
@@ -87,13 +80,24 @@ public class Tool implements ActionListener {
                 return;
             }
         }
+    }
+    // Takes user input and loads a chunk from a file into the chunk variable.
+    // TODO: Make the user input part a different method.
+    public void loadChunk(int[] coords){
+        // A single line of text in the file
+        String line;
+        // A row of chunks represented as an array of Strings
+        String[] row;
+        // The chunk to load represented as a String
+        String[] rawChunk;
+
         // I don't wanna have to deal with methods throwing exceptions
         try {
             // TODO: Make this not a hardcoded map file
             File f = new File("Maps/map1.map");
             Scanner s = new Scanner(f);
             // Skip lines until one before the line at y...
-            for(int i = 0; i < chunkY; i++){
+            for(int i = 0; i < coords[1]; i++){
                 s.nextLine();
             }
             // so that the next line will be the one we want.
@@ -101,7 +105,7 @@ public class Tool implements ActionListener {
             // Split the line into individual chunks; the regex here reads .split(";}").
             row = line.split(";\\}");
                      
-            rawChunk = row[chunkX] // Get the chunk at our desired X
+            rawChunk = row[coords[0]] // Get the chunk at our desired X
                 .substring(1) // Get rid of the first character which is always a {
                     .split(";"); // Split into rows of tiles.
             // rawChunk now reads
@@ -205,11 +209,9 @@ public class Tool implements ActionListener {
             loadChunk();
         }
         if(chunkRectangle.contains(mouseX, mouseY - 32)){
-            System.out.println("chunk");
             int x = (int)Math.floor((mouseX - 100) / 50);
             int y = (int)Math.floor((mouseY - 132) / 50);
             chunk[y][x] = selectedType;
-            System.out.println(chunk[y][x]);
         }  
         if(palletRectangle.contains(mouseX, mouseY)){
             int x = (int)Math.floor((mouseX - 800) / 50);

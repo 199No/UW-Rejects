@@ -1,5 +1,6 @@
 package mapTool;
 import java.awt.Image;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -62,6 +63,9 @@ public class Images {
         return null;
     }
     public BufferedImage getImage(int id){
+        if(id <= 0){
+            return new BufferedImage(1, 1, Transparency.OPAQUE);
+        }
         return imageList[id];
     }
     public int numImages(){
