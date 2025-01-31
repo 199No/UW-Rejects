@@ -1,28 +1,11 @@
 package src;
-//-------------------------------------------------//
-//                    Imports                      //
-//-------------------------------------------------// 
+
 import java.awt.AWTException;
+import java.awt.Rectangle;
 import java.io.IOException;
 
-//-------------------------------------------------//
-//                     Main                        //
-//-------------------------------------------------// 
-public class Main{
-    //////////////
-    //Properties
-    //////////////
-    /////////////
-    //Constuctor
-    /////////////
-
-//   |
-//   V
-    public static void main(String[] args) throws AWTException, IOException{
+public class Main {
+    public static void main(String[] args) throws IOException, AWTException{
         new Game();
     }
-//-------------------------------------------------//
-//                    Methods                      //
-//-------------------------------------------------// 
-
 }

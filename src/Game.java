@@ -14,7 +14,7 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.Timer;
-
+//unrejar
 
 
 //-------------------------------------------------//
@@ -26,7 +26,7 @@ public class Game implements ActionListener{
     ///////////////
     //Properties
     ///////////////
-    
+    //very unrejar
     public static final boolean inDebugMode = false;
     Timer gameTimer;
     Gui gui;
@@ -43,7 +43,7 @@ public class Game implements ActionListener{
     Chunk chunk2;
     private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
     private ArrayList<Player>  players = new ArrayList<Player>();
-
+    private ArrayList<Entity> entities = new ArrayList<Entity>();
     // Bounds
     private double xMin = 0;
     private double xMax = 4080;
@@ -60,12 +60,8 @@ public class Game implements ActionListener{
         players.add(player1);
         players.add(player2);
         this.input = new Input();
-        enemies.add(createSlime(100, 300));
-        enemies.add(createSlime(700, 400));
-        enemies.add(createSlime(750, 5000));
-        enemies.add(createSlime(6000, 600));
-        enemies.add(createSlime(5000, 5000));
-        enemies.add(createSlime(5000, 300));
+        //TODO: find out how to actually make slime like normal
+        enemies.add(createSlime(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(100,300,Gui.TILE_SIZE, Gui.TILE_SIZE)));
 
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
@@ -106,7 +102,7 @@ public class Game implements ActionListener{
         for (int i = 0; i < this.enemies.size(); i++) {
             Enemies enemy = enemies.get(i);
             for (int p = 0; p < this.players.size(); p++) {
-                enemy.scanArea(players.get(p).getLocation());
+                enemy.scanArea(new int[]{(int) players.get(p).getLocation()[0],  (int) players.get(p).getLocation()[1]});
             }
     
             if (enemy.getAlert()) {
@@ -122,8 +118,8 @@ public class Game implements ActionListener{
                 EnvObject[] envObjects = map.getChunk(c).getEnvObjects();
                 for (int j = 0; j < envObjects.length; j++) {
                     EnvObject obj = envObjects[j];
-                    Rectangle eHitbox = enemy.getHitbox();
-                    Rectangle objHitbox = obj.getHitbox();
+                    Rectangle eHitbox = enemy.getRelHitbox();
+                    Rectangle objHitbox = obj.getAbsHitbox();
     
                     if (eHitbox.intersects(objHitbox)) {
                         Rectangle2D clip = objHitbox.createIntersection(eHitbox);
@@ -132,20 +128,20 @@ public class Game implements ActionListener{
                         if (clip.getHeight() > clip.getWidth()) {
                             // Right collision
                             if (eHitbox.getX() > objHitbox.getX()) {
-                                enemy.setxPos(objHitbox.getMaxX());
+                                enemy.setX(objHitbox.getMaxX());
                             }
                             // Left collision
                             if (eHitbox.getX() < objHitbox.getX()) {
-                                enemy.setxPos(objHitbox.getX() - enemy.getWidth());
+                                enemy.setX(objHitbox.getX() - enemy.getWidth());
                             }
                         } else if (clip.getWidth() > clip.getHeight()) {
                             // Top collision
                             if (eHitbox.getY() > objHitbox.getY()) {
-                                enemy.setyPos(objHitbox.getMaxY());
+                                enemy.setY(objHitbox.getMaxY());
                             }
                             // Bottom collision
                             if (eHitbox.getY() < objHitbox.getY()) {
-                                enemy.setyPos(objHitbox.getY() - enemy.getHeight());
+                                enemy.setY(objHitbox.getY() - enemy.getHeight());
                             }
                         }
                     }
@@ -178,17 +174,17 @@ public class Game implements ActionListener{
     
         // Update camera position
         gui.moveCamera(
-            ((players.get(0).getxPos() + players.get(1).getxPos()) / 2 - gui.cameraX()) / 10,
-            ((players.get(0).getyPos() + players.get(1).getyPos()) / 2 - gui.cameraY()) / 10
+            ((players.get(0).getX() + players.get(1).getX()) / 2 - gui.cameraX()) / 10,
+            ((players.get(0).getY() + players.get(1).getY()) / 2 - gui.cameraY()) / 10
         );
     
         // Draw the first layer of the environment (behind both players)
         for (int c = 0; c < map.numLoadedChunks(); c++) {
-            gui.drawEnvLayer1(map.getChunk(c), player1.getyPos(), player2.getyPos());
+            gui.drawEnvLayer1(map.getChunk(c), player1.getY(), player2.getY());
         }
     
         // Draw whichever player is farthest back
-        if (player1.getyPos() < player2.getyPos()) {
+        if (player1.getY() < player2.getY()) {
             gui.drawPlayer(players.get(0), input);
         } else {
             gui.drawPlayer(players.get(1), input);
@@ -196,11 +192,11 @@ public class Game implements ActionListener{
     
         // Draw the second layer of the environment (between both players)
         for (int c = 0; c < map.numLoadedChunks(); c++) {
-            gui.drawEnvLayer2(map.getChunk(c), player1.getyPos(), player2.getyPos());
+            gui.drawEnvLayer2(map.getChunk(c), player1.getY(), player2.getY());
         }
     
         // Draw whichever player is farthest forward
-        if (player1.getyPos() < player2.getyPos()) {
+        if (player1.getY() < player2.getY()) {
             gui.drawPlayer(players.get(1), input);
         } else {
             gui.drawPlayer(players.get(0), input);
@@ -208,11 +204,13 @@ public class Game implements ActionListener{
     
         // Draw the third layer of the environment (in front of both players)
         for (int f = 0; f < map.numLoadedChunks(); f++) {
-            gui.drawEnvLayer3(map.getChunk(f), player1.getyPos(), player2.getyPos());
+            gui.drawEnvLayer3(map.getChunk(f), player1.getY(), player2.getY());
         }
     
         gui.drawEnemies(this.enemies);
-        gui.drawHitboxes(this.players, this.enemies);
+        for(int i = 0; i < enemies.size(); i++){
+            
+        }
         checkHitboxes(this.players, this.enemies);
         despawnSwingHitbox(this.players);
         gui.displayFPS((int) frameRate);
@@ -220,8 +218,8 @@ public class Game implements ActionListener{
         now = System.currentTimeMillis();
     }
 
-    public Slime createSlime(double x, double y){
-        return new Slime(x,y); //make a slime given a x and y
+    public Slime createSlime(double x, double y, double width, double height, Rectangle hitbox){
+        return new Slime(x,y,width,height,hitbox); //make a slime given a x and y
     }
 
     public Player getPlayer1(){
@@ -233,31 +231,31 @@ public class Game implements ActionListener{
     }
 
     public void inBounds(Player player){
-        if(player.getxPos() > this.xMax){
-            player.setxPos(this.xMax);
+        if(player.getX() > this.xMax){
+            player.setX(this.xMax);
         }
-        if(player.getxPos() < this.xMin){
-            player.setxPos(this.xMin);
+        if(player.getX() < this.xMin){
+            player.setX(this.xMin);
         }
-        if(player.getyPos() > this.yMax){
-            player.setyPos(this.yMax);
+        if(player.getY() > this.yMax){
+            player.setY(this.yMax);
         }
-        if(player.getyPos() < this.yMin){
-            player.setyPos(this.yMin);
+        if(player.getY() < this.yMin){
+            player.setY(this.yMin);
         }
     }
     public void inBounds(Enemies enemy){
-        if(enemy.getxPos() > this.xMax){
-            enemy.setxPos(this.xMax);
+        if(enemy.getX() > this.xMax){
+            enemy.setX(this.xMax);
         }
-        if(enemy.getxPos() < this.xMin){
-            enemy.setxPos(this.xMin);
+        if(enemy.getX() < this.xMin){
+            enemy.setX(this.xMin);
         }
-        if(enemy.getyPos() > this.yMax){
-            enemy.setyPos(this.yMax);
+        if(enemy.getY() > this.yMax){
+            enemy.setY(this.yMax);
         }
-        if(enemy.getyPos() < this.yMin){
-            enemy.setyPos(this.yMin);
+        if(enemy.getY() < this.yMin){
+            enemy.setY(this.yMin);
         }
     }
 
@@ -286,22 +284,19 @@ public class Game implements ActionListener{
         inBounds(player);
         
     }
+    //TODO: Make this better
     public void checkHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies) {
 
         for(int p = 0; p < players.size(); p++){
         for (int i = 0; i < enemies.size(); i++) {
             Enemies enemy = enemies.get(i);
 
-            // Check if the swing hitbox intersects the enemy's hitbox
-            if (players.get(p).getSwingHitbox().intersects(enemy.getHitbox())) {
-                // Deal damage to the enemy
+            if (players.get(p).getSwingHitbox().intersects(enemy.getRelHitbox())) {
                 enemy.takeDamage(players.get(p).getDamage());
 
-                // Optionally, handle enemy death
-                if (!enemy.isAlive()) {
-                    System.out.println("Enemy defeated!");
+                if (!enemy.getIsAlive()) {
                     enemies.remove(i);
-                    i--; // Adjust index after removal
+                    i--;
                 }
             }
         }
@@ -324,6 +319,7 @@ public class Game implements ActionListener{
             keys[playerKeys[3]]  // Right
         };
         player.move(movement, shift);
+
         ////////////////
         /// COLLISION
         ///////////////
@@ -334,30 +330,30 @@ public class Game implements ActionListener{
             Rectangle2D clip;
             for(int k = 0; k < envObjects.length; k++){
                 obj = envObjects[k];
-                pHitbox = player.getHitbox();
-                objHitbox = obj.getHitbox();
-                if(player.getHitbox().intersects(obj.getHitbox())){
+                pHitbox = player.getAbsHitbox();
+                objHitbox = obj.getAbsHitbox();
+                if(pHitbox.intersects(objHitbox)){
                     clip = objHitbox.createIntersection(pHitbox);
                     // Horizontal collide
                     if(clip.getHeight() > clip.getWidth()){
                         // Right collide
                         if(pHitbox.getX() > objHitbox.getX()){
-                            player.setxPos(objHitbox.getMaxX());
+                            player.setX(objHitbox.getMaxX());
                         }   
                         // Left collide
                         if(pHitbox.getX() < objHitbox.getX()){
-                            player.setxPos(objHitbox.getX() - player.getWidth());
+                            player.setX(objHitbox.getX() - player.getWidth());
                         }
                     }
                     else if (clip.getWidth() > clip.getHeight()){
                         
                         // Right collide
                         if(pHitbox.getY() > objHitbox.getY()){
-                            player.setyPos(objHitbox.getMaxY());
+                            player.setY(objHitbox.getMaxY());
                         }   
                         // Left collide
                         if(pHitbox.getY() < objHitbox.getY()){
-                            player.setyPos(objHitbox.getY() - player.getHeight());
+                            player.setY(objHitbox.getY() - player.getHeight());
                         }
                     }
                 }
