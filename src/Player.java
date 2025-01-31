@@ -56,6 +56,7 @@ public class Player extends Entity{
     private int dashCooldown; // in miliseconds
     public int dashLength   = 250 + 500 + 250; // in miliseconds
     private boolean isDashing;
+    private boolean wasDashing;
     
     //Hitbox
     private boolean active; //the player is able to be hit if true
@@ -287,29 +288,25 @@ public class Player extends Entity{
     public int getDamage(){
         return this.damage;
     }   
-    public int getLastDash(){
-        
-    }
     public BufferedImage getImage(){
         BufferedImage playerImage = dashAnimation.getCurFrame(); // Default idle animation frame
 
         // Handle dash animation
         if(isDashing){
                                // time since last dash 
-            int currentState = (int)(((int)System.currentTimeMillis() - input.getLastDash(player)) / 250);
+            int currentState = (int)(((int)System.currentTimeMillis() - Input.getLastDash(this)) / 250);
 
             if(dashAnimation.getCurState() != currentState) dashAnimation.setState(currentState);
 
             playerImage = dashAnimation.getCurFrame();
         }
         else /* if player is not dashing */{
-            StatefulAnimation idleAnim = playerIdleAnimations[player.playernum - 1];
-            if (player.getYDir() == -1) {
+            if (yDir == -1) {
                 // Player is facing up
-                if (player.getXDir() == -1) {
+                if (xDir == -1) {
                     // Moving left while facing up
                     idleAnim.setState(3);
-                } else if (player.getXDir() == 1) {
+                } else if (xDir == 1) {
                     // Moving right while facing up
                     idleAnim.setState(2);
                 } else {
@@ -318,10 +315,10 @@ public class Player extends Entity{
                 }
             } else {
                 // Player is not facing up
-                if (player.getXDir() == -1) {
+                if (xDir == -1) {
                     // Moving left
                     idleAnim.setState(1);
-                } else if (player.getXDir() == 1) {
+                } else if (xDir == 1) {
                     // Moving right
                     idleAnim.setState(0);
                 } else {
@@ -331,6 +328,7 @@ public class Player extends Entity{
             }
             playerImage = idleAnim.getCurFrame();
         }
+        return playerImage;
     }
 
 }

@@ -391,7 +391,8 @@ public class Game implements ActionListener{
                 if(!player.getIsDashing()){
                     player.dash(playerKeys[i], 5);
                     player.setIsDashing(true);
-                }else{
+                }
+                else{
                     player.dash(playerKeys[i], 5);
                 }
             }
