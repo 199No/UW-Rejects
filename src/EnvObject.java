@@ -30,6 +30,7 @@ public class EnvObject extends Entity{
         this.xPos = xPos;
         this.yPos = yPos;
         this.type = type;
+        this.hitbox = createHitbox(type);
         switch(type){
             case 1:
                 // Large airwall
@@ -40,6 +41,7 @@ public class EnvObject extends Entity{
                 }
                 this.collidable = true;
                 isFlat = true;
+                break;
             case 2:
                 // Small airwall
                 if(Game.inDebugMode){
@@ -49,33 +51,40 @@ public class EnvObject extends Entity{
                 }
                 this.collidable = true;
                 isFlat = true;
+                break;
             case 3:
                 image = images.getImage("tree1");
                 this.collidable = true;
                 isFlat = false;
+                break;
             case 4:
                 image = images.getImage("tree2");
                 this.collidable = true;
                 isFlat = false;
+                break;
             case 5:
                 // Pink flower
                 image = images.getImage("flowers").getSubimage(0, 0, 24, 24);
                 this.collidable = false;
                 isFlat = false;
+                break;
             case 6:
                 // Purple flower
                 image = images.getImage("flowers").getSubimage(24, 0, 24, 24);
                 this.collidable = false;
                 isFlat = false;
+                break;
             case 7:
                 // Blue flower
                 image = images.getImage("flowers").getSubimage(0, 24, 24, 24);
                 this.collidable = false;  
                 isFlat = false;
+                break;
             case 8:
                 image = images.getImage("lilypad");
                 this.collidable = false;
                 isFlat = false;
+                break;
         }
         hitbox.translate((int)this.xPos, (int)this.yPos);
     }

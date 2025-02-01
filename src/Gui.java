@@ -66,20 +66,6 @@ public class Gui extends JPanel{
         slimeAnimation = new Animation(images.getImage("slime"), 4, 2, 7, 100, true);
         slimeAnimation.start(); 
 
-        playerIdleAnimations = new StatefulAnimation[] {
-
-            new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, images.getImage("playerIdle"), true),
-            new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, images.getImage("player2Idle"), true)
-        };
-
-        playerDashAnimations = new StatefulAnimation[] {
-            // Player 1 dash
-            new StatefulAnimation(63, 3, 2, new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, images.getImage("playerDash"), true),
-            // Player 2 dash
-            new StatefulAnimation(63, 3, 2, new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, images.getImage("player2Dash"), true)
-
-        };
-
         waterAnimation = new Animation(images.getImage("waterTile"), 3, 1, 3, 250, true);
         waterAnimation.start();
         this.cameraX = 0;
@@ -145,53 +131,8 @@ public class Gui extends JPanel{
             }
         });
     }
-    public BufferedImage getPlayerImage(Player player, Input input){
-        BufferedImage playerImage = playerDashAnimations[player.playernum - 1].getCurFrame(); // Default idle animation frame
-
-        // Handle dash animation
-        if(player.getIsDashing()){
-            StatefulAnimation dashAnimation = playerDashAnimations[player.playernum - 1];
-                               // time since last dash 
-            int currentState = (int)(((int)System.currentTimeMillis() - input.getLastDash(player)) / 250);
-
-            if(dashAnimation.getCurState() != currentState) dashAnimation.setState(currentState);
-
-            playerImage = dashAnimation.getCurFrame();
-        }
-        else /* if player is not dashing */{
-            StatefulAnimation idleAnim = playerIdleAnimations[player.playernum - 1];
-            if (player.getYDir() == -1) {
-                // Player is facing up
-                if (player.getXDir() == -1) {
-                    // Moving left while facing up
-                    idleAnim.setState(3);
-                } else if (player.getXDir() == 1) {
-                    // Moving right while facing up
-                    idleAnim.setState(2);
-                } else {
-                    // Default to right-facing up when no horizontal movement
-                    idleAnim.setState(3);
-                }
-            } else {
-                // Player is not facing up
-                if (player.getXDir() == -1) {
-                    // Moving left
-                    idleAnim.setState(1);
-                } else if (player.getXDir() == 1) {
-                    // Moving right
-                    idleAnim.setState(0);
-                } else {
-                    // Default to idle right-facing when no movement
-                    idleAnim.setState(0);
-                }
-            }
-            playerImage = idleAnim.getCurFrame();
-        }
-        return playerImage;
-    }
-
     // Draw the player based on animations and current state.
-    public void drawPlayer(Player player, Input input){
+    public void drawPlayer(Player player){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
 
@@ -234,6 +175,8 @@ public class Gui extends JPanel{
                     //     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
 
                     // }
+                    g2d.drawImage(player.getImage(), (int)absToScreenX(player.getX()), (int)absToScreenY(player.getY()), (int)player.getWidth(), (int)player.getHeight(), null);
+                    drawHitbox(player);
                     if(Game.inDebugMode){
                         g2d.drawString("" + (int)(player.getX() / TILE_SIZE) + ", " + (int)(player.getY() / TILE_SIZE), (int)absToScreenX(player.getX() + 10), (int)absToScreenY(player.getY() - 30));
                     }

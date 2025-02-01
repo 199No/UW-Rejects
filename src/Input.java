@@ -64,7 +64,6 @@ public class Input implements KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-
         if(e.getKeyCode() < keys.length){
              //checks to see if this input was a new input
 

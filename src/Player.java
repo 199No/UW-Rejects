@@ -23,8 +23,6 @@ public class Player extends Entity{
 
 
     //positioning
-    private double xPos;
-    private double yPos;
     private double xVel;
     private double yVel;
     private int xDir; // -1 (left), 0 (neutral), 1 (right)
@@ -65,20 +63,19 @@ public class Player extends Entity{
     private Rectangle swingHitbox = new Rectangle( swingWidth, swingHeight,  (int) getX(),  (int) getY() );
 
     //Animation
-    
-    StatefulAnimation idleAnim = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, new Images("Images/Misc", Transparency.BITMASK).getImage("player" + playernum + "Idle"), true);
-    StatefulAnimation dashAnimation = new StatefulAnimation(63, 3, 2, new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, new Images("Images/Misc", Transparency.BITMASK).getImage("player" + playernum + "Dash"), true);
+    StatefulAnimation idleAnim;
+    StatefulAnimation dashAnimation;
     ///////////////
     //Constuctor
     //////////////
     public Player(double x, double y, int hp, int d, int dmg, double s, int playernum) {
         super(x, y, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(Gui.TILE_SIZE/4, Gui.TILE_SIZE/4, Gui.TILE_SIZE / 2, Gui.TILE_SIZE / 2));
+        idleAnim      = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, new Images("Images", Transparency.BITMASK).getImage("player" + playernum + "Idle"), true);
+        dashAnimation = new StatefulAnimation(63, 3, 2, new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, new Images("Images", Transparency.BITMASK).getImage("player" + playernum + "Dash"), true);
         System.out.println("Player!");
 
         this.playernum = playernum;
 
-        this.xPos = x;
-        this.yPos = y;
 
         this.health = hp;
         this.defence = d;
@@ -150,8 +147,8 @@ public class Player extends Entity{
 
     // Update the player's position based on velocity and a scaling factor
     private void updatePosition(double speed) {
-        this.xPos += this.xVel * speed;
-        this.yPos += this.yVel * speed;
+        x += this.xVel * speed;
+        y += this.yVel * speed;
     }
 
     public void attack() {
@@ -289,7 +286,7 @@ public class Player extends Entity{
         return this.damage;
     }   
     public BufferedImage getImage(){
-        BufferedImage playerImage = dashAnimation.getCurFrame(); // Default idle animation frame
+        BufferedImage playerImage = idleAnim.getCurFrame(); // Default idle animation frame
 
         // Handle dash animation
         if(isDashing){

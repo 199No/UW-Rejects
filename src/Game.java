@@ -27,7 +27,7 @@ public class Game implements ActionListener{
     //Properties
     ///////////////
     //very unrejar
-    public static final boolean inDebugMode = false;
+    public static final boolean inDebugMode = true;
     Timer gameTimer;
     Gui gui;
     Player player1;
@@ -41,9 +41,9 @@ public class Game implements ActionListener{
     boolean[] movement = new boolean[4];
     Chunk chunk1;
     Chunk chunk2;
-    private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
-    private ArrayList<Player>  players = new ArrayList<Player>();
-    private ArrayList<Entity> entities = new ArrayList<Entity>();
+    private ArrayList<Enemies> enemies  = new ArrayList<Enemies>();
+    private ArrayList<Player>  players  = new ArrayList<Player>();
+    private ArrayList<Entity>  entities = new ArrayList<Entity>();
     // Bounds
     private double xMin = 0;
     private double xMax = 4080;
@@ -158,13 +158,13 @@ public class Game implements ActionListener{
         // Draw dash bars
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g) {
-                double height1 = (((double) System.currentTimeMillis() - (double) input.getLastp1Dash()) / 5000) * Gui.HEIGHT;
+                double height1 = (((double) System.currentTimeMillis() - (double) Input.getLastp1Dash()) / 5000) * Gui.HEIGHT;
                 g.setColor(Color.BLACK);
                 g.fillRect(0, 0, 30, Gui.HEIGHT);
                 g.setColor(new Color(3, 148, 252));
                 g.fillRect(0, Gui.HEIGHT - (int) height1, 30, (int) height1);
     
-                double height2 = (((double) System.currentTimeMillis() - (double) input.getLastp2Dash()) / 5000) * Gui.HEIGHT;
+                double height2 = (((double) System.currentTimeMillis() - (double) Input.getLastp2Dash()) / 5000) * Gui.HEIGHT;
                 g.setColor(Color.BLACK);
                 g.fillRect(Gui.WIDTH - 30, 0, 30, Gui.HEIGHT);
                 g.setColor(new Color(3, 148, 252));
@@ -185,9 +185,9 @@ public class Game implements ActionListener{
     
         // Draw whichever player is farthest back
         if (player1.getY() < player2.getY()) {
-            gui.drawPlayer(players.get(0), input);
+            gui.drawPlayer(players.get(0));
         } else {
-            gui.drawPlayer(players.get(1), input);
+            gui.drawPlayer(players.get(1));
         }
     
         // Draw the second layer of the environment (between both players)
@@ -197,9 +197,9 @@ public class Game implements ActionListener{
     
         // Draw whichever player is farthest forward
         if (player1.getY() < player2.getY()) {
-            gui.drawPlayer(players.get(1), input);
+            gui.drawPlayer(players.get(1));
         } else {
-            gui.drawPlayer(players.get(0), input);
+            gui.drawPlayer(players.get(0));
         }
     
         // Draw the third layer of the environment (in front of both players)
@@ -262,19 +262,19 @@ public class Game implements ActionListener{
     public void updatePlayer(Player player){
             
         // Get input information
-        boolean[] keys = input.getKeys();
-        boolean[] shifts = input.getShifts();
+        boolean[] keys = Input.getKeys();
+        boolean[] shifts = Input.getShifts();
 
         // Update player movement with input information
-        updatePlayerMovement(player, input.getPlayerKeys(player), shifts[player.playernum -1], keys);
+        updatePlayerMovement(player, Input.getPlayerKeys(player), shifts[player.playernum -1], keys);
 
         // Handle    player actions (attack block) with input information
-        handlePlayerActions(player, keys, input.getPlayerKeys(player)[5], input.getPlayerKeys(player)[4]); // Attack: 5th key in list, Block: 4th key in list
+        handlePlayerActions(player, keys, Input.getPlayerKeys(player)[5], Input.getPlayerKeys(player)[4]); // Attack: 5th key in list, Block: 4th key in list
 
         // Handle player dashing
 
-        if ((int) System.currentTimeMillis() - input.getLastDash() < player.dashLength) {
-            handlePlayerDash(player, input.getPlayerKeys(player));
+        if ((int) System.currentTimeMillis() - Input.getLastDash() < player.dashLength) {
+            handlePlayerDash(player, Input.getPlayerKeys(player));
         } else {
             if(player.getIsDashing()){
                 player.setIsDashing(false);
@@ -387,7 +387,7 @@ public class Game implements ActionListener{
 
     private void handlePlayerDash(Player player, int[] playerKeys) {
         for(int i = 0; i < playerKeys.length; i++){
-            if(playerKeys[i] == input.getDash()){
+            if(playerKeys[i] == Input.getDash()){
                 if(!player.getIsDashing()){
                     player.dash(playerKeys[i], 5);
                     player.setIsDashing(true);
