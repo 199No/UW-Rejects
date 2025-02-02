@@ -30,8 +30,8 @@ public class Input implements KeyListener{
     static int p1dash; // keyevent used to distinguish which key was pressed
     static int p2dash; // keyevent used to distinguish which key was pressed
     static int dash; // keyevent of last found key
-    static int lastp1Dash = (int) System.currentTimeMillis(); // in mili
-    static int lastp2Dash = (int) System.currentTimeMillis(); // in mili
+    static int lastp1Dash = (int) System.currentTimeMillis() - 50000; // in mili
+    static int lastp2Dash = (int) System.currentTimeMillis() - 50000; // in mili
     static int lastdash; // time of last dash
 
     // all keys used, besides shift for player 1
@@ -81,13 +81,11 @@ public class Input implements KeyListener{
                         lastdash = (int) System.currentTimeMillis();
                         p1dash = e.getKeyCode();
                         dash = e.getKeyCode();
-                        System.out.println("dashcodep1: " + e.getKeyCode());
                     } else if (isPlayer2 && (int) System.currentTimeMillis() - lastp2Dash > 5000) {
                         lastp2Dash = (int) System.currentTimeMillis();
                         lastdash = (int) System.currentTimeMillis();
                         p2dash = e.getKeyCode();
                         dash = e.getKeyCode();
-                        System.out.println("dashcodep2: " + e.getKeyCode());
                     }
                 }
                 

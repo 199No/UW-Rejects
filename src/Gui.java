@@ -4,7 +4,6 @@ package src;
 //-------------------------------------------------// 
 import javax.swing.*;
 
-import Enemies.Enemies;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -27,6 +26,7 @@ public class Gui extends JPanel{
     public static final double HEIGHT_SCALE = (double)2/(double)3;
     public static final int PLAYER_SIZE = 24;
     public static final int TILE_SIZE = 60;
+    public static final boolean showGridOverlay = true && Game.inDebugMode;
     // Queues up all the draw commands in a frame so that they can all be executed at the end of the frame at the correct time.
     ArrayList<GraphicsRunnable> drawQueue;
     // You need a frame to draw things on.
@@ -40,11 +40,6 @@ public class Gui extends JPanel{
 
     Rectangle chunkUnloadBoundary = new Rectangle(-(TILE_SIZE * 10), -(TILE_SIZE * 10), Gui.WIDTH + (TILE_SIZE * 20), Gui.HEIGHT + (TILE_SIZE * 20));
 
-    Animation slimeAnimation;
-    StatefulAnimation[] playerDashAnimations;
-    StatefulAnimation[] playerIdleAnimations;
-    StatefulAnimation player1Idle;
-    StatefulAnimation player2Idle;
     Animation waterAnimation;
 
     ////////// CAMERA ///////////
@@ -62,9 +57,6 @@ public class Gui extends JPanel{
         // Images for tiles only
         tileImages = new Images("Images/Enviroment/Tiles", Transparency.OPAQUE);
 
-        // Define a constantly running Animation for the slime (soon to be better)
-        slimeAnimation = new Animation(images.getImage("slime"), 4, 2, 7, 100, true);
-        slimeAnimation.start(); 
 
         waterAnimation = new Animation(images.getImage("waterTile"), 3, 1, 3, 250, true);
         waterAnimation.start();
@@ -131,128 +123,20 @@ public class Gui extends JPanel{
             }
         });
     }
-    // Draw the player based on animations and current state.
-    public void drawPlayer(Player player){
-        drawQueue.add(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
-
-                    // TODO: Make this a function call
-                    // // Get an affine transform to work with
-                    // AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
-                    
-
-                    // double[] playerScreenPos = absToScreen(player.getxPos(), player.getyPos());
-
-                    // // How much to vertically scale the final shadow (for adjustments)
-                    // double shadowScaleFactor = 0.8;
-                    // // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
-                    // double playerToTileX = (double)TILE_SIZE/(double)playerImage.getWidth();
-                    // double playerToTileY = (double)TILE_SIZE/(double)playerImage.getHeight();
-                    // // How much to shear the shadow (basically shadow angle)
-                    // double shearFactor = -0.5;
-
-                    // // Move the shadow image to where it needs to be
-                    // shadowTransform.translate(
-                    //                       // Because the image shears from the bottom up it moves the "feet" of the shadow,
-                    //                       // so we account for that and also the imminent scaling of the image.
-                    //     (playerScreenPos[0] + playerImage.getWidth() * shearFactor * playerToTileX * shadowScaleFactor),
-                    //                               // Flipping the image puts it above the player's head so we move it to be below the feet instead.
-                    //     (double)((playerScreenPos[1] + 2*TILE_SIZE) - playerImage.getHeight() * (1-shadowScaleFactor) * playerToTileY)
-                    // );
-                    // // Shear the image so it is at the right angle
-                    // shadowTransform.shear(shearFactor, 0);
-                    // // Rescale the image so it appears the right size
-                    // shadowTransform.scale(playerToTileX, -playerToTileY * shadowScaleFactor);
-                    // // Draw the player and its shadow
-                    
-                    // if(player.getXDir() <= 0 && player.getIsDashing()){
-                    //     g2d.drawImage(playerImage, (int)playerScreenPos[0] + TILE_SIZE, (int)playerScreenPos[1], -TILE_SIZE, TILE_SIZE, null);
-                    //     shadowTransform.scale(-1, 1);
-                    //     shadowTransform.translate(-TILE_SIZE / playerToTileX, 0);
-                    //     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
-                    // } else {
-                    //     g2d.drawImage(playerImage, (int)playerScreenPos[0], (int)playerScreenPos[1], TILE_SIZE, TILE_SIZE, null);
-                    //     g2d.drawImage(toShadow(playerImage), shadowTransform, null);
-
-                    // }
-                    g2d.drawImage(player.getImage(), (int)absToScreenX(player.getX()), (int)absToScreenY(player.getY()), (int)player.getWidth(), (int)player.getHeight(), null);
-                    drawHitbox(player);
-                    if(Game.inDebugMode){
-                        g2d.drawString("" + (int)(player.getX() / TILE_SIZE) + ", " + (int)(player.getY() / TILE_SIZE), (int)absToScreenX(player.getX() + 10), (int)absToScreenY(player.getY() - 30));
-                    }
-                } 
-            
-        });
-    }    // TODO: List of stuff
-    public void drawEnvLayer1(Chunk c, double player1y, double player2y){
-        drawQueue.add(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
-                EnvObject[] envObjects = c.getEnvObjects();
-                for(int i = 0; i < envObjects.length; i++){
-                    if(envObjects[i].getAbsHitbox().getY() < Math.min(player1y, player2y)){
-                        drawEnvObject(envObjects[i], g2d);
-                    }
-
-                }
-            }
-        });
-    }
-        
-    public void drawEnvLayer2(Chunk c, double player1y, double player2y){
-        drawQueue.add(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
-                EnvObject[] envObjects = c.getEnvObjects();
-                double objY;
-                for(int i = 0; i < envObjects.length; i++){
-                    objY = envObjects[i].getAbsHitbox().getY();
-                    if(objY < Math.max(player1y, player2y) && objY > Math.min(player1y, player2y)){
-                        drawEnvObject(envObjects[i], g2d);
-                    }
-
-                }
-            }
-        });
-    }
-        
-    public void drawEnvLayer3(Chunk c, double player1y, double player2y){
-        drawQueue.add(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
-                EnvObject[] envObjects = c.getEnvObjects();
-                for(int i = 0; i < envObjects.length; i++){
-                    if(envObjects[i].getAbsHitbox().getY() > Math.max(player1y, player2y)){
-                        drawEnvObject(envObjects[i], g2d);
-                    }
-
-                }
-            }
-        });
-    }
+    
     public void drawShadow(Entity e){
 
     }
 
-    public void drawEntity(){
-
-    }
-
-
-
-    // TODO: Make this a function call
-    public void drawEnemies(ArrayList<Enemies> enemies){
-        //given an arraylist type enemies
-        //draw enemies based on their x and y positon {use getxPos() getyPos()}
+    public void drawEntity(Entity e){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                for(int i = 0; i < enemies.size(); i ++){
-
-                    BufferedImage slimeImage = slimeAnimation.getFrame();
-                    double[] screenPos = absToScreen(enemies.get(i).getX(), enemies.get(i).getY());
-                    g2d.drawImage(slimeImage, (int)screenPos[0], (int)screenPos[1], TILE_SIZE, TILE_SIZE, null);
-                    g2d.drawImage(toShadow(slimeImage), (int)screenPos[0], (int)(screenPos[1] + 2 * TILE_SIZE), TILE_SIZE, -TILE_SIZE, null);
+                g2d.drawImage(e.getImage(), (int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()), (int)e.getWidth(), (int)e.getHeight(), null);
+                if(Game.inDebugMode){
+                    drawHitbox(e);
                 }
             }
         });
-
     }
 
     public void drawChunk(Chunk c){
@@ -269,42 +153,14 @@ public class Gui extends JPanel{
                         }
                         //g2d.setColor(Color.GREEN);
                         //g2d.fillOval((int)threeDCoords[0] - 2, (int)threeDCoords[1] - 2, 4, 4);
-                        g2d.drawImage(tileImage, (int)(chunkCoords[0] + (x * TILE_SIZE)), (int)(chunkCoords[1] + (y * (TILE_SIZE * 2/3))), TILE_SIZE, (TILE_SIZE * 2/3), null);
+                        g2d.drawImage((tileImage), (int)(chunkCoords[0] + (x * TILE_SIZE)), (int)(chunkCoords[1] + (y * (TILE_SIZE * 2/3))), TILE_SIZE, (TILE_SIZE * 2/3), null);
+                        if(showGridOverlay) 
+                            g2d.drawRect((int)(chunkCoords[0] + (x * TILE_SIZE)), (int)(chunkCoords[1] + (y * (TILE_SIZE * 2/3))), TILE_SIZE, (TILE_SIZE * 2/3));
 
                     }
                 }
             }
         });
-    }
-    // TODO: Make a function call
-    public void drawEnvObject(EnvObject e, Graphics2D g2d){
-        // How much to shear the shadow (basically shadow angle)
-        double shearFactor = -0.5;
-
-        double[] objCoords = absToScreen(e.getX(), e.getY());
-
-        // How much to vertically scale the final shadow (for adjustments)
-        double shadowScaleFactor = 0.8;
-        // The ratio between the player IMAGE size and the player's actual size, so that the shadow gets drawn the right size.
-        double playerToTileX = (double)e.getWidth()/(double)e.getImage().getWidth();
-        double playerToTileY = (double)e.getHeight()/(double)e.getImage().getHeight();
-
-        // Get an affine transform to work with
-        AffineTransform shadowTransform = AffineTransform.getScaleInstance(1, 1);
-        shadowTransform.translate(objCoords[0] + e.getImage().getWidth() * shearFactor * playerToTileX * shadowScaleFactor, 
-                                  (double)((objCoords[1] + 2*e.getHeight()) - e.getImage().getHeight() * (1-shadowScaleFactor) * playerToTileY)
-                                );
-        // Shear the image so it is at the right angle
-        shadowTransform.shear(shearFactor, 0);
-        // Rescale the image so it appears the right size
-        shadowTransform.scale(playerToTileX, -playerToTileY * shadowScaleFactor);
-        // Draw the player and its shadow
-        g2d.drawImage(e.getImage(), (int)objCoords[0], (int)objCoords[1], (int)e.getWidth(), (int)(e.getHeight()), null);
-        if(!e.isFlat()){
-            g2d.drawImage(toShadow(e.getImage()), shadowTransform, null);
-        }
-
-        drawHitbox(e);
     }
     public void drawHitbox(Entity e){
         drawQueue.add(new GraphicsRunnable() {

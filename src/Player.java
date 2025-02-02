@@ -71,7 +71,12 @@ public class Player extends Entity{
     public Player(double x, double y, int hp, int d, int dmg, double s, int playernum) {
         super(x, y, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(Gui.TILE_SIZE/4, Gui.TILE_SIZE/4, Gui.TILE_SIZE / 2, Gui.TILE_SIZE / 2));
         idleAnim      = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, new Images("Images", Transparency.BITMASK).getImage("player" + playernum + "Idle"), true);
-        dashAnimation = new StatefulAnimation(63, 3, 2, new int[][] {{0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}}, new Images("Images", Transparency.BITMASK).getImage("player" + playernum + "Dash"), true);
+        dashAnimation = new StatefulAnimation(62, 6, 2, 
+                            new int[][] {
+                                {0,1,2,3}, {4,5}, {4,5}, {4,3,2,1}, // Rightwards dash
+                                {6,7,8,9}, {10,11}, {10,11}, {9,8,7,6} // Leftwards dash
+                            }, 
+                            new Images("Images", Transparency.BITMASK).getImage("player" + playernum + "Dash"), true);
         System.out.println("Player!");
 
         this.playernum = playernum;
@@ -156,7 +161,7 @@ public class Player extends Entity{
         this.isAttacking = true;
         lastAttack = (int) System.currentTimeMillis();
         System.out.println(lastAttack);
-        System.out.println("attack!");
+        // System.out.println("attack!");
     
         // Call the method to spawn a hitbox based on the player's direction
         spawnHitbox();
@@ -184,8 +189,8 @@ public class Player extends Entity{
         // Create a new hitbox
         swingHitbox = new Rectangle((int) getX(), (int) getY(), swingWidth, swingHeight);
     
-        System.out.println("Player positon at (" + (int) getX() + ", " + (int) getY() );
-        System.out.println("Hitbox spawned at (" + hitboxX + ", " + hitboxY + ")");
+        // System.out.println("Player positon at (" + (int) getX() + ", " + (int) getY() );
+        // System.out.println("Hitbox spawned at (" + hitboxX + ", " + hitboxY + ")");
     }
 
     public void block(){
@@ -292,6 +297,10 @@ public class Player extends Entity{
         if(isDashing){
                                // time since last dash 
             int currentState = (int)(((int)System.currentTimeMillis() - Input.getLastDash(this)) / 250);
+            
+            if(xDir == -1){
+                currentState += 4;
+            }
 
             if(dashAnimation.getCurState() != currentState) dashAnimation.setState(currentState);
 

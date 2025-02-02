@@ -6,8 +6,13 @@ package Enemies;
 
 import src.Player;
 import java.awt.Rectangle;
+import java.awt.Transparency;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.util.ArrayList;
+import src.Images;
+
+import src.Animation;
 import src.Gui;
 //-------------------------------------------------//
 //                   Enemies                       //
@@ -26,6 +31,8 @@ public class Slime extends Enemies {
     double[] randomLoc = {0, 0};
     boolean moving = false;
     private Random rnd = new Random(); // Add a Random instance
+    
+    Animation slimeAnimation;
 
     ///////////////
     // Constructor
@@ -40,6 +47,11 @@ public class Slime extends Enemies {
         this.eyesight = 400;
         this.alert = false;
         this.idle = true;
+
+        
+        // Define a constantly running Animation for the slime (soon to be better)
+        slimeAnimation = new Animation(new Images("Images/Enemies", Transparency.BITMASK).getImage("slime"), 4, 2, 7, 100, true);
+        slimeAnimation.start(); 
     }
 
     //-------------------------------------------------//
@@ -49,7 +61,7 @@ public class Slime extends Enemies {
     public void takeDamage(int dmg) {
         this.health -= dmg;
         if (this.health <= 0) {
-            die();
+            die(); // Thy end is now!
         }
     }
 
@@ -164,5 +176,8 @@ public class Slime extends Enemies {
 
     public void die() {
         // Handle slime death
+    }
+    public BufferedImage getImage(){
+        return slimeAnimation.getFrame();
     }
 }

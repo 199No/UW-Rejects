@@ -43,8 +43,8 @@ public class StatefulAnimation {
         this.frameTime = newTime;
     }
     public BufferedImage getCurFrame(){
-        if(state > states.length){
-            state = states.length;
+        if(state > states.length - 1){
+            state = states.length - 1;
         }
         if((int)System.currentTimeMillis() - lastStep > frameTime){
             lastStep = (int)System.currentTimeMillis();

@@ -72,4 +72,13 @@ public class Map {
     public int numLoadedChunks(){
         return loadedChunks.size();
     }
+    public ArrayList<EnvObject> getAllEnvObjects(){
+        ArrayList<EnvObject> result = new ArrayList<EnvObject> ();
+        for(int i = 0; i < loadedChunks.size(); i++){
+            for(EnvObject e : loadedChunks.get(i).getEnvObjects()){
+                result.add(e);
+            }
+        }
+        return result;
+    }
 }

@@ -1,9 +1,10 @@
 package src;
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 
-public class Entity {
+public abstract class Entity {
     double x,y,width,height;
     Rectangle hitbox;
 
@@ -49,4 +50,5 @@ public class Entity {
             (int)(this.hitbox.getHeight())
         );
     }
+    public abstract BufferedImage getImage();
 }

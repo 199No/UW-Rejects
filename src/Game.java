@@ -2,7 +2,8 @@ package src;
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
-import Enemies.*;
+import Enemies.Slime;
+import Enemies.Enemies;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Random;
 import javax.swing.Timer;
 //unrejar
 
@@ -27,7 +30,8 @@ public class Game implements ActionListener{
     //Properties
     ///////////////
     //very unrejar
-    public static final boolean inDebugMode = true;
+    public static final boolean inDebugMode = false;
+    Random random;
     Timer gameTimer;
     Gui gui;
     Player player1;
@@ -61,8 +65,9 @@ public class Game implements ActionListener{
         players.add(player2);
         this.input = new Input();
         //TODO: find out how to actually make slime like normal
-        enemies.add(createSlime(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(100,300,Gui.TILE_SIZE, Gui.TILE_SIZE)));
-
+        // Use the slime constructor
+        enemies.add(createSlime(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(0, 0, Gui.TILE_SIZE, Gui.TILE_SIZE)));
+        random = new Random();
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
         // Only these four lines should happen after this comment otherwise stuff will break
@@ -88,6 +93,10 @@ public class Game implements ActionListener{
             lastSecond = now;
             frameRate = framesLastSecond;
             framesLastSecond = 0;
+            
+            // enemies.add(
+            //     new Slime(random.nextInt(0, Gui.WIDTH), random.nextInt(0, Gui.HEIGHT), Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(0, 0, Gui.TILE_SIZE, Gui.TILE_SIZE))
+            // );
         } else {
             framesLastSecond++;
         }
@@ -97,7 +106,6 @@ public class Game implements ActionListener{
         ////////////////
         updatePlayer(player1);
         updatePlayer(player2);
-    
         // Update enemies
         for (int i = 0; i < this.enemies.size(); i++) {
             Enemies enemy = enemies.get(i);
@@ -114,6 +122,7 @@ public class Game implements ActionListener{
             ////////////////
             /// COLLISION
             ///////////////
+            // TODO: Make a collide(Entity e1, Entity e2) method
             for (int c = 0; c < map.numLoadedChunks(); c++) {
                 EnvObject[] envObjects = map.getChunk(c).getEnvObjects();
                 for (int j = 0; j < envObjects.length; j++) {
@@ -148,7 +157,11 @@ public class Game implements ActionListener{
                 }
             }
         }
-    
+        
+        // Update entity list
+        entities.addAll(enemies);
+        entities.addAll(players);
+        entities.addAll(map.getAllEnvObjects());
         // Draw the background (happens before all other draw commands)
         gui.background(0, 0, 0);
         for (int c = 0; c < map.numLoadedChunks(); c++) {
@@ -177,45 +190,17 @@ public class Game implements ActionListener{
             ((players.get(0).getX() + players.get(1).getX()) / 2 - gui.cameraX()) / 10,
             ((players.get(0).getY() + players.get(1).getY()) / 2 - gui.cameraY()) / 10
         );
-    
-        // Draw the first layer of the environment (behind both players)
-        for (int c = 0; c < map.numLoadedChunks(); c++) {
-            gui.drawEnvLayer1(map.getChunk(c), player1.getY(), player2.getY());
-        }
-    
-        // Draw whichever player is farthest back
-        if (player1.getY() < player2.getY()) {
-            gui.drawPlayer(players.get(0));
-        } else {
-            gui.drawPlayer(players.get(1));
-        }
-    
-        // Draw the second layer of the environment (between both players)
-        for (int c = 0; c < map.numLoadedChunks(); c++) {
-            gui.drawEnvLayer2(map.getChunk(c), player1.getY(), player2.getY());
-        }
-    
-        // Draw whichever player is farthest forward
-        if (player1.getY() < player2.getY()) {
-            gui.drawPlayer(players.get(1));
-        } else {
-            gui.drawPlayer(players.get(0));
-        }
-    
-        // Draw the third layer of the environment (in front of both players)
-        for (int f = 0; f < map.numLoadedChunks(); f++) {
-            gui.drawEnvLayer3(map.getChunk(f), player1.getY(), player2.getY());
-        }
-    
-        gui.drawEnemies(this.enemies);
-        for(int i = 0; i < enemies.size(); i++){
-            
+        // Draw all Entities (players, enemies, envObjects, etc.)
+        for(int i = 0; i < entities.size(); i++){
+            gui.drawEntity(entities.get(i));
         }
         checkHitboxes(this.players, this.enemies);
         despawnSwingHitbox(this.players);
         gui.displayFPS((int) frameRate);
         gui.repaint();
         now = System.currentTimeMillis();
+        
+        entities.clear();
     }
 
     public Slime createSlime(double x, double y, double width, double height, Rectangle hitbox){
@@ -291,7 +276,7 @@ public class Game implements ActionListener{
         for (int i = 0; i < enemies.size(); i++) {
             Enemies enemy = enemies.get(i);
 
-            if (players.get(p).getSwingHitbox().intersects(enemy.getRelHitbox())) {
+            if (players.get(p).getSwingHitbox().intersects(enemy.getAbsHitbox())) {
                 enemy.takeDamage(players.get(p).getDamage());
 
                 if (!enemy.getIsAlive()) {
