@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 //-------------------------------------------------//
 //                      Gui                        //
@@ -125,13 +126,21 @@ public class Gui extends JPanel{
     }
     
     public void drawShadow(Entity e){
-
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                BufferedImage result = new BufferedImage(WIDTH, HEIGHT, ABORT)
+                AffineTransformOp op = new AffineTransformOp(AffineTransform.getShearInstance(0.5, 0), null);
+                
+                g2d.drawImage(toShadow(e.getImage()), (int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()) + (int)(2 * e.getHeight()), (int)e.getWidth(), -(int)e.getHeight(), null);
+            }
+        });
     }
 
     public void drawEntity(Entity e){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 g2d.drawImage(e.getImage(), (int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()), (int)e.getWidth(), (int)e.getHeight(), null);
+                drawShadow(e);
                 if(Game.inDebugMode){
                     drawHitbox(e);
                 }
