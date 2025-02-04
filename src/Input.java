@@ -21,7 +21,7 @@ public class Input implements KeyListener{
     ///////////////
     //Properties
     //////////////
-    
+    public static final int DASH_COOLDOWN = 3000;
     static boolean[] keys = new boolean[90];
     static boolean[] shifts = new boolean[2];
     static int[] pressed = new int[90];
@@ -76,12 +76,12 @@ public class Input implements KeyListener{
                     boolean isPlayer1 = checkPlayer1Keys(e.getKeyCode());
                     boolean isPlayer2 = checkPlayer2Keys(e.getKeyCode());
                 
-                    if (isPlayer1 && (int) System.currentTimeMillis() - lastp1Dash > 5000) {
+                    if (isPlayer1 && (int) System.currentTimeMillis() - lastp1Dash > DASH_COOLDOWN) {
                         lastp1Dash = (int) System.currentTimeMillis();
                         lastdash = (int) System.currentTimeMillis();
                         p1dash = e.getKeyCode();
                         dash = e.getKeyCode();
-                    } else if (isPlayer2 && (int) System.currentTimeMillis() - lastp2Dash > 5000) {
+                    } else if (isPlayer2 && (int) System.currentTimeMillis() - lastp2Dash > DASH_COOLDOWN) {
                         lastp2Dash = (int) System.currentTimeMillis();
                         lastdash = (int) System.currentTimeMillis();
                         p2dash = e.getKeyCode();

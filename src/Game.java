@@ -59,13 +59,13 @@ public class Game implements ActionListener{
     //////////////
     public Game() throws AWTException, IOException{
 
-        this.player1 = new Player(750,300.0,100,10,10,1,2);
-        this.player2 = new Player(500.0, 500.0, 100, 10, 10, 1,1);
+        this.player1 = new Player(750,300.0,100,10,10,1.3,2);
+        this.player2 = new Player(500.0, 500.0, 100, 10, 10, 1.3, 1);
         players.add(player1);
         players.add(player2);
         this.input = new Input();
         //TODO: find out how to actually make slime like normal
-        // Use the slime constructor
+        // Use the slime constructorsdds
         enemies.add(createSlime(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(0, 0, Gui.TILE_SIZE, Gui.TILE_SIZE)));
         random = new Random();
         gui = new Gui(1280, 720, input);
@@ -171,13 +171,13 @@ public class Game implements ActionListener{
         // Draw dash bars
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g) {
-                double height1 = (((double) System.currentTimeMillis() - (double) Input.getLastp1Dash()) / 5000) * Gui.HEIGHT;
+                double height1 = (((double)(int) System.currentTimeMillis() - (double) Input.getLastp1Dash()) / (double)Input.DASH_COOLDOWN) * Gui.HEIGHT;
                 g.setColor(Color.BLACK);
                 g.fillRect(0, 0, 30, Gui.HEIGHT);
                 g.setColor(new Color(3, 148, 252));
                 g.fillRect(0, Gui.HEIGHT - (int) height1, 30, (int) height1);
     
-                double height2 = (((double) System.currentTimeMillis() - (double) Input.getLastp2Dash()) / 5000) * Gui.HEIGHT;
+                double height2 = (((double)(int) System.currentTimeMillis() - (double) Input.getLastp2Dash()) / (double)Input.DASH_COOLDOWN) * Gui.HEIGHT;
                 g.setColor(Color.BLACK);
                 g.fillRect(Gui.WIDTH - 30, 0, 30, Gui.HEIGHT);
                 g.setColor(new Color(3, 148, 252));
@@ -194,6 +194,7 @@ public class Game implements ActionListener{
         for(int i = 0; i < entities.size(); i++){
             gui.drawEntity(entities.get(i));
         }
+
         checkHitboxes(this.players, this.enemies);
         despawnSwingHitbox(this.players);
         gui.displayFPS((int) frameRate);

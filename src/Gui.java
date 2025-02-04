@@ -124,59 +124,106 @@ public class Gui extends JPanel{
             }
         });
     }
-    
+    // Draws a shadow for the given Entity.
     public void drawShadow(Entity e){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                BufferedImage result = new BufferedImage(WIDTH, HEIGHT, ABORT)
-                AffineTransformOp op = new AffineTransformOp(AffineTransform.getShearInstance(0.5, 0), null);
-                
-                g2d.drawImage(toShadow(e.getImage()), (int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()) + (int)(2 * e.getHeight()), (int)e.getWidth(), -(int)e.getHeight(), null);
+                // @see javadoc for AffineTranform
+                double shearFactor = 0.5; // Determines the "angle" at which the shadow projects.
+
+                BufferedImage eImage = e.getImage();
+
+                BufferedImage result = new BufferedImage( // Elongated image to account for shear
+                    eImage.getWidth() + (int)(eImage.getWidth() * shearFactor),
+                    eImage.getHeight(), Transparency.BITMASK);
+                // Used to apply the shear onto the image
+                AffineTransformOp op = new AffineTransformOp(AffineTransform.getShearInstance(shearFactor, 0), null);
+                // Apply shear
+                result = op.filter(toShadow(eImage), result);
+                // Draw the final result at the correct position
+                g2d.drawImage(
+                    result,                        // Correction because of shear
+                    (int)(absToScreenX(e.getX()) - (e.getWidth() * shearFactor) ), 
+                    (int)absToScreenY(e.getY()) + (int)(2 * e.getHeight()), 
+                    (int)(e.getWidth() * 1.5), 
+                    -(int)e.getHeight(), 
+                    null
+                );
             }
         });
     }
-
+    // Draws an Entity and its shadow.
     public void drawEntity(Entity e){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                g2d.drawImage(e.getImage(), (int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()), (int)e.getWidth(), (int)e.getHeight(), null);
+                // Draw the shadow behind the player
                 drawShadow(e);
+                // Draw the player image in screen space
+                g2d.drawImage(
+                    e.getImage(), 
+                    (int)absToScreenX(e.getX()), 
+                    (int)absToScreenY(e.getY()),
+                    (int)e.getWidth(), 
+                    (int)e.getHeight(),
+                    null
+                );
+                
                 if(Game.inDebugMode){
                     drawHitbox(e);
                 }
             }
         });
     }
-
+    // Draw one 10x10 "chunk" of tiles.
     public void drawChunk(Chunk c){
         drawQueue.add(new GraphicsRunnable() {
             BufferedImage tileImage;
+
             public void draw(Graphics2D g2d){
+                // Coordinates of the top-left of this chunk
                 double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
+
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
-                        tileImage =
-                        tileImages.getImage(c.getTile(x, y)-1);
+                        // Get the image for this tile
+                        tileImage = tileImages.getImage(c.getTile(x, y)-1);
+                        // Special condition: water tile is animated
                         if(c.getTile(x, y) - 1 == 17){
                             tileImage = waterAnimation.getFrame();
                         }
-                        //g2d.setColor(Color.GREEN);
-                        //g2d.fillOval((int)threeDCoords[0] - 2, (int)threeDCoords[1] - 2, 4, 4);
-                        g2d.drawImage((tileImage), (int)(chunkCoords[0] + (x * TILE_SIZE)), (int)(chunkCoords[1] + (y * (TILE_SIZE * 2/3))), TILE_SIZE, (TILE_SIZE * 2/3), null);
+                        // Draw the image for this tile
+                        g2d.drawImage(
+                            (tileImage), 
+                            (int)(chunkCoords[0] + (x * TILE_SIZE)), 
+                            (int)(chunkCoords[1] + (y * (TILE_SIZE * HEIGHT_SCALE))), 
+                            TILE_SIZE, 
+                            (int)(TILE_SIZE * HEIGHT_SCALE), 
+                            null
+                        );
+                        // Draw a rectangle on the grid, same size as the image
                         if(showGridOverlay) 
-                            g2d.drawRect((int)(chunkCoords[0] + (x * TILE_SIZE)), (int)(chunkCoords[1] + (y * (TILE_SIZE * 2/3))), TILE_SIZE, (TILE_SIZE * 2/3));
+                            g2d.drawRect(
+                                (int)(chunkCoords[0] + (x * TILE_SIZE)), 
+                                (int)(chunkCoords[1] + (y * (TILE_SIZE * HEIGHT_SCALE))), 
+                                TILE_SIZE, 
+                                (int)(TILE_SIZE * HEIGHT_SCALE)
+                            );
 
                     }
                 }
             }
         });
     }
+    // Draw the hitbox for a given Entity.
     public void drawHitbox(Entity e){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 if(Game.inDebugMode){
+                    // Get the hitbox
                     Rectangle hitbox = e.getAbsHitbox();
+                    // Convert absolute coords to screenspace
                     double[] coords = absToScreen((hitbox.getX()), (hitbox.getY()));
+                    // Draw a red rectangle representing the hitbox
                     g2d.setColor(Color.RED);
                     g2d.setStroke(new BasicStroke(3));
                     g2d.drawRect((int)coords[0], (int)coords[1], (int)hitbox.getWidth(), (int)hitbox.getHeight());
@@ -207,9 +254,11 @@ public class Gui extends JPanel{
         sCameraX = cameraX;
         sCameraY = cameraY;
     }
+    // Recolors a BufferedImage so that it is gray and translucent
     public BufferedImage toShadow(BufferedImage image){
+        // Color of the final shadow (usually black)
         Color color = new Color(0, 0, 0);
-        // Create a copy of the image to avoid modifying the original
+        // Result image
         BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), Transparency.TRANSLUCENT);
 
         // Copy the alpha channel from the original image
@@ -217,20 +266,20 @@ public class Gui extends JPanel{
         g.drawImage(image, 0, 0, null);
 
         // Set the composite rule to only affect non-transparent pixels
-        // See https://ssp.impulsetrain.com/porterduff.html
-        g.setComposite(AlphaComposite.SrcIn.derive(0.2f));
+        // @see https://ssp.impulsetrain.com/porterduff.html
+        g.setComposite(AlphaComposite.SrcIn.derive(0.3f));
 
         // Set the desired color and fill the entire image
         g.setColor(color);
         g.fillRect(0, 0, image.getWidth(), image.getHeight());
         
-        
+        // Return the final result
         return result;
         
     }
     
     /////////////////////////////////////////////////////
-    /// UTILITY
+    /// UTILITY (static)
     /////////////////////////////////////////////////////
     
     
@@ -246,10 +295,10 @@ public class Gui extends JPanel{
         return new double[] {x - sCameraX + WIDTH / 2, (y - sCameraY + HEIGHT / 2) * HEIGHT_SCALE};
     }   
     public static double[] tileToScreen(double xTiles, double yTiles){
-        return new double[] {(xTiles * TILE_SIZE - sCameraX) + WIDTH/2, ((yTiles * TILE_SIZE - sCameraY) + HEIGHT/2) * HEIGHT_SCALE};
+        return new double[] {(xTiles * TILE_SIZE - sCameraX) + WIDTH/2, ((yTiles * TILE_SIZE - sCameraY) + HEIGHT/2 + TILE_SIZE /2) * HEIGHT_SCALE};
     }
     public static double[] chunkToScreen(double xChunks, double yChunks){
-        return new double[] {(xChunks * TILE_SIZE * 10 - sCameraX) + WIDTH / 2, ((yChunks * TILE_SIZE * 10 - sCameraY) + HEIGHT / 2) * HEIGHT_SCALE};
+        return new double[] {(xChunks * TILE_SIZE * 10 - sCameraX) + WIDTH / 2, ((yChunks * TILE_SIZE * 10 - sCameraY) + HEIGHT / 2 + TILE_SIZE / 2) * HEIGHT_SCALE};
     }
 
 }

@@ -70,6 +70,7 @@ public class Player extends Entity{
     //////////////
     public Player(double x, double y, int hp, int d, int dmg, double s, int playernum) {
         super(x, y, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(Gui.TILE_SIZE/4, Gui.TILE_SIZE/4, Gui.TILE_SIZE / 2, Gui.TILE_SIZE / 2));
+        super.setType(5);
         idleAnim      = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, new Images("Images", Transparency.BITMASK).getImage("player" + playernum + "Idle"), true);
         dashAnimation = new StatefulAnimation(62, 6, 2, 
                             new int[][] {

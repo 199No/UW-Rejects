@@ -5,8 +5,10 @@ import java.awt.image.BufferedImage;
 
 
 public abstract class Entity {
+    public static final int TYPE_PLAYER = 5;
     double x,y,width,height;
     Rectangle hitbox;
+    int type;
 
     public Entity(double x, double y, double width, double height, Rectangle hitbox){
         this.x = x;
@@ -15,6 +17,12 @@ public abstract class Entity {
         this.height = height;
         this.hitbox = hitbox;
     }
+    public void setType(int type){
+        this.type = type;
+    }
+    public int getType(){
+        return type;
+    }   
     public double getX(){
         return this.x;
     }
