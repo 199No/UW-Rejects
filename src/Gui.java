@@ -27,7 +27,7 @@ public class Gui extends JPanel{
     public static final double HEIGHT_SCALE = (double)2/(double)3;
     public static final int PLAYER_SIZE = 24;
     public static final int TILE_SIZE = 60;
-    public static final boolean showGridOverlay = true && Game.inDebugMode;
+    public static final boolean showGridOverlay = false && Game.inDebugMode;
     // Queues up all the draw commands in a frame so that they can all be executed at the end of the frame at the correct time.
     ArrayList<GraphicsRunnable> drawQueue;
     // You need a frame to draw things on.
@@ -167,9 +167,11 @@ public class Gui extends JPanel{
                     (int)e.getHeight(),
                     null
                 );
-                
                 if(Game.inDebugMode){
+                    // Draw hitbox
                     drawHitbox(e);
+                    // Draw outline rectangle
+                    g2d.drawRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()), (int)e.getWidth(), (int)e.getHeight());
                 }
             }
         });

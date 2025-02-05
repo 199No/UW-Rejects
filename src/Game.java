@@ -30,7 +30,7 @@ public class Game implements ActionListener{
     //Properties
     ///////////////
     //very unrejar
-    public static final boolean inDebugMode = false;
+    public static final boolean inDebugMode = true;
     Random random;
     Timer gameTimer;
     Gui gui;
@@ -324,22 +324,22 @@ public class Game implements ActionListener{
                     if(clip.getHeight() > clip.getWidth()){
                         // Right collide
                         if(pHitbox.getX() > objHitbox.getX()){
-                            player.setX(objHitbox.getMaxX());
+                            player.setX(player.getX() + clip.getWidth());
                         }   
                         // Left collide
                         if(pHitbox.getX() < objHitbox.getX()){
-                            player.setX(objHitbox.getX() - player.getWidth());
+                            player.setX(player.getX() - clip.getWidth());
                         }
                     }
                     else if (clip.getWidth() > clip.getHeight()){
-                        
+                            
                         // Right collide
                         if(pHitbox.getY() > objHitbox.getY()){
-                            player.setY(objHitbox.getMaxY());
+                            player.setY(player.getY() + clip.getHeight());
                         }   
                         // Left collide
                         if(pHitbox.getY() < objHitbox.getY()){
-                            player.setY(objHitbox.getY() - player.getHeight());
+                            player.setY(player.getY() - clip.getHeight());
                         }
                     }
                 }
