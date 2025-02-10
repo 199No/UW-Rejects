@@ -64,7 +64,6 @@ public class Sounds {
         File folder = new File(folderPath);
         // Get the contents of the folder
         File[] contents = folder.listFiles();
-        System.out.println(folder.toString());
         // If folder is actually a folder (not an sound)...
         if (contents != null) {
             if(!folder.toString().endsWith(".wav")){
