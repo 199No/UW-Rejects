@@ -59,7 +59,7 @@ public class Tool implements ActionListener {
         // Draw the newly drawn bits to the screen.
         gui.repaint();
     }
-    public void getUserInput(){
+    public int[] getUserInput(){
         
         // Get user input
         System.out.println("Which chunk do you want to load? (x,y)");
@@ -77,9 +77,10 @@ public class Tool implements ActionListener {
             }
             // Otherwise there is a chunk loaded, don't modify chunk data at all
             else {
-                return;
+                return new int[]{-1, -1};
             }
         }
+        return new int[]{chunkX, chunkY};
     }
     // Takes user input and loads a chunk from a file into the chunk variable.
     // TODO: Make the user input part a different method.
