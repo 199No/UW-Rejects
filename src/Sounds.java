@@ -25,7 +25,7 @@ public class Sounds {
     public Sounds(){
 
         //Load the sounds
-        recursiveSoundLoad("UW-Rejects\\Sounds");
+        recursiveSoundLoad("Sounds");
 
         //Set the size of the Sound classes
         soundFiles = new File[tempsoundFiles.size()];
