@@ -25,7 +25,7 @@ public class Sounds {
     public Sounds(){
 
         //Load the sounds
-        recursiveSoundLoad("Sounds");
+        recursiveSoundLoad("UW-Rejects\\Sounds");
 
         //Set the size of the Sound classes
         soundFiles = new File[tempsoundFiles.size()];
@@ -62,13 +62,16 @@ public class Sounds {
     private void recursiveSoundLoad(String folderPath){
         // New file from the path
         File folder = new File(folderPath);
+        // Get the contents of the folder
+        File[] contents = folder.listFiles();
+        System.out.println(folder.toString());
         // If folder is actually a folder (not an sound)...
-        if(!folder.toString().endsWith(".wav")){
-            // Get the contents of the folder
-            File[] contents = folder.listFiles();
-            // Search the contents of the folder
-            for(int i = 0; i < contents.length; i++){
-                recursiveSoundLoad(contents[i].getAbsolutePath());
+        if (contents != null) {
+            if(!folder.toString().endsWith(".wav")){
+                // Search the contents of the folder
+                for(int i = 0; i < contents.length; i++){
+                    recursiveSoundLoad(contents[i].getAbsolutePath());
+                }
             }
         }
         // If folder is an sound...
