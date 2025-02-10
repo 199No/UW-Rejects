@@ -33,7 +33,7 @@ public class Tool implements ActionListener {
         chunk = new int[10][10];
         selectedType = 1;
         
-        loadChunk();
+        loadChunk(getUserInput());
 
         // Everything that needs to happen after loading the chunk
         input = new Input(this);
@@ -207,7 +207,7 @@ public class Tool implements ActionListener {
             saveChunk();
         }
         if(loadNewButtonRectangle.contains(mouseX, mouseY - 32)){
-            loadChunk();
+            loadChunk(getUserInput());
         }
         if(chunkRectangle.contains(mouseX, mouseY - 32)){
             int x = (int)Math.floor((mouseX - 100) / 50);
