@@ -27,14 +27,29 @@ public class Gui extends JPanel{
     // You need a frame to draw things on.
     JFrame frame = new JFrame("The Divided Realms Map Tool");
     Images images;
+    Images tempImages = new Images("Images/Enviroment");
+    BufferedImage[] envImages;   
     int[][] chunk = new int[10][10];
+    int[][] envChunk = new int[10][10];
     int selectedType = 1;
     ///////////////
     //Constuctor
     //////////////
-    public Gui(int width, int height, Input input, int[][] chunk) {
+    public Gui(int width, int height, Input input, int[][] chunk, int[][] envChunk) {
         images = new Images("Images/Enviroment/Tiles");
+        envImages = new BufferedImage[] {
+            new BufferedImage(1, 1, Transparency.BITMASK),
+            tempImages.getImage("X"),
+            tempImages.getImage("X").getSubimage(1, 1, 22, 22),
+            tempImages.getImage("tree1"),
+            tempImages.getImage("tree2"),
+            tempImages.getImage("flowers").getSubimage(0, 0, 24, 24),
+            tempImages.getImage("flowers").getSubimage(24, 0, 24, 24),
+            tempImages.getImage("flowers").getSubimage(0, 24, 24, 24),
+            tempImages.getImage("lilypad")
+        };
         this.chunk = chunk;
+        this.envChunk = envChunk;
         this.width = WIDTH;
         this.height = HEIGHT;
         // JFrame setup
@@ -84,18 +99,26 @@ public class Gui extends JPanel{
             }
         });
     }
-    public void drawTiles(){
+    public void drawTiles(boolean inEnvMode){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
                         g2d.drawImage(images.getImage(chunk[y][x] - 1), x * 50 + 100, y * 50 + 100, 50, 50, null);
+                        g2d.drawImage(envImages[envChunk[y][x]], x * 50 + 100, y * 50 + 100, 50, 50, null);
                     }
                 }
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 4; x++){
-                        if(x + (y * 4) < images.numImages()){
-                            g2d.drawImage(images.getImage(x + (y * 4)), x * 50 + 800, y * 50 + 100, 50, 50, null);
+                        if(inEnvMode){
+                            if(x + (y * 4) < envImages.length){
+                                g2d.drawImage(envImages[x + (y * 4)], x * 50 + 800, y * 50 + 100, 50, 50, null);
+                            }
+
+                        } else {
+                            if(x + (y * 4) < images.numImages()){
+                                g2d.drawImage(images.getImage(x + (y * 4)), x * 50 + 800, y * 50 + 100, 50, 50, null);
+                            }
                         }
                     }
                 }
@@ -138,8 +161,9 @@ public class Gui extends JPanel{
         });
     }
 
-    public void updateChunk(int[][] c){
+    public void updateChunk(int[][] c, int[][] e){
         chunk = c;
+        envChunk = e;
     }
     // Return the width and height of the 
     public double width() { return width; }

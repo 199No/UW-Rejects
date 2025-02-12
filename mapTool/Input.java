@@ -27,6 +27,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     boolean automatedMove;
     double movedX, movedY;
     boolean mouseLocked;
+    boolean mouseIsPressed;
     boolean[] keys = new boolean[90];
     Tool tool;
     ///////////////
@@ -38,6 +39,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
         mouseX = MouseInfo.getPointerInfo().getLocation().getX();
         mouseY = MouseInfo.getPointerInfo().getLocation().getY();
         tool = t;
+        mouseIsPressed = false;
     }
     public double mouseX(){
         return mouseX;
@@ -66,6 +68,9 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     public double dMouseY(){
         return mouseY - lastY;
     }
+    public boolean getMousePressed(){
+        return mouseIsPressed;
+    }
     @Override
     public void mouseMoved(MouseEvent e){
 
@@ -77,12 +82,12 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
 
     @Override
     public void mousePressed(MouseEvent e) {
-        
+        mouseIsPressed = true;
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        
+        mouseIsPressed = false;
     }
 
     @Override
@@ -97,7 +102,7 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
 
     @Override
     public void mouseDragged(MouseEvent e){
-        tool.handleMouseClick(mouseX, mouseY);
+
     }
 
     @Override
@@ -116,6 +121,10 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     public void keyReleased(KeyEvent e) {
         if(e.getKeyCode() < keys.length){
                 keys[e.getKeyCode()] = false;
+        }
+        if(e.getKeyCode() == KeyEvent.VK_E){
+            tool.setEnvMode(!tool.getEnvMode());
+            System.out.println("gris");
         }
     }
 

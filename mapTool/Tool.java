@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.awt.Rectangle;
 public class Tool implements ActionListener {
-    public static final boolean inEnvMode = true;
     Input input;
     Gui gui;
     Timer timer; // Provides a "pulse" every 1/60th of a second for frame timing
@@ -27,17 +26,19 @@ public class Tool implements ActionListener {
     int chunkX, chunkY;
     // Takes user input through the console
     Scanner consoleInput;
+    boolean inEnvMode = true;
     public Tool(){
         // Everything that needs to happen before loading the chunk
         consoleInput = new Scanner(System.in);
-        chunk = new int[10][10];
+
         selectedType = 1;
-        
-        loadChunk(getUserInput());
+        int[] userInput = getUserInput();
+        loadChunk(userInput, new File("Maps/map1.map"), chunk);
+        loadChunk(userInput, new File("Maps/map1Env.map"), envChunk);
 
         // Everything that needs to happen after loading the chunk
         input = new Input(this);
-        gui = new Gui(1080, 720, input, chunk);
+        gui = new Gui(1080, 720, input, chunk, envChunk);
         timer = new Timer(17, this);
         timer.start();
     }
@@ -45,12 +46,15 @@ public class Tool implements ActionListener {
     public void actionPerformed(ActionEvent e){
         // Update mouseX, mouseY, pmouseX, and pmouseY
         input.updateMouse();
+        if(input.getMousePressed()){
+            handleMouseClick(input.mouseX(), input.mouseY());
+        }
         // Give Gui a copy of the chunk with whatever new edits were added to it.
-        gui.updateChunk(chunk);
+        gui.updateChunk(chunk, envChunk);
         // Draw a background over the last frame, otherwise you get "smearing" (Google it)
         gui.background(255, 255, 255);
         // Draw all the tiles in the chunk
-        gui.drawTiles();
+        gui.drawTiles(inEnvMode);
         // Draw the grid over that
         gui.drawGrid();
         // Draw the buttons (surprise)
@@ -83,8 +87,7 @@ public class Tool implements ActionListener {
         return new int[]{chunkX, chunkY};
     }
     // Takes user input and loads a chunk from a file into the chunk variable.
-    // TODO: Make the user input part a different method.
-    public void loadChunk(int[] coords){
+    public void loadChunk(int[] coords, File mapFile, int[][] result){
         // A single line of text in the file
         String line;
         // A row of chunks represented as an array of Strings
@@ -94,8 +97,7 @@ public class Tool implements ActionListener {
 
         // I don't wanna have to deal with methods throwing exceptions
         try {
-            // TODO: Make this not a hardcoded map file
-            File f = new File("Maps/map1.map");
+            File f = mapFile;
             Scanner s = new Scanner(f);
             // Skip lines until one before the line at y...
             for(int i = 0; i < coords[1]; i++){
@@ -117,7 +119,7 @@ public class Tool implements ActionListener {
                 row = rawChunk[i].split(",");
                 // Plonk the values into chunk.
                 for(int k = 0; k < 10; k++){ // For each tile in a row...
-                    chunk[i][k] = Integer.parseInt(row[k]);
+                    result[i][k] = Integer.parseInt(row[k]);
                 }
                 
             }
@@ -207,7 +209,7 @@ public class Tool implements ActionListener {
             saveChunk();
         }
         if(loadNewButtonRectangle.contains(mouseX, mouseY - 32)){
-            loadChunk(getUserInput());
+            loadChunk(getUserInput(), new File("Maps/map1.map"), chunk);
         }
         if(chunkRectangle.contains(mouseX, mouseY - 32)){
             int x = (int)Math.floor((mouseX - 100) / 50);
@@ -222,4 +224,10 @@ public class Tool implements ActionListener {
         }
         gui.setSelectedType(selectedType);
     } 
+    public void setEnvMode(boolean t){
+        inEnvMode = t;
+    }
+    public boolean getEnvMode(){
+        return inEnvMode;
+    }
 }

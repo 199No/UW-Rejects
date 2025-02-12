@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.Random;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 //-------------------------------------------------//
@@ -156,17 +157,17 @@ public class Gui extends JPanel{
     public void drawEntity(Entity e){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
+                int x = (int)absToScreenX(e.getX());
+                int y =  (int)absToScreenY(e.getY());
+                int width = (int)e.getWidth();
+                int height = (int)e.getHeight();
+                if(e.getClass() == Player.class){
+                    y += 5 * Math.cos((double)System.currentTimeMillis() / (500));
+                }
                 // Draw the shadow behind the player
                 drawShadow(e);
                 // Draw the player image in screen space
-                g2d.drawImage(
-                    e.getImage(), 
-                    (int)absToScreenX(e.getX()), 
-                    (int)absToScreenY(e.getY()),
-                    (int)e.getWidth(), 
-                    (int)e.getHeight(),
-                    null
-                );
+                g2d.drawImage(e.getImage(), x, y, width, height, null);
                 if(Game.inDebugMode){
                     // Draw hitbox
                     drawHitbox(e);
