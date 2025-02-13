@@ -88,6 +88,36 @@ public class Sounds {
         }
     }
 
+    /*
+     * //Play Sound Method
+public static void playSound(String name) {
+    try {
+        // Loop through sound names to find a match
+        for (int i = 0; i < soundNames.length; i++) {
+            if (soundNames[i].equals(name)) {
+
+                // If the clip is already open, reset it
+                if (soundClip[i].isOpen()) {
+                    soundClip[i].stop();
+                    soundClip[i].flush();
+                    soundClip[i].setFramePosition(0);
+                } else {
+                    soundClip[i].open(soundAudio[i]);  // Open only if not already opened
+                }
+                
+                soundClip[i].start();
+                break;  // Exit loop once sound is found and played
+            }
+        }
+    } catch (IOException | LineUnavailableException error) {
+        error.printStackTrace();
+    }
+}
+
+     * 
+     */
+
+
     //Play Sound Method
     public static void playSound(String name){
 
@@ -99,9 +129,17 @@ public class Sounds {
                 //If the SoundName equal the Given Soundname
                 if(soundNames[i].equals(name)){
 
-                    //Play the Clip
-                    soundClip[i].open(soundAudio[i]);
+                    if (soundClip[i].isOpen()) {
+                        soundClip[i].stop();
+                        soundClip[i].flush();
+                        soundClip[i].setFramePosition(0);
+                    } else {
+                        soundClip[i].open(soundAudio[i]);  // Open only if not already opened
+                    }
+
                     soundClip[i].start();
+                    break;  // Exit loop once sound is found and played
+                    
                 }
             }
         }

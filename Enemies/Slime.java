@@ -61,7 +61,7 @@ public class Slime extends Enemies {
     //-------------------------------------------------// 
 
     public void takeDamage(int dmg) {
-        //Sounds.playSound("SlimeBejiggle");
+        Sounds.playSound("SlimeAttack");
         this.health -= dmg;
         if (this.health <= 0) {
             die(); // Thy end is now!
@@ -110,7 +110,7 @@ public class Slime extends Enemies {
         if (targetPlayer != null) {
             double[] playerLoc = {targetPlayer.getX(), targetPlayer.getY()};
             moveToward(playerLoc);
-            //Sounds.playSound("SlimeBejiggle");
+            Sounds.playSound("SlimeBejiggle");
 
 
             // Check if player is out of range
@@ -180,7 +180,7 @@ public class Slime extends Enemies {
     }
 
     public void die() {
-        //Sounds.playSound("SlimeDeath");
+        Sounds.playSound("SlimeDeath");
         // Handle slime death
     }
     public BufferedImage getImage(){
