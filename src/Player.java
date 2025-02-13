@@ -265,6 +265,9 @@ public class Player extends Entity{
     //BLOCK
 
     public boolean getIsBlocking(){
+        if(isBlocking){
+            Sounds.playSound("Blocking");
+        }
         return this.isBlocking;
     }
     public int getLastBlock(){
