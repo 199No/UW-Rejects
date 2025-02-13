@@ -214,7 +214,11 @@ public class Tool implements ActionListener {
         if(chunkRectangle.contains(mouseX, mouseY - 32)){
             int x = (int)Math.floor((mouseX - 100) / 50);
             int y = (int)Math.floor((mouseY - 132) / 50);
-            chunk[y][x] = selectedType;
+            if(inEnvMode){
+                envChunk[y][x] = selectedType - 1;
+            } else {
+                chunk[y][x] = selectedType;
+            }
         }  
         if(palletRectangle.contains(mouseX, mouseY)){
             int x = (int)Math.floor((mouseX - 800) / 50);
