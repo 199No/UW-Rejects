@@ -176,6 +176,17 @@ public class Gui extends JPanel{
             }
         });
     }
+    public void drawEntity(Player e){
+        drawEntity(e);
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                g2d.setColor(Color.BLACK);
+                g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 25), (int)e.getWidth(), 10);
+                g2d.setColor(Color.GREEN);
+                g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 25), (int)(e.getWidth() * e.getHealthPercent()), 10);
+            }
+        });
+    }
     // Draw one 10x10 "chunk" of tiles.
     public void drawChunk(Chunk c){
         drawQueue.add(new GraphicsRunnable() {
