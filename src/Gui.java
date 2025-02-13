@@ -163,6 +163,7 @@ public class Gui extends JPanel{
                 int height = (int)e.getHeight();
                 if(e.getClass() == Player.class){
                     y += 5 * Math.cos((double)System.currentTimeMillis() / (500));
+                    
                 }
                 // Draw the shadow behind the player
                 drawShadow(e);
@@ -174,6 +175,17 @@ public class Gui extends JPanel{
                     // Draw outline rectangle
                     g2d.drawRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()), (int)e.getWidth(), (int)e.getHeight());
                 }
+            }
+        });
+    }
+    public void drawEntity(Player e){
+        drawEntity(e);
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                g2d.setColor(Color.BLACK);
+                g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 25), (int)e.getWidth(), 10);
+                g2d.setColor(Color.GREEN);
+                g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 25), (int)e.getWidth() * e.getHealthPercent(), 10);
             }
         });
     }

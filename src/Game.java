@@ -30,7 +30,7 @@ public class Game implements ActionListener{
     //Properties
     ///////////////
     //very unrejar
-    public static final boolean inDebugMode = true;
+    public static final boolean inDebugMode = false;
     Random random;
     Timer gameTimer;
     Gui gui;
