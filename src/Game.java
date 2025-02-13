@@ -30,7 +30,7 @@ public class Game implements ActionListener{
     //Properties
     ///////////////
     //very unrejar
-    public static final boolean inDebugMode = false;
+    public static final boolean inDebugMode = true;
     Random random;
     Timer gameTimer;
     Gui gui;
@@ -59,14 +59,14 @@ public class Game implements ActionListener{
     //////////////
     public Game() throws AWTException, IOException{
 
-        this.player1 = new Player(750,300.0,100,10,10,1.3,2);
-        this.player2 = new Player(500.0, 500.0, 100, 10, 10, 1.3, 1);
+        this.player1 = new Player(750.0, 300.0, 100, 10, 1.3, 2);
+        this.player2 = new Player(500.0, 500.0, 100, 10, 1.3, 1);
         players.add(player1);
         players.add(player2);
         this.input = new Input();
         //TODO: find out how to actually make slime like normal
         // Use the slime constructorsdds
-        enemies.add(createSlime(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(0, 0, Gui.TILE_SIZE, Gui.TILE_SIZE)));
+        enemies.add(createSlime(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE)));
         random = new Random();
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
@@ -254,18 +254,35 @@ public class Game implements ActionListener{
         // Update player movement with input information
         updatePlayerMovement(player, Input.getPlayerKeys(player), shifts[player.playernum -1], keys);
 
-        // Handle    player actions (attack block) with input information
-        handlePlayerActions(player, keys, Input.getPlayerKeys(player)[5], Input.getPlayerKeys(player)[4]); // Attack: 5th key in list, Block: 4th key in list
-
         // Handle player dashing
 
-        if ((int) System.currentTimeMillis() - Input.getLastDash() < player.dashLength) {
+        if ((int) System.currentTimeMillis() - Input.getLastDash() < player.getDashLength()) {
             handlePlayerDash(player, Input.getPlayerKeys(player));
         } else {
             if(player.getIsDashing()){
                 player.setIsDashing(false);
             }
         }
+
+        // Handle player blocking
+
+        if ((int) System.currentTimeMillis() - player.getLastBlock() < player.getBlockLength()) {
+           handlePlayerBlock(player, Input.getPlayerKeys(player)[4], keys);
+        } else {
+            if(player.getIsBlocking()){
+                player.setIsBlocking(false);
+            }
+        }
+
+        // Handle player attack
+
+        if ((int) System.currentTimeMillis() - player.getLastAttack() < player.getAttackLength()) {
+            handlePlayerAttack(player, Input.getPlayerKeys(player)[5], keys);
+         } else {
+             if(player.getIsBlocking()){
+                 player.setIsAttacking(false);
+             }
+         }
 
         inBounds(player);
         
@@ -348,38 +365,45 @@ public class Game implements ActionListener{
 
     }
 
-    private void handlePlayerActions(Player player, boolean[] keys, int attackKey, int blockKey) {
-         // Check if the attack is currently on cooldown
-    if (player.getIsAttacking() && (int) System.currentTimeMillis() - player.getLastAttack() > player.getAttackCooldown()) {
-        player.setIsAttacking(false);
-    }
+    private void handlePlayerAttack(Player player, int attackKey, boolean[] keys){
 
-    // Restrict attack action
-    if (keys[attackKey]) {
-        if (!player.getIsAttacking() &&  // Player is not already attacking
-            !player.getIsBlocking() &&  // Player is not blocking
-            (int) System.currentTimeMillis() - player.getLastAttack() > player.getAttackCooldown()) { // Cooldown check
-            player.attack(); // Trigger attack
+        if (player.getIsAttacking() && (int) System.currentTimeMillis() - player.getLastAttack() > player.getAttackLength()) {
+            player.setIsAttacking(false);
+        }
+
+        if (keys[attackKey]) {
+            if (!player.getIsAttacking() &&  // Player is not already attacking
+                !player.getIsBlocking() &&  // Player is not blocking
+                (int) System.currentTimeMillis() - player.getLastAttack() > player.getAttackCooldown()) { // Cooldown check
+                player.attack(); // Trigger attack
+            }
         }
     }
 
-    // Restrict block action
-    if (keys[blockKey]) {
-        if (!player.getIsAttacking()) { // Ensure player is not attacking
-            player.block(); // Trigger block
+    private void handlePlayerBlock(Player player, int blockKey, boolean[] keys){
+
+        if (player.getIsBlocking() && (int) System.currentTimeMillis() - player.getLastBlock() > player.getBlockLength()) {
+            player.setIsBlocking(false);
         }
-    }
+
+        if (keys[blockKey]) {
+            if (!player.getIsBlocking() &&  // Player is not already blocking
+                !player.getIsAttacking() &&  // Player is not attacking
+                (int) System.currentTimeMillis() - player.getLastBlock() > player.getBlockCooldown()) { // Cooldown check
+                player.block(); // Trigger block
+            }
+        }
     }
 
     private void handlePlayerDash(Player player, int[] playerKeys) {
         for(int i = 0; i < playerKeys.length; i++){
             if(playerKeys[i] == Input.getDash()){
                 if(!player.getIsDashing()){
-                    player.dash(playerKeys[i], 5);
+                    player.dash(playerKeys[i]);
                     player.setIsDashing(true);
                 }
                 else{
-                    player.dash(playerKeys[i], 5);
+                    player.dash(playerKeys[i]);
                 }
             }
         }

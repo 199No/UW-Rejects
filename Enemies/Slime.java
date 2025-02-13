@@ -5,8 +5,6 @@ package Enemies;
 //-------------------------------------------------// 
 
 import src.Player;
-import src.Sounds;
-
 import java.awt.Rectangle;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
@@ -61,7 +59,6 @@ public class Slime extends Enemies {
     //-------------------------------------------------// 
 
     public void takeDamage(int dmg) {
-        //Sounds.playSound("SlimeBejiggle");
         this.health -= dmg;
         if (this.health <= 0) {
             die(); // Thy end is now!
@@ -110,8 +107,6 @@ public class Slime extends Enemies {
         if (targetPlayer != null) {
             double[] playerLoc = {targetPlayer.getX(), targetPlayer.getY()};
             moveToward(playerLoc);
-            //Sounds.playSound("SlimeBejiggle");
-
 
             // Check if player is out of range
             double dx = targetPlayer.getX() - this.xPos;
@@ -180,8 +175,10 @@ public class Slime extends Enemies {
     }
 
     public void die() {
-        //Sounds.playSound("SlimeDeath");
         // Handle slime death
+    }
+    public void takeDamage(){
+        
     }
     public BufferedImage getImage(){
         return slimeAnimation.getFrame();
