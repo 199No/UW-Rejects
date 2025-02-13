@@ -5,8 +5,6 @@ package Enemies;
 //-------------------------------------------------// 
 
 import src.Player;
-import src.Sounds;
-
 import java.awt.Rectangle;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
@@ -182,6 +180,9 @@ public class Slime extends Enemies {
     public void die() {
         Sounds.playSound("SlimeDeath");
         // Handle slime death
+    }
+    public void takeDamage(){
+        
     }
     public BufferedImage getImage(){
         return slimeAnimation.getFrame();
