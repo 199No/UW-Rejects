@@ -9,7 +9,7 @@ import javax.sound.sampled.*;
 
 
 //-------------------------------------------------//
-//                    Sounds                       //
+//    b               Sounds                       //
 //-------------------------------------------------// 
 public class Sounds {
 
@@ -139,7 +139,7 @@ public static void playSound(String name) {
 
                     soundClip[i].start();
                     break;  // Exit loop once sound is found and played
-                    
+
                 }
             }
         }

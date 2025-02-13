@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.util.ArrayList;
 import src.Images;
-
+import src.Sounds;
 import src.Animation;
 import src.Gui;
 //-------------------------------------------------//
