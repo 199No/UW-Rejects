@@ -70,6 +70,16 @@ public class Game implements ActionListener{
         random = new Random();
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
+
+
+        //How to say if its in desert do wind if in grass do country
+        if(false){
+            Sounds.playSound("WindBackground");
+        }
+        if(true){
+            Sounds.playSound("Countryside");
+        }
+
         // Only these four lines should happen after this comment otherwise stuff will break
         gameTimer = new Timer(2, this);
         gameTimer.start();
