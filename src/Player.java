@@ -192,12 +192,13 @@ public class Player extends Entity{
         // System.out.println("Player positon at (" + (int) getX() + ", " + (int) getY() );
         // System.out.println("Hitbox spawned at (" + hitboxX + ", " + hitboxY + ")");
     }
-
+   
     public void block(){
         System.out.println("block!");
     }
 
     public void dash(int key, int speed) {
+        Sounds.playSound("Roll");
         boolean[] movement = new boolean[4];
         if (key >= 0 && key < movement.length) {
             movement[key] = true;
