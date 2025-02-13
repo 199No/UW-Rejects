@@ -157,7 +157,7 @@ public class Player extends Entity{
     }
 
     public void attack() {
-        Sounds.playSound("SwordAttack");
+        //Sounds.playSound("SwordAttack");
         this.isAttacking = true;
         lastAttack = (int) System.currentTimeMillis();
         System.out.println(lastAttack);
@@ -198,7 +198,7 @@ public class Player extends Entity{
     }
 
     public void dash(int key, int speed) {
-        Sounds.playSound("Roll");
+        //Sounds.playSound("Roll");
         boolean[] movement = new boolean[4];
         if (key >= 0 && key < movement.length) {
             movement[key] = true;

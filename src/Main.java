@@ -7,7 +7,6 @@ public class Main {
     public static void main(String[] args) throws IOException, AWTException{
         new Sounds();
       //Sounds.playSound("AnvilHit");
-    
         new Game();
     }
 }
