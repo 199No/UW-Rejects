@@ -157,7 +157,7 @@ public class Player extends Entity{
     }
 
     public void attack() {
-
+        Sounds.playSound("SwordAttack");
         this.isAttacking = true;
         lastAttack = (int) System.currentTimeMillis();
         System.out.println(lastAttack);

@@ -14,12 +14,12 @@ import javax.sound.sampled.*;
 public class Sounds {
 
     //Create list
-    File[] soundFiles;
-    String[] soundNames;
-    AudioInputStream[] soundAudio;
-    Clip[] soundClip;
-    ArrayList<File> tempsoundFiles = new ArrayList<File>();
-    ArrayList<String> tempSoundNames = new ArrayList<String>();
+    private static File[] soundFiles;
+    private static String[] soundNames;
+    private static AudioInputStream[] soundAudio;
+    private static Clip[] soundClip;
+    private static ArrayList<File> tempsoundFiles = new ArrayList<File>();
+    private static ArrayList<String> tempSoundNames = new ArrayList<String>();
 
 
     public Sounds(){
@@ -59,7 +59,7 @@ public class Sounds {
 
 
     //SoundLoading Method
-    private void recursiveSoundLoad(String folderPath){
+    private static void recursiveSoundLoad(String folderPath){
         // New file from the path
         File folder = new File(folderPath);
         // Get the contents of the folder
@@ -89,7 +89,7 @@ public class Sounds {
     }
 
     //Play Sound Method
-    public void playSound(String name){
+    public static void playSound(String name){
 
         try{
 
@@ -115,7 +115,7 @@ public class Sounds {
     }
     
     //Stop Sound Method
-    public void stopSound(String name){
+    public static void stopSound(String name){
 
         //For every SoundName
         for(int i = 0; i < soundNames.length; i++){
