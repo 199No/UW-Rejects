@@ -178,6 +178,17 @@ public class Game implements ActionListener{
             gui.drawChunk(map.getChunk(c));
         }
     
+        // Update camera position
+        gui.moveCamera(
+            ((players.get(0).getX() + players.get(1).getX()) / 2 - gui.cameraX()) / 10,
+            ((players.get(0).getY() + players.get(1).getY()) / 2 - gui.cameraY()) / 10
+        );
+        // Draw all Entities (players, enemies, envObjects, etc.)
+        for(int i = 0; i < entities.size(); i++){
+            gui.drawEntity(entities.get(i));
+        }
+        
+    
         // Draw dash bars
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g) {
@@ -194,16 +205,6 @@ public class Game implements ActionListener{
                 g.fillRect(Gui.WIDTH - 30, Gui.HEIGHT - (int) height2, 30, (int) height2);
             }
         });
-    
-        // Update camera position
-        gui.moveCamera(
-            ((players.get(0).getX() + players.get(1).getX()) / 2 - gui.cameraX()) / 10,
-            ((players.get(0).getY() + players.get(1).getY()) / 2 - gui.cameraY()) / 10
-        );
-        // Draw all Entities (players, enemies, envObjects, etc.)
-        for(int i = 0; i < entities.size(); i++){
-            gui.drawEntity(entities.get(i));
-        }
 
         checkHitboxes(this.players, this.enemies);
         despawnSwingHitbox(this.players);

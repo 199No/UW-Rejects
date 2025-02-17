@@ -171,6 +171,8 @@ public class Gui extends JPanel{
                     // Draw hitbox
                     drawHitbox(e);
                     // Draw outline rectangle
+                    g2d.setColor(Color.CYAN);
+                    g2d.setStroke(new BasicStroke(2));
                     g2d.drawRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()), (int)e.getWidth(), (int)e.getHeight());
                 }
             }
@@ -215,6 +217,8 @@ public class Gui extends JPanel{
                         );
                         // Draw a rectangle on the grid, same size as the image
                         if(showGridOverlay) 
+                            g2d.setColor(Color.BLACK);
+                            g2d.setStroke(new BasicStroke(1));
                             g2d.drawRect(
                                 (int)(chunkCoords[0] + (x * TILE_SIZE)), 
                                 (int)(chunkCoords[1] + (y * (TILE_SIZE * HEIGHT_SCALE))), 
@@ -223,6 +227,11 @@ public class Gui extends JPanel{
                             );
 
                     }
+                }
+                if(showGridOverlay){
+                    g2d.setColor(Color.MAGENTA);
+                    g2d.setStroke(new BasicStroke(3));
+                    g2d.drawRect((int)chunkCoords[0], (int)chunkCoords[1], Gui.TILE_SIZE * 10, (int)(Gui.TILE_SIZE * 10 * HEIGHT_SCALE));
                 }
             }
         });
