@@ -216,6 +216,20 @@ public class Tool implements ActionListener {
             fw.close();
             s.close();
         }catch(IOException e){e.printStackTrace();}
+        // Copy the output file over to the map file
+        try {
+            FileWriter fw = new FileWriter(mapFile, false);
+            fw.write("");
+            fw.close();
+            fw = new FileWriter(mapFile);
+            Scanner s = new Scanner(outputFile);
+            while(s.hasNextLine()){
+                fw.write(s.nextLine() + "\n");
+            }
+            s.close();
+            fw.close();
+        }catch(IOException e){e.printStackTrace();}
+
     }
     public void handleMouseClick(double mouseX, double mouseY){
         System.out.println("Clicked! " + mouseX + " " + (mouseY - 32));

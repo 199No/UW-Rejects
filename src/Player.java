@@ -205,7 +205,6 @@ public class Player extends Entity{
     }
 
     public void dash(int key) {
-        Sounds.playSound("Roll");
         boolean[] movement = new boolean[4];
         if (key >= 0 && key < movement.length) {
             movement[key] = true;
@@ -299,6 +298,9 @@ public class Player extends Entity{
     }
     public void setIsDashing(boolean bool){
         this.isDashing = bool; 
+        if(bool){
+            Sounds.playSound("Roll");
+        }
     }
 
     //HEALTH
