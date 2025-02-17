@@ -31,6 +31,8 @@ public class Tool implements ActionListener {
     File envFile;
     File outputFile = new File("Maps/toolOutput.map");
     File outputEnvFile = new File("Maps/toolOutputEnv.map");
+    String saveButtonText = "Save";
+    int lastSave = -Integer.MAX_VALUE;
     public Tool(){
         // Everything that needs to happen before loading the chunk
         consoleInput = new Scanner(System.in);
@@ -67,7 +69,10 @@ public class Tool implements ActionListener {
         // Draw the grid over that
         gui.drawGrid();
         // Draw the buttons (surprise)
-        gui.drawButton(saveButtonRectangle, "Save");
+        if(saveButtonText == "Saved!" && (int)System.currentTimeMillis() - lastSave > 1500){
+            saveButtonText = "Save";
+        }
+        gui.drawButton(saveButtonRectangle, saveButtonText);
         gui.drawButton(loadNewButtonRectangle, "Load");
         // Draw the newly drawn bits to the screen.
         gui.repaint();
@@ -229,7 +234,8 @@ public class Tool implements ActionListener {
             s.close();
             fw.close();
         }catch(IOException e){e.printStackTrace();}
-
+        saveButtonText = "Saved!";
+        lastSave = (int)System.currentTimeMillis();
     }
     public void handleMouseClick(double mouseX, double mouseY){
         System.out.println("Clicked! " + mouseX + " " + (mouseY - 32));
@@ -273,5 +279,8 @@ public class Tool implements ActionListener {
     }
     public boolean getEnvMode(){
         return inEnvMode;
+    }
+    public String getSaveText(){
+        return saveButtonText;
     }
 }

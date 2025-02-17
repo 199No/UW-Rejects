@@ -155,6 +155,9 @@ public class Gui extends JPanel{
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 g2d.setColor(Color.BLACK);
+                if(text.equals("Saved!")){
+                    g2d.setColor(Color.GRAY);
+                }
                 g2d.drawRect((int)button.getX(), (int)button.getY(), (int)button.getWidth(), (int)button.getHeight());
                 g2d.drawString(text, (int)button.getX() + 20, (int)button.getY() + 20);
             }     
