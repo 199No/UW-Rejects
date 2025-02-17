@@ -27,14 +27,23 @@ public class Tool implements ActionListener {
     // Takes user input through the console
     Scanner consoleInput;
     boolean inEnvMode = true;
+    File mapFile;
+    File envFile;
+    File outputFile = new File("Maps/toolOutput.map");
+    File outputEnvFile = new File("Maps/toolOutputEnv.map");
     public Tool(){
         // Everything that needs to happen before loading the chunk
         consoleInput = new Scanner(System.in);
 
+        System.out.println("Which map do you want to load? (1 for map 1, 2, for map 2, etc)");
+        String selectedMap = consoleInput.nextLine();
+        mapFile = new File("Maps/map" + selectedMap + ".map");
+        envFile = new File("Maps/map" + selectedMap + "Env.map");
+
         selectedType = 1;
         int[] userInput = getUserInput();
-        loadChunk(userInput, new File("Maps/map1.map"), chunk);
-        loadChunk(userInput, new File("Maps/map1Env.map"), envChunk);
+        loadChunk(userInput, mapFile, chunk);
+        loadChunk(userInput, envFile, envChunk);
 
         // Everything that needs to happen after loading the chunk
         input = new Input(this);
@@ -148,12 +157,14 @@ public class Tool implements ActionListener {
         ------------------------------------------------
         -----------------------------------------------]
     */
-    public void saveChunk(){
+    public void saveChunk(File outputFile, File mapFile){
         try {
             // File for the output
-            File outputFile = new File("Maps/toolOutput.map");
+            //File outputFile = new File("Maps/toolOutput.map");
+
             // File for the map
-            File mapFile = new File("Maps/map1.map");
+            //File mapFile = new File("Maps/map1.map");
+            
             // The line that has our chunk in it, as a String array
             String[] outputLine;
             // Our chunk as a string with the first character to make things easier later on.
@@ -174,7 +185,11 @@ public class Tool implements ActionListener {
             outputLine = s.nextLine().split(";\\}");
             for(int y = 0; y < 10; y++){
                 for(int x = 0; x < 10; x++){
-                    chunkString += chunk[y][x];
+                    if(mapFile.getName().endsWith("Env.map")){
+                        chunkString += envChunk[y][x];
+                    } else {
+                        chunkString += chunk[y][x];
+                    }
                     if(x < 9){
                         chunkString += ",";
                     }
@@ -206,10 +221,21 @@ public class Tool implements ActionListener {
         System.out.println("Clicked! " + mouseX + " " + (mouseY - 32));
         if(saveButtonRectangle.contains(mouseX, mouseY - 32)){
             System.out.println("Saved");
-            saveChunk();
+            saveChunk(outputFile, mapFile);
+            saveChunk(outputEnvFile, envFile);
         }
         if(loadNewButtonRectangle.contains(mouseX, mouseY - 32)){
-            loadChunk(getUserInput(), new File("Maps/map1.map"), chunk);
+            consoleInput = new Scanner(System.in);
+    
+            System.out.println("Which map do you want to load? (1 for map 1, 2, for map 2, etc)");
+            String selectedMap = consoleInput.nextLine();
+            mapFile = new File("Maps/map" + selectedMap + ".map");
+            envFile = new File("Maps/map" + selectedMap + "Env.map");
+    
+            selectedType = 1;
+            int[] userInput = getUserInput();
+            loadChunk(userInput, mapFile, chunk);
+            loadChunk(userInput, envFile, envChunk);
         }
         if(chunkRectangle.contains(mouseX, mouseY - 32)){
             int x = (int)Math.floor((mouseX - 100) / 50);

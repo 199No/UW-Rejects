@@ -48,6 +48,7 @@ public class Game implements ActionListener{
     private ArrayList<Enemies> enemies  = new ArrayList<Enemies>();
     private ArrayList<Player>  players  = new ArrayList<Player>();
     private ArrayList<Entity>  entities = new ArrayList<Entity>();
+    private ArrayList<Integer> entityIndices = new ArrayList<Integer>();
     // Bounds
     private double xMin = 0;
     private double xMax = 4080;
@@ -167,7 +168,6 @@ public class Game implements ActionListener{
                 }
             }
         }
-        
         // Update entity list
         entities.addAll(enemies);
         entities.addAll(players);

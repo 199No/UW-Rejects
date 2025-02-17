@@ -19,7 +19,8 @@ Click the "Run" button above its main method.
 This will set VSCode's default "main" to the MapTool main, so you will have to do this again on the game's Main.java file.
 Enter your selected chunk x and y seperated by a comma with no spaces.
 Pick a tile to "draw" with using the pallet on the right. The red square indicates the selected tile type.
-Click (drag coming soon) on a tile to draw over it.
+Press E to switch between env mode and map mode.
+Click or drag on a tile to draw over it.
 Once you are happy click "Save" and close the window.
 Your newly edited map will show up in the toolOutput.map file.
 Give it a quick glance to make sure the tool didn't corrupt anything.
