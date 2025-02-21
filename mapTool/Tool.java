@@ -16,7 +16,7 @@ public class Tool implements ActionListener {
     // Which tile type is the "paint" right now
     int selectedType;
     // For input on the chunk
-    Rectangle chunkRectangle = new Rectangle(100, 100, 500, 500);
+    Rectangle chunkRectangle = new Rectangle(100, 100, 10 * Gui.TILE_SIZE, (int)(10 * (Gui.TILE_SIZE * Gui.HEIGHT_SCALE)));
     // For input on the pallet
     Rectangle palletRectangle = new Rectangle(800, 100, 200, 500);
     // For each button
@@ -258,8 +258,8 @@ public class Tool implements ActionListener {
             loadChunk(userInput, envFile, envChunk);
         }
         if(chunkRectangle.contains(mouseX, mouseY - 32)){
-            int x = (int)Math.floor((mouseX - 100) / 50);
-            int y = (int)Math.floor((mouseY - 132) / 50);
+            int x = (int)Math.floor((mouseX - 100) / Gui.TILE_SIZE);
+            int y = (int)Math.floor((mouseY - 132) / (Gui.TILE_SIZE * Gui.HEIGHT_SCALE));
             if(inEnvMode){
                 envChunk[y][x] = selectedType - 1;
             } else {

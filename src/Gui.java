@@ -206,6 +206,7 @@ public class Gui extends JPanel{
                         if(c.getTile(x, y) - 1 == 17){
                             tileImage = waterAnimation.getFrame();
                         }
+                        g2d.setColor(new Color(0, 0, 0 ,0));
                         // Draw the image for this tile
                         g2d.drawImage(
                             (tileImage), 
@@ -320,7 +321,7 @@ public class Gui extends JPanel{
         return new double[] {(xTiles * TILE_SIZE - sCameraX) + WIDTH/2, ((yTiles * TILE_SIZE - sCameraY) + HEIGHT/2 + TILE_SIZE /2) * HEIGHT_SCALE};
     }
     public static double[] chunkToScreen(double xChunks, double yChunks){
-        return new double[] {(xChunks * TILE_SIZE * 10 - sCameraX) + WIDTH / 2, ((yChunks * TILE_SIZE * 10 - sCameraY) + HEIGHT / 2 + TILE_SIZE / 2) * HEIGHT_SCALE};
+        return new double[] {(xChunks * TILE_SIZE * 10 - sCameraX) + WIDTH / 2, ((yChunks * TILE_SIZE * 10 - sCameraY) + HEIGHT / 2) * HEIGHT_SCALE};
     }
 
 }

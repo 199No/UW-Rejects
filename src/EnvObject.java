@@ -99,7 +99,7 @@ public class EnvObject extends Entity{
             case 1:
                 return new Rectangle(0, 0, Gui.TILE_SIZE, (int)(Gui.TILE_SIZE * Gui.HEIGHT_SCALE));
             case 2:
-                return new Rectangle(Gui.TILE_SIZE / 4, (Gui.TILE_SIZE / 4), Gui.TILE_SIZE / 2, (int)(Gui.TILE_SIZE / 2 * Gui.HEIGHT_SCALE));
+                return new Rectangle(Gui.TILE_SIZE / 8, (Gui.TILE_SIZE / 8), (int)(Gui.TILE_SIZE * 0.75), (int)(Gui.TILE_SIZE * 0.75 * Gui.HEIGHT_SCALE));
 
             case 3:
                 return new Rectangle(Gui.TILE_SIZE, Gui.TILE_SIZE * 3, Gui.TILE_SIZE, Gui.TILE_SIZE);

@@ -361,13 +361,13 @@ public class Game implements ActionListener{
                     }
                     else if (clip.getWidth() > clip.getHeight()){
                             
-                        // Right collide
+                        // Bottom collide
                         if(pHitbox.getY() > objHitbox.getY()){
-                            player.setY(player.getY() + clip.getHeight());
+                            player.setY(objHitbox.getY() + objHitbox.getHeight());
                         }   
-                        // Left collide
+                        // Top collide
                         if(pHitbox.getY() < objHitbox.getY()){
-                            player.setY(player.getY() - clip.getHeight());
+                            player.setY(objHitbox.getY() - pHitbox.getHeight());
                         }
                     }
                 }
