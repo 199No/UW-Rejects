@@ -1,6 +1,4 @@
 package mapTool;
-// oh yeah I stole most of this code from anders
-// most of the credit goes to him (a small amount of this is my code)
 
 //pressed -> released (check if short)  [100 - 350]
 //time inbetween

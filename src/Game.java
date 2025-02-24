@@ -15,7 +15,6 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Random;
 import javax.swing.Timer;
 //unrejar
 
@@ -30,7 +29,7 @@ public class Game implements ActionListener{
     //Properties
     ///////////////
     //very unrejar
-    public static final boolean inDebugMode = true;
+    public static final boolean inDebugMode = false;
     Random random;
     Timer gameTimer;
     Gui gui;
@@ -65,8 +64,6 @@ public class Game implements ActionListener{
         players.add(player1);
         players.add(player2);
         this.input = new Input();
-        //TODO: find out how to actually make slime like normal
-        // Use the slime constructorsdds
         enemies.add(createSlime(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE)));
         random = new Random();
         gui = new Gui(1280, 720, input);
@@ -74,10 +71,10 @@ public class Game implements ActionListener{
 
 
         //How to say if its in desert do wind if in grass do country
-        if(false){
+        if(true){
             Sounds.playSound("WindBackground");
         }
-        if(true){
+        if(!true){
             Sounds.playSound("Countryside");
         }
 
@@ -99,7 +96,6 @@ public class Game implements ActionListener{
         //// CALCULATE FPS
         ////////////////////
         now = System.currentTimeMillis();
-    
         if (now - lastSecond > 1000) {
             lastSecond = now;
             frameRate = framesLastSecond;
