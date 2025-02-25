@@ -31,7 +31,9 @@ public class Slime extends Enemies {
     double[] randomLoc = {0, 0};
     boolean moving = false;
     private Random rnd = new Random(); // Add a Random instance
-    
+
+    private final int width = Gui.TILE_SIZE;
+    private final int height = Gui.TILE_SIZE;
     Animation slimeAnimation;
 
     ///////////////
@@ -42,8 +44,21 @@ public class Slime extends Enemies {
         this.health = 100;
         this.damage = 10;
         this.speed = 2;
-        this.width = Gui.TILE_SIZE;
-        this.height = Gui.TILE_SIZE;
+        this.eyesight = 400;
+        this.alert = false;
+        this.idle = true;
+
+        
+        // Define a constantly running Animation for the slime (soon to be better)
+        slimeAnimation = new Animation(new Images("Images/Enemies", Transparency.BITMASK).getImage("slime"), 4, 2, 7, 100, true);
+        slimeAnimation.start(); 
+    }
+
+    public Slime(double x, double y) {
+        super(x, y, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle((int) x, (int) y, Gui.TILE_SIZE, Gui.TILE_SIZE) );
+        this.health = 100;
+        this.damage = 10;
+        this.speed = 2;
         this.eyesight = 400;
         this.alert = false;
         this.idle = true;

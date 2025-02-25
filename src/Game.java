@@ -67,7 +67,7 @@ public class Game implements ActionListener{
         this.input = new Input();
         //TODO: find out how to actually make slime like normal
         // Use the slime constructorsdds
-        enemies.add(createSlime(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE)));
+        enemies.add(spawnSlime(100, 300));
         random = new Random();
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
@@ -213,10 +213,6 @@ public class Game implements ActionListener{
         now = System.currentTimeMillis();
         
         entities.clear();
-    }
-
-    public Slime createSlime(double x, double y, double width, double height, Rectangle hitbox){
-        return new Slime(x,y,width,height,hitbox); //make a slime given a x and y
     }
 
     public Player getPlayer1(){
@@ -419,6 +415,10 @@ public class Game implements ActionListener{
             }
         }
         
+    }
+
+    public Slime spawnSlime(double x, double y){
+        return new Slime(x,y); //make a slime given a x and y
     }
 
 }
