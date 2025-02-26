@@ -27,7 +27,7 @@ public class Gui extends JPanel{
     public static final double HEIGHT_SCALE = (double)2/(double)3;
     public static final int PLAYER_SIZE = 24;
     public static final int TILE_SIZE = 60;
-    public static final boolean showGridOverlay = false && Game.inDebugMode;
+    public static final boolean showGridOverlay = false && Game.inDebugMode();
     // Queues up all the draw commands in a frame so that they can all be executed at the end of the frame at the correct time.
     ArrayList<GraphicsRunnable> drawQueue;
     // You need a frame to draw things on.
@@ -125,9 +125,7 @@ public class Gui extends JPanel{
         });
     }
     // Draws a shadow for the given Entity.
-    public void drawShadow(Entity e){
-        drawQueue.add(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
+    public void drawShadow(Entity e, Graphics2D g2d){
                 // @see javadoc for AffineTranform
                 double shearFactor = 0.5; // Determines the "angle" at which the shadow projects.
 
@@ -149,15 +147,13 @@ public class Gui extends JPanel{
                     -(int)e.getHeight(), 
                     null
                 );
-            }
-        });
     }
     // Draws an Entity and its shadow.
     public void drawEntity(Entity e){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 // Draw the shadow behind the player
-                drawShadow(e);
+                drawShadow(e, g2d);
                 // Draw the player image in screen space
                 g2d.drawImage(
                     e.getImage(), 
@@ -167,7 +163,7 @@ public class Gui extends JPanel{
                     (int)e.getHeight(),
                     null
                 );
-                if(Game.inDebugMode){
+                if(Game.inDebugMode()){
                     // Draw hitbox
                     drawHitbox(e);
                     // Draw outline rectangle
@@ -241,7 +237,7 @@ public class Gui extends JPanel{
     public void drawHitbox(Entity e){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                if(Game.inDebugMode){
+                if(Game.inDebugMode()){
                     // Get the hitbox
                     Rectangle hitbox = e.getAbsHitbox();
                     // Convert absolute coords to screenspace
