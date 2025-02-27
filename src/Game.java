@@ -262,12 +262,18 @@ public class Game implements ActionListener{
         updatePlayerMovement(player, Input.getPlayerKeys(player), shifts[player.playernum -1], keys);
 
         // Handle player dashing
-
-        if ((int) System.currentTimeMillis() - Input.getLastDash() < player.getDashLength()) {
-            handlePlayerDash(player, Input.getPlayerKeys(player));
-        } else {
-            if(player.getIsDashing()){
-                player.setIsDashing(false);
+        if(!player.getIsDashing()){
+            if ((int) System.currentTimeMillis() - Input.getLastDash() < player.getDashLength()) {
+                handlePlayerDash(player, Input.getPlayerKeys(player));
+                player.setIsDashing(true);
+            }
+        }else{
+            if ((int) System.currentTimeMillis() - Input.getLastDash() < player.getDashLength()) {
+                handlePlayerDash(player, Input.getPlayerKeys(player));
+            } else if ((int) System.currentTimeMillis() - Input.getLastDash() > player.getDashLength()) {
+                if(player.getIsDashing()){
+                    player.setIsDashing(false);
+                }
             }
         }
 
@@ -403,15 +409,10 @@ public class Game implements ActionListener{
     }
 
     private void handlePlayerDash(Player player, int[] playerKeys) {
-        for(int i = 0; i < playerKeys.length; i++){
+        for(int i = 0; i < playerKeys.length - 2; i++){
             if(playerKeys[i] == Input.getDash()){
-                if(!player.getIsDashing()){
-                    player.dash(playerKeys[i]);
-                    player.setIsDashing(true);
-                }
-                else{
-                    player.dash(playerKeys[i]);
-                }
+                System.out.println(player.getIsDashing()); 
+                player.dash(playerKeys[i]);
             }
         }
         
