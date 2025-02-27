@@ -105,14 +105,16 @@ public class Player extends Entity{
 
 
     public void move(boolean[] movement, boolean isShifting) {
-        applyDirection(); // get direction
-        applyMovement(movement); // get movement
-        applyFriction(); // apply the friction force
-        capVelocity(); // if more than max speed set max speed
-        if(isShifting){
-            updatePosition(shiftSpeed);
-        }else{
-            updatePosition(this.speed);
+        if(!isDashing){
+            applyDirection(); // get direction
+            applyMovement(movement); // get movement
+            applyFriction(); // apply the friction force
+            capVelocity(); // if more than max speed set max speed
+            if(isShifting){
+                updatePosition(shiftSpeed);
+            }else{
+                updatePosition(this.speed);
+            }
         }
     }
 
@@ -122,6 +124,13 @@ public class Player extends Entity{
         if (movement[1]) this.xVel -= this.speed; // Left
         if (movement[2]) this.yVel += this.speed; // Down
         if (movement[3]) this.xVel += this.speed; // Right
+    }
+
+    private void applyDashMovement(boolean[] movement) {
+        if (movement[0]) this.yVel -= this.dashSpeed; // Up
+        if (movement[1]) this.xVel -= this.dashSpeed; // Left
+        if (movement[2]) this.yVel += this.dashSpeed; // Down
+        if (movement[3]) this.xVel += this.dashSpeed; // Right
     }
 
     // Apply direction based on the movement
@@ -200,21 +209,13 @@ public class Player extends Entity{
         setActive(false);
     }
 
-    //TODO: This method is handling player dash and checks if player is able to dash
-    public boolean checkDash(){
-        return false;
-    }
-
     public void dash(int key) {
-        /* 
         boolean[] movement = new boolean[4];
         if (key >= 0 && key < movement.length) {
             movement[key] = true;
         }
-        applyMovement(movement);
-        applyFriction();
+        applyDashMovement(movement);
         updatePosition(dashSpeed);
-        */
     }
 
     public int getXDir(){
