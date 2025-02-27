@@ -176,14 +176,14 @@ public class Gui extends JPanel{
             }
         });
     }
-    public void drawEntity(Player e){
+    public void drawPlayer(Player e){
         drawEntity(e);
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                g2d.setColor(Color.BLACK);
-                g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 25), (int)e.getWidth(), 10);
+                g2d.setColor(new Color(100, 0, 0));
+                g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 20), (int)e.getWidth(), 5);
                 g2d.setColor(Color.GREEN);
-                g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 25), (int)(e.getWidth() * e.getHealthPercent()), 10);
+                g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 20), (int)(e.getWidth() * e.getHealthPercent()), 5);
             }
         });
     }
