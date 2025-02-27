@@ -51,6 +51,8 @@ public class Gui extends JPanel{
 
     Rectangle chunkRectangle = new Rectangle(0, 0, TILE_SIZE * 10, (int)(TILE_SIZE * HEIGHT_SCALE));
 
+    int transitionFade = 0; 
+
     ///////////////
     //Constuctor
     //////////////
@@ -269,6 +271,29 @@ public class Gui extends JPanel{
                 }
             }
         });
+    }
+    public void drawLevelTransition(int transitionStart){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                int now = (int)System.currentTimeMillis();
+                if(transitionStart != 0){
+                    if(now - transitionStart < 1000){
+                        transitionFade ++;
+                    } else {
+                        transitionFade --;
+                    }
+                    if(transitionFade > 255){
+                        transitionFade = 255;
+                    }
+                    else {
+                        transitionFade = 0;
+                    }
+                    g2d.setColor(new Color(0, 0, 0, transitionFade));
+                    g2d.drawRect(0, 0, Gui.WIDTH, Gui.HEIGHT);
+                }
+            }
+        });
+        
     }
     //////////////////////////////////////////////////
     /// CAMERA

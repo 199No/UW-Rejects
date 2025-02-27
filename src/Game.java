@@ -65,14 +65,11 @@ public class Game implements ActionListener{
         players.add(player1);
         players.add(player2);
         this.input = new Input();
-        //TODO: find out how to actually make slime like normal
         // Use the slime constructorsdds
         enemies.add(spawnSlime(100, 300));
         random = new Random();
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
-        
-        player1.setHealth(50);
 
         //How to say if its in desert do wind if in grass do country
         if(!true){
