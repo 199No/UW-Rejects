@@ -29,7 +29,7 @@ public class Game implements ActionListener{
     //Properties
     ///////////////
     //very unrejar
-    public static final boolean inDebugMode = false;
+    public static boolean inDebugMode = false;
     Random random;
     Timer gameTimer;
     Gui gui;
@@ -47,7 +47,8 @@ public class Game implements ActionListener{
     private ArrayList<Enemies> enemies  = new ArrayList<Enemies>();
     private ArrayList<Player>  players  = new ArrayList<Player>();
     private ArrayList<Entity>  entities = new ArrayList<Entity>();
-    private ArrayList<Integer> entityIndices = new ArrayList<Integer>();
+    int[] entityIndices;
+    EntitySort esort = new EntitySort();
     // Bounds
     private double xMin = 0;
     private double xMax = 4080;
@@ -64,7 +65,9 @@ public class Game implements ActionListener{
         players.add(player1);
         players.add(player2);
         this.input = new Input();
-        enemies.add(createSlime(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(100, 300, Gui.TILE_SIZE, Gui.TILE_SIZE)));
+        //TODO: find out how to actually make slime like normal
+        // Use the slime constructorsdds
+        enemies.add(spawnSlime(100, 300));
         random = new Random();
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
@@ -179,9 +182,15 @@ public class Game implements ActionListener{
             ((players.get(0).getX() + players.get(1).getX()) / 2 - gui.cameraX()) / 10,
             ((players.get(0).getY() + players.get(1).getY()) / 2 - gui.cameraY()) / 10
         );
+        // Create array of indices
+        entityIndices = new int[entities.size()];
+        // Populate array
+        for(int i = 0; i < entities.size(); i++) entityIndices[i] = i;
+        // Sort entities
+        esort.sort(entityIndices, entities, 0, entities.size() - 1);
         // Draw all Entities (players, enemies, envObjects, etc.)
         for(int i = 0; i < entities.size(); i++){
-            gui.drawEntity(entities.get(i));
+            gui.drawEntity(entities.get(entityIndices[i]));
         }
         
     
@@ -209,18 +218,6 @@ public class Game implements ActionListener{
         now = System.currentTimeMillis();
         
         entities.clear();
-    }
-
-    public Slime createSlime(double x, double y, double width, double height, Rectangle hitbox){
-        return new Slime(x,y,width,height,hitbox); //make a slime given a x and y
-    }
-
-    public Player getPlayer1(){
-        return this.player1;
-    }
-
-    public Player getPlayer2(){
-        return this.player2;
     }
 
     public void inBounds(Player player){
@@ -415,6 +412,16 @@ public class Game implements ActionListener{
             }
         }
         
+    }
+
+    public Slime spawnSlime(double x, double y){
+        return new Slime(x,y); //make a slime given a x and y
+    }
+    public static void setDebugMode(boolean value){
+        inDebugMode = value;
+    }
+    public static boolean inDebugMode(){
+        return inDebugMode;
     }
 
 }

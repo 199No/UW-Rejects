@@ -13,6 +13,8 @@ public class Tool implements ActionListener {
     Timer timer; // Provides a "pulse" every 1/60th of a second for frame timing
     int[][] chunk = new int[10][10];
     int[][] envChunk = new int[10][10];
+    int[][][] adjacentChunks = new int[10][10][8]; 
+    int[][][] adjacentEnvChunks = new int[10][10][8]; 
     // Which tile type is the "paint" right now
     int selectedType;
     // For input on the chunk
@@ -46,6 +48,8 @@ public class Tool implements ActionListener {
         int[] userInput = getUserInput();
         loadChunk(userInput, mapFile, chunk);
         loadChunk(userInput, envFile, envChunk);
+
+        
 
         // Everything that needs to happen after loading the chunk
         input = new Input(this);

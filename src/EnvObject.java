@@ -35,7 +35,7 @@ public class EnvObject extends Entity{
         switch(type){
             case 1:
                 // Large airwall
-                if(Game.inDebugMode){
+                if(Game.inDebugMode()){
                     image = images.getImage("X");
                 } else {
                     image = new BufferedImage(5, 5, Transparency.BITMASK);
@@ -45,7 +45,7 @@ public class EnvObject extends Entity{
                 break;
             case 2:
                 // Small airwall
-                if(Game.inDebugMode){
+                if(Game.inDebugMode()){
                     image = images.getImage("X").getSubimage(1, 1, 22, 22);
                 } else {
                     image = new BufferedImage(5, 5, Transparency.BITMASK);
@@ -110,7 +110,7 @@ public class EnvObject extends Entity{
                 return new Rectangle(Gui.TILE_SIZE, Gui.TILE_SIZE * 3, Gui.TILE_SIZE, Gui.TILE_SIZE);
                                 
             case 4:
-                return new Rectangle(Gui.TILE_SIZE, Gui.TILE_SIZE * 2, Gui.TILE_SIZE, Gui.TILE_SIZE);
+                return new Rectangle(Gui.TILE_SIZE, Gui.TILE_SIZE * 3, Gui.TILE_SIZE, Gui.TILE_SIZE);
                 
 
             case 5:
