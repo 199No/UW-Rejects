@@ -3,9 +3,6 @@ package src;
 import java.awt.Rectangle;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.TransferQueue;
-
-import javax.swing.plaf.nimbus.State;
 
 //-------------------------------------------------//
 //                    Player                       //
@@ -323,7 +320,7 @@ public class Player extends Entity{
 
     //return percentage for health bar
     public double getHealthPercent(){
-        return (this.health/this.maxHealth);
+        return ((double)this.health/(double)this.maxHealth);
     }
 
     //SPEED

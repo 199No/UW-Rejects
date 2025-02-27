@@ -60,8 +60,8 @@ public class Game implements ActionListener{
     //////////////
     public Game() throws AWTException, IOException{
 
-        this.player1 = new Player(750.0, 300.0, 100, 10, 1.3, 2);
-        this.player2 = new Player(500.0, 500.0, 100, 10, 1.3, 1);
+        this.player1 = new Player(750.0, 300.0, 100, 10, 1.3, 1);
+        this.player2 = new Player(500.0, 500.0, 100, 10, 1.3, 2);
         players.add(player1);
         players.add(player2);
         this.input = new Input();
@@ -71,18 +71,19 @@ public class Game implements ActionListener{
         random = new Random();
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
-
+        
+        player1.setHealth(50);
 
         //How to say if its in desert do wind if in grass do country
-        if(true){
+        if(!true){
             Sounds.playSound("WindBackground");
         }
-        if(!true){
+        if(true){
             Sounds.playSound("Countryside");
         }
 
         // Only these four lines should happen after this comment otherwise stuff will break
-        gameTimer = new Timer(2, this);
+        gameTimer = new Timer(17, this);
         gameTimer.start();
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
@@ -169,8 +170,8 @@ public class Game implements ActionListener{
         }
         // Update entity list
         entities.addAll(enemies);
-        entities.addAll(players);
         entities.addAll(map.getAllEnvObjects());
+        entities.addAll(players);
         // Draw the background (happens before all other draw commands)
         gui.background(0, 0, 0);
         for (int c = 0; c < map.numLoadedChunks(); c++) {
@@ -189,8 +190,13 @@ public class Game implements ActionListener{
         // Sort entities
         esort.sort(entityIndices, entities, 0, entities.size() - 1);
         // Draw all Entities (players, enemies, envObjects, etc.)
+        
         for(int i = 0; i < entities.size(); i++){
-            gui.drawEntity(entities.get(entityIndices[i]));
+            if(entityIndices[i] < entities.size() - 2){
+                gui.drawEntity(entities.get(entityIndices[i])); 
+            } else {
+                gui.drawPlayer(players.get(entityIndices[i] - (entities.size() - 2)));
+            }
         }
         
     
@@ -423,6 +429,10 @@ public class Game implements ActionListener{
     }
     public static boolean inDebugMode(){
         return inDebugMode;
+    }
+    public void goToLevel2(){
+        // Change mapfile and env file to be map2.map
+        // Reset player positions
     }
 
 }
