@@ -4,7 +4,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 
-public abstract class Entity {
+public abstract class Entity{
     public static final int TYPE_PLAYER = 5;
     double x,y,width,height;
     Rectangle hitbox;

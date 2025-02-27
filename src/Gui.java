@@ -49,6 +49,8 @@ public class Gui extends JPanel{
     static double sCameraX;
     static double sCameraY; // Static version of camera coords
 
+    Rectangle chunkRectangle = new Rectangle(0, 0, TILE_SIZE * 10, (int)(TILE_SIZE * HEIGHT_SCALE));
+
     ///////////////
     //Constuctor
     //////////////
@@ -194,7 +196,7 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 // Coordinates of the top-left of this chunk
                 double[] chunkCoords = Gui.chunkToScreen(c.x(), c.y());
-
+                
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 10; x++){
                         // Get the image for this tile

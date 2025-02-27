@@ -15,7 +15,6 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Random;
 import javax.swing.Timer;
 //unrejar
 
@@ -30,7 +29,7 @@ public class Game implements ActionListener{
     //Properties
     ///////////////
     //very unrejar
-    private static boolean inDebugMode = true;
+    public static boolean inDebugMode = false;
     Random random;
     Timer gameTimer;
     Gui gui;
@@ -75,10 +74,10 @@ public class Game implements ActionListener{
 
 
         //How to say if its in desert do wind if in grass do country
-        if(false){
+        if(true){
             Sounds.playSound("WindBackground");
         }
-        if(true){
+        if(!true){
             Sounds.playSound("Countryside");
         }
 
@@ -100,7 +99,6 @@ public class Game implements ActionListener{
         //// CALCULATE FPS
         ////////////////////
         now = System.currentTimeMillis();
-    
         if (now - lastSecond > 1000) {
             lastSecond = now;
             frameRate = framesLastSecond;

@@ -15,7 +15,8 @@ public class EnvObject extends Entity{
         {Gui.TILE_SIZE, Gui.TILE_SIZE},
         {Gui.TILE_SIZE, Gui.TILE_SIZE},
         {Gui.TILE_SIZE, Gui.TILE_SIZE},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE}
+        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
+        {Gui.TILE_SIZE * 2, Gui.TILE_SIZE * 3}
 
     };
     Rectangle hitbox;
@@ -85,6 +86,10 @@ public class EnvObject extends Entity{
                 this.collidable = false;
                 isFlat = false;
                 break;
+            case 9:
+                image = images.getImage("cactus");
+                this.collidable = true;
+                isFlat = false;
         }
         hitbox.translate((int)this.xPos, (int)this.yPos);
     }
@@ -121,6 +126,10 @@ public class EnvObject extends Entity{
                       
             case 8:
                 return new Rectangle(0, 0, 1, 1);
+
+            case 9:
+                return new Rectangle((int)(Gui.TILE_SIZE * 0.5), Gui.TILE_SIZE * 2, Gui.TILE_SIZE, Gui.TILE_SIZE);
+
                 
         }
         return new Rectangle();

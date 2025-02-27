@@ -44,7 +44,8 @@ public class Gui extends JPanel{
         {Gui.TILE_SIZE, Gui.TILE_SIZE},
         {Gui.TILE_SIZE, Gui.TILE_SIZE},
         {Gui.TILE_SIZE, Gui.TILE_SIZE},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE}
+        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
+        {Gui.TILE_SIZE * 2, Gui.TILE_SIZE * 3}
 
     };
     ///////////////
@@ -61,7 +62,8 @@ public class Gui extends JPanel{
             tempImages.getImage("flowers").getSubimage(0, 0, 24, 24),
             tempImages.getImage("flowers").getSubimage(24, 0, 24, 24),
             tempImages.getImage("flowers").getSubimage(0, 24, 24, 24),
-            tempImages.getImage("lilypad")
+            tempImages.getImage("lilypad"),
+            tempImages.getImage("cactus")
         };
         this.chunk = chunk;
         this.envChunk = envChunk;
