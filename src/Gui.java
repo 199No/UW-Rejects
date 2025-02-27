@@ -178,6 +178,7 @@ public class Gui extends JPanel{
     }
     public void drawPlayer(Player e){
         drawEntity(e);
+        drawSwingHitbox(e);
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 g2d.setColor(new Color(100, 0, 0));
@@ -246,6 +247,23 @@ public class Gui extends JPanel{
                     double[] coords = absToScreen((hitbox.getX()), (hitbox.getY()));
                     // Draw a red rectangle representing the hitbox
                     g2d.setColor(Color.RED);
+                    g2d.setStroke(new BasicStroke(3));
+                    g2d.drawRect((int)coords[0], (int)coords[1], (int)hitbox.getWidth(), (int)hitbox.getHeight());
+                }
+            }
+        });
+    }
+    // Draw the Swing hitbox for a given Player.
+    public void drawSwingHitbox(Player p){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                if(Game.inDebugMode()){
+                    // Get the hitbox
+                    Rectangle hitbox = p.getSwingHitbox();
+                    // Convert absolute coords to screenspace
+                    double[] coords = absToScreen((hitbox.getX()), (hitbox.getY()));
+                    // Draw a red rectangle representing the hitbox
+                    g2d.setColor(Color.magenta);
                     g2d.setStroke(new BasicStroke(3));
                     g2d.drawRect((int)coords[0], (int)coords[1], (int)hitbox.getWidth(), (int)hitbox.getHeight());
                 }
