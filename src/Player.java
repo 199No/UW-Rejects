@@ -57,7 +57,7 @@ public class Player extends Entity{
     //Hitbox
     private boolean active; //the player is able to be hit if true
     public int swingWidth  = Gui.TILE_SIZE * 2;
-    public int swingHeight = Gui.TILE_SIZE * 2;
+    public int swingHeight = Gui.TILE_SIZE;
     private Rectangle swingHitbox = new Rectangle( swingWidth, swingHeight,  (int) getX(),  (int) getY() );
 
     //Animation
@@ -199,12 +199,14 @@ public class Player extends Entity{
 
         setActive(false);
     }
+
     //TODO: This method is handling player dash and checks if player is able to dash
     public boolean checkDash(){
         return false;
     }
 
     public void dash(int key) {
+        /* 
         boolean[] movement = new boolean[4];
         if (key >= 0 && key < movement.length) {
             movement[key] = true;
@@ -212,6 +214,7 @@ public class Player extends Entity{
         applyMovement(movement);
         applyFriction();
         updatePosition(dashSpeed);
+        */
     }
 
     public int getXDir(){
