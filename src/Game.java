@@ -427,7 +427,9 @@ public class Game implements ActionListener{
     }
     public void goToLevel2(){
         // Change mapfile and env file to be map2.map
-        // Reset player positions
+        player1.setPos(750, 300);
+        player2.setPos(500, 500);
+        map = new Map("Maps/map2.map", "Maps/map2Env.map");
     }
 
 }
