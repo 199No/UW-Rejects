@@ -130,6 +130,7 @@ public class Game implements ActionListener{
             ////////////////
             /// COLLISION
             ///////////////
+            
             for (int c = 0; c < map.numLoadedChunks(); c++) {
                 EnvObject[] envObjects = map.getChunk(c).getEnvObjects();
                 for (int j = 0; j < envObjects.length; j++) {

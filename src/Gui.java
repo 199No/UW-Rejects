@@ -205,7 +205,6 @@ public class Gui extends JPanel{
                         if(c.getTile(x, y) - 1 == 17){
                             tileImage = waterAnimation.getFrame();
                         }
-                        g2d.setColor(new Color(0, 0, 0 ,0));
                         // Draw the image for this tile
                         g2d.drawImage(
                             (tileImage), 
@@ -216,7 +215,7 @@ public class Gui extends JPanel{
                             null
                         );
                         // Draw a rectangle on the grid, same size as the image
-                        if(showGridOverlay) 
+                        if(showGridOverlay) {
                             g2d.setColor(Color.BLACK);
                             g2d.setStroke(new BasicStroke(1));
                             g2d.drawRect(
@@ -225,7 +224,7 @@ public class Gui extends JPanel{
                                 TILE_SIZE, 
                                 (int)(TILE_SIZE * HEIGHT_SCALE)
                             );
-
+                        }
                     }
                 }
                 if(showGridOverlay){
