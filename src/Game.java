@@ -130,7 +130,6 @@ public class Game implements ActionListener{
             ////////////////
             /// COLLISION
             ///////////////
-            // TODO: Make a collide(Entity e1, Entity e2) method
             for (int c = 0; c < map.numLoadedChunks(); c++) {
                 EnvObject[] envObjects = map.getChunk(c).getEnvObjects();
                 for (int j = 0; j < envObjects.length; j++) {
@@ -300,7 +299,6 @@ public class Game implements ActionListener{
         inBounds(player);
         
     }
-    //TODO: Make this better
     public void checkHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies) {
 
         for(int p = 0; p < players.size(); p++){

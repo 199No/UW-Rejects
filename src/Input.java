@@ -165,7 +165,6 @@ public class Input implements KeyListener{
         }
         return false;
     }
-    // TODO: Make player handle dash
     public static int getLastDash(Player player){
         if(player.playernum == 1){
             return lastp1Dash;

@@ -12,8 +12,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 //-------------------------------------------------//
 //                      Gui                        //
-//-------------------------------------------------// 
-// TODO: Make Gui a static class
+//-------------------------------------------------//
 public class Gui extends JPanel{
     ///////////////
     //Properties
@@ -32,7 +31,6 @@ public class Gui extends JPanel{
     ArrayList<GraphicsRunnable> drawQueue;
     // You need a frame to draw things on.
     JFrame frame = new JFrame("The Divided Realms INDEV");
-    // TODO: Make this a stateful animation.
 
     // General images
     Images images;

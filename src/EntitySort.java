@@ -15,7 +15,7 @@ class EntitySort
           
             // If current element is smaller than or
             // equal to pivot
-            if (e.get(a[j]).getY() <= pivot)
+            if (e.get(a[j]).getAbsHitbox().getY() <= pivot)
             {
                 i++;
 
