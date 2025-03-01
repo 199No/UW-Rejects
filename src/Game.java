@@ -80,7 +80,7 @@ public class Game implements ActionListener{
         }
 
         // Only these four lines should happen after this comment otherwise stuff will break
-        gameTimer = new Timer(17, this);
+        gameTimer = new Timer(11, this);
         gameTimer.start();
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
@@ -108,7 +108,7 @@ public class Game implements ActionListener{
         } else {
             framesLastSecond++;
         }
-    
+        map.unloadChunks(gui.cameraX(), gui.cameraY());
         ////////////////
         // Update Player
         ////////////////

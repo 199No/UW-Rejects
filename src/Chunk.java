@@ -10,7 +10,7 @@ public class Chunk {
     private int y; // Y (in chunks) 
     private int[][] tileData; // Ground data (what type of tile is the ground?)
     private int[][] envData; // Environment data (what is on the ground?) (trees, houses, chests, etc)
-    private Rectangle unloadBoundary = new Rectangle(-Gui.TILE_SIZE*10, -Gui.TILE_SIZE*10, Gui.WIDTH + 20*Gui.TILE_SIZE, Gui.HEIGHT + 20*Gui.TILE_SIZE); 
+    private Rectangle chunkBoundary;
     private ArrayList<EnvObject> tempObjects = new ArrayList<EnvObject> ();
     private EnvObject[] envObjects;
     public Chunk(int[][] tileData, int[][] envData, int x, int y){
@@ -18,6 +18,7 @@ public class Chunk {
         this.envData = envData;
         this.x = x;
         this.y = y;
+        this.chunkBoundary = new Rectangle(this.x, this.y, Gui.TILE_SIZE * 10, (int)(Gui.TILE_SIZE * 10 * Gui.HEIGHT_SCALE));
         // Extract envObjects from env data
         for(int i = 0; i < this.envData.length; i++){
             for(int k = 0; k < this.envData[i].length; k++){
@@ -38,7 +39,8 @@ public class Chunk {
     }
     
     public boolean isVisible(double cameraX, double cameraY){
-        return new Rectangle(-(int)cameraX, -(int)cameraY, Gui.TILE_SIZE*10, Gui.TILE_SIZE*10).contains(unloadBoundary);
+        this.chunkBoundary.setLocation((int)Gui.absToScreenX(this.x), (int)Gui.absToScreenY(this.y));
+        return this.chunkBoundary.intersects(Map.CHUNK_UNLOAD_BOUNDARY);
     }
     public EnvObject[] getEnvObjects(){
         return envObjects;

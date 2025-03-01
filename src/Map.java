@@ -1,5 +1,6 @@
 package src;
 
+import java.awt.Rectangle;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -8,7 +9,7 @@ public class Map {
     ArrayList<Chunk> loadedChunks = new ArrayList<Chunk>();
     String tilePath;
     String envPath;
-
+    public static final Rectangle CHUNK_UNLOAD_BOUNDARY = new Rectangle(-100, -100, Gui.WIDTH + 100, Gui.HEIGHT + 100);
     public Map(String tilePath, String envPath){
         for(int y = 0; y < 6; y++){
             for(int x = 0; x < 6; x++){
