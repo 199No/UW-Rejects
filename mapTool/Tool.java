@@ -11,10 +11,8 @@ public class Tool implements ActionListener {
     Input input;
     Gui gui;
     Timer timer; // Provides a "pulse" every 1/60th of a second for frame timing
-    int[][] chunk = new int[10][10];
-    int[][] envChunk = new int[10][10];
-    int[][][] adjacentChunks = new int[10][10][8]; 
-    int[][][] adjacentEnvChunks = new int[10][10][8]; 
+    int[][][] chunks = new int[10][10][9]; 
+    int[][][] envChunks = new int[10][10][9]; 
     // Which tile type is the "paint" right now
     int selectedType;
     // For input on the chunk
@@ -46,14 +44,19 @@ public class Tool implements ActionListener {
 
         selectedType = 1;
         int[] userInput = getUserInput();
-        loadChunk(userInput, mapFile, chunk);
-        loadChunk(userInput, envFile, envChunk);
-
+        for(int y = userInput[1] - 1; y < userInput[1] + 3; y++){
+            for(int x = userInput[0] - 1; x < userInput[0] + 3; x++){
+                if(x >= 0 && x <= 5 && y >= 0 && y <= 5){
+                    loadChunk(userInput, mapFile, chunks[y * 3 + x]);
+                    loadChunk(userInput, envFile, envChunks[y * 3 + x]);
+                }
+            }
+        }
         
 
         // Everything that needs to happen after loading the chunk
         input = new Input(this);
-        gui = new Gui(1080, 720, input, chunk, envChunk);
+        gui = new Gui(1080, 720, input, chunks, envChunks);
         timer = new Timer(17, this);
         timer.start();
     }
@@ -65,7 +68,7 @@ public class Tool implements ActionListener {
             handleMouseClick(input.mouseX(), input.mouseY());
         }
         // Give Gui a copy of the chunk with whatever new edits were added to it.
-        gui.updateChunk(chunk, envChunk);
+        gui.updateChunk(chunks[5], envChunks[5]);
         // Draw a background over the last frame, otherwise you get "smearing" (Google it)
         gui.background(255, 255, 255);
         // Draw all the tiles in the chunk
@@ -93,7 +96,7 @@ public class Tool implements ActionListener {
 
         if(userInput[0].equals("cancel")){
             // If chunk has not been loaded yet (if the tool was just opened)
-            if(chunk[0][0] == 0 /* The array is initialized as all 0s (no tile has id 0) */){
+            if(chunks[0][0][5] == 0 /* The array is initialized as all 0s (no tile has id 0) */){
                 consoleInput.close();
                 System.exit(0);
             }
@@ -195,9 +198,9 @@ public class Tool implements ActionListener {
             for(int y = 0; y < 10; y++){
                 for(int x = 0; x < 10; x++){
                     if(mapFile.getName().endsWith("Env.map")){
-                        chunkString += envChunk[y][x];
+                        chunkString += envChunks[y][x][5];
                     } else {
-                        chunkString += chunk[y][x];
+                        chunkString += chunks[y][x][5];
                     }
                     if(x < 9){
                         chunkString += ",";
@@ -258,16 +261,16 @@ public class Tool implements ActionListener {
     
             selectedType = 1;
             int[] userInput = getUserInput();
-            loadChunk(userInput, mapFile, chunk);
-            loadChunk(userInput, envFile, envChunk);
+            loadChunk(userInput, mapFile, chunks[5]);
+            loadChunk(userInput, envFile, envChunks[5]);
         }
         if(chunkRectangle.contains(mouseX, mouseY - 32)){
             int x = (int)Math.floor((mouseX - 100) / Gui.TILE_SIZE);
             int y = (int)Math.floor((mouseY - 132) / (Gui.TILE_SIZE * Gui.HEIGHT_SCALE));
             if(inEnvMode){
-                envChunk[y][x] = selectedType - 1;
+                envChunks[y][x][5] = selectedType - 1;
             } else {
-                chunk[y][x] = selectedType;
+                chunks[y][x][5] = selectedType;
             }
         }  
         if(palletRectangle.contains(mouseX, mouseY)){

@@ -31,8 +31,8 @@ public class Gui extends JPanel{
     Images images;
     Images tempImages = new Images("Images/Enviroment");
     BufferedImage[] envImages;   
-    int[][] chunk = new int[10][10];
-    int[][] envChunk = new int[10][10];
+    int[][][] chunks = new int[10][10][9];
+    int[][][] envChunks = new int[10][10][9];
     int selectedType = 1;
     
     private static double[][] possibleDimensions = new double[][] {
@@ -51,7 +51,7 @@ public class Gui extends JPanel{
     ///////////////
     //Constuctor
     //////////////
-    public Gui(int width, int height, Input input, int[][] chunk, int[][] envChunk) {
+    public Gui(int width, int height, Input input, int[][][] chunks, int[][][] envChunks) {
         images = new Images("Images/Enviroment/Tiles");
         envImages = new BufferedImage[] {
             new BufferedImage(1, 1, Transparency.BITMASK),
@@ -65,8 +65,8 @@ public class Gui extends JPanel{
             tempImages.getImage("lilypad"),
             tempImages.getImage("cactus")
         };
-        this.chunk = chunk;
-        this.envChunk = envChunk;
+        this.chunks = chunks;
+        this.envChunks = envChunks;
         this.width = WIDTH;
         this.height = HEIGHT;
         // JFrame setup
@@ -119,14 +119,18 @@ public class Gui extends JPanel{
     public void drawTiles(boolean inEnvMode){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                for(int y = 0; y < 10; y++){
-                    for(int x = 0; x < 10; x++){
-                        g2d.drawImage(images.getImage(chunk[y][x] - 1), x * TILE_SIZE + 100, (int)(y * TILE_SIZE * HEIGHT_SCALE + 100), TILE_SIZE, (int)(TILE_SIZE * HEIGHT_SCALE)+ 1, null);
+                for(int i = 0; i < 9; i++){
+                    for(int y = 0; y < 10; y++){
+                        for(int x = 0; x < 10; x++){
+                            g2d.drawImage(images.getImage(chunks[y][x][i] - 1), x * TILE_SIZE + 100, (int)(y * TILE_SIZE * HEIGHT_SCALE + 100), TILE_SIZE, (int)(TILE_SIZE * HEIGHT_SCALE)+ 1, null);
+                        }
                     }
                 }
-                for(int y = 0; y < 10; y++){
-                    for(int x = 0; x < 10; x++){
-                        g2d.drawImage(envImages[envChunk[y][x]], x * TILE_SIZE + 100, (int)(y * TILE_SIZE * HEIGHT_SCALE + 100), (int)possibleDimensions[envChunk[y][x]][0], (int)possibleDimensions[envChunk[y][x]][1], null);
+                for(int i = 0; i < 9; i++){
+                    for(int y = 0; y < 10; y++){
+                        for(int x = 0; x < 10; x++){
+                            g2d.drawImage(envImages[envChunks[y][x][i]], x * TILE_SIZE + 100, (int)(y * TILE_SIZE * HEIGHT_SCALE + 100), (int)possibleDimensions[envChunks[y][x][i]][0], (int)possibleDimensions[envChunks[y][x][i]][1], null);
+                        }
                     }
                 }
                 for(int y = 0; y < 10; y++){
@@ -186,8 +190,8 @@ public class Gui extends JPanel{
     }
 
     public void updateChunk(int[][] c, int[][] e){
-        chunk = c;
-        envChunk = e;
+        chunks[5] = c;
+        envChunks[5] = e;
     }
     // Return the width and height of the 
     public double width() { return width; }
