@@ -63,7 +63,7 @@ public class Images {
         return null;
     }
     public BufferedImage getImage(int id){
-        if(id <= 0){
+        if(id < 0){
             return new BufferedImage(1, 1, Transparency.OPAQUE);
         }
         return imageList[id];

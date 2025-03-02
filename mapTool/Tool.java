@@ -11,8 +11,8 @@ public class Tool implements ActionListener {
     Input input;
     Gui gui;
     Timer timer; // Provides a "pulse" every 1/60th of a second for frame timing
-    int[][][] chunks = new int[10][10][9]; 
-    int[][][] envChunks = new int[10][10][9]; 
+    int[][][] chunks = new int[9][10][10]; 
+    int[][][] envChunks = new int[9][10][10]; 
     // Which tile type is the "paint" right now
     int selectedType;
     // For input on the chunk
@@ -44,11 +44,19 @@ public class Tool implements ActionListener {
 
         selectedType = 1;
         int[] userInput = getUserInput();
-        for(int y = userInput[1] - 1; y < userInput[1] + 3; y++){
-            for(int x = userInput[0] - 1; x < userInput[0] + 3; x++){
-                if(x >= 0 && x <= 5 && y >= 0 && y <= 5){
-                    loadChunk(userInput, mapFile, chunks[y * 3 + x]);
-                    loadChunk(userInput, envFile, envChunks[y * 3 + x]);
+        for(int y = -1; y < 2; y++){
+            for(int x = -1; x < 2; x++){
+                if(x + userInput[0] >= 0 && x + userInput[0] <= 5 && y + userInput[1] >= 0 && y + userInput[1] <= 5){
+                    loadChunk(
+                        new int[]{userInput[0] + x, userInput[1] + y},
+                        mapFile, 
+                        chunks[(y + 1) * 3 + (x + 1)]
+                    );
+                    loadChunk(
+                        new int[]{userInput[0] + x, userInput[1] + y},
+                        envFile, 
+                        envChunks[(y + 1) * 3 + (x + 1)]
+                    );
                 }
             }
         }
@@ -68,7 +76,7 @@ public class Tool implements ActionListener {
             handleMouseClick(input.mouseX(), input.mouseY());
         }
         // Give Gui a copy of the chunk with whatever new edits were added to it.
-        gui.updateChunk(chunks[5], envChunks[5]);
+        gui.updateChunk(chunks[4], envChunks[4]);
         // Draw a background over the last frame, otherwise you get "smearing" (Google it)
         gui.background(255, 255, 255);
         // Draw all the tiles in the chunk
@@ -96,7 +104,7 @@ public class Tool implements ActionListener {
 
         if(userInput[0].equals("cancel")){
             // If chunk has not been loaded yet (if the tool was just opened)
-            if(chunks[0][0][5] == 0 /* The array is initialized as all 0s (no tile has id 0) */){
+            if(chunks[0][0][4] == 0 /* The array is initialized as all 0s (no tile has id 0) */){
                 consoleInput.close();
                 System.exit(0);
             }
@@ -198,9 +206,9 @@ public class Tool implements ActionListener {
             for(int y = 0; y < 10; y++){
                 for(int x = 0; x < 10; x++){
                     if(mapFile.getName().endsWith("Env.map")){
-                        chunkString += envChunks[y][x][5];
+                        chunkString += envChunks[4][y][x];
                     } else {
-                        chunkString += chunks[y][x][5];
+                        chunkString += chunks[4][y][x];
                     }
                     if(x < 9){
                         chunkString += ",";
@@ -261,16 +269,16 @@ public class Tool implements ActionListener {
     
             selectedType = 1;
             int[] userInput = getUserInput();
-            loadChunk(userInput, mapFile, chunks[5]);
-            loadChunk(userInput, envFile, envChunks[5]);
+            loadChunk(userInput, mapFile, chunks[4]);
+            loadChunk(userInput, envFile, envChunks[4]);
         }
         if(chunkRectangle.contains(mouseX, mouseY - 32)){
             int x = (int)Math.floor((mouseX - 100) / Gui.TILE_SIZE);
             int y = (int)Math.floor((mouseY - 132) / (Gui.TILE_SIZE * Gui.HEIGHT_SCALE));
             if(inEnvMode){
-                envChunks[y][x][5] = selectedType - 1;
+                envChunks[4][y][x] = selectedType - 1;
             } else {
-                chunks[y][x][5] = selectedType;
+                chunks[4][y][x] = selectedType;
             }
         }  
         if(palletRectangle.contains(mouseX, mouseY)){

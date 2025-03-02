@@ -21,8 +21,10 @@ public class Gui extends JPanel{
     // Made public so that other classes can see them
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
-    public static final double HEIGHT_SCALE = (double)2/(double)3;
     public static final int TILE_SIZE = 60;
+    public static final double HEIGHT_SCALE = (double)2/(double)3;
+    public static final int CHUNK_WIDTH = TILE_SIZE * 10;
+    public static final int CHUNK_HEIGHT = (int)(TILE_SIZE * 10 * HEIGHT_SCALE);
     // Where things get queued up to be drawn. 
     // Instead of draw commands being fired whenever, allows things to be drawn all at once at the end of the frame.
     ArrayList<GraphicsRunnable> drawQueue;
@@ -122,17 +124,49 @@ public class Gui extends JPanel{
                 for(int i = 0; i < 9; i++){
                     for(int y = 0; y < 10; y++){
                         for(int x = 0; x < 10; x++){
-                            g2d.drawImage(images.getImage(chunks[y][x][i] - 1), x * TILE_SIZE + 100, (int)(y * TILE_SIZE * HEIGHT_SCALE + 100), TILE_SIZE, (int)(TILE_SIZE * HEIGHT_SCALE)+ 1, null);
+                            g2d.drawImage(
+                                images.getImage(chunks[i][y][x] - 1), 
+                                x * TILE_SIZE + ((i % 3 - 1) * CHUNK_WIDTH + 100), 
+                                (int)(y * TILE_SIZE * HEIGHT_SCALE + (i / 3 - 1) * CHUNK_HEIGHT + 100), 
+                                TILE_SIZE, 
+                                (int)(TILE_SIZE * HEIGHT_SCALE)+ 1,
+                                 null
+                            );
                         }
                     }
                 }
                 for(int i = 0; i < 9; i++){
                     for(int y = 0; y < 10; y++){
                         for(int x = 0; x < 10; x++){
-                            g2d.drawImage(envImages[envChunks[y][x][i]], x * TILE_SIZE + 100, (int)(y * TILE_SIZE * HEIGHT_SCALE + 100), (int)possibleDimensions[envChunks[y][x][i]][0], (int)possibleDimensions[envChunks[y][x][i]][1], null);
+                            g2d.drawImage(
+                                envImages[envChunks[i][y][x]], 
+                                x * TILE_SIZE + ((i % 3 - 1) * CHUNK_WIDTH + 100), 
+                                (int)(y * TILE_SIZE * HEIGHT_SCALE + (i / 3 - 1) * CHUNK_HEIGHT + 100), 
+                                (int)possibleDimensions[envChunks[i][y][x]][0], 
+                                (int)possibleDimensions[envChunks[i][y][x]][1], 
+                                null
+                            );
                         }
                     }
+                    if(i != 4){
+                        g2d.setColor(new Color(255, 255, 255, 150));
+                        g2d.fillRect((i % 3 - 1) * CHUNK_WIDTH + 100, 
+                                     (i / 3 - 1) * CHUNK_HEIGHT + 100, 
+                                     CHUNK_WIDTH, 
+                                     CHUNK_HEIGHT
+                                    );
+                    }
+                    if(chunks[i] == null){
+                        g2d.setColor(Color.WHITE);
+                        g2d.fillRect((i % 3 - 1) * CHUNK_WIDTH + 100, 
+                                        (i / 3 - 1) * CHUNK_HEIGHT + 100, 
+                                        CHUNK_WIDTH, 
+                                        CHUNK_HEIGHT
+                        );
+                    }
                 }
+                g2d.setColor(Color.WHITE);
+                g2d.fillRect(800, 100, 200, 500);
                 for(int y = 0; y < 10; y++){
                     for(int x = 0; x < 4; x++){
                         if(inEnvMode){
@@ -190,8 +224,8 @@ public class Gui extends JPanel{
     }
 
     public void updateChunk(int[][] c, int[][] e){
-        chunks[5] = c;
-        envChunks[5] = e;
+        chunks[4] = c;
+        envChunks[4] = e;
     }
     // Return the width and height of the 
     public double width() { return width; }
