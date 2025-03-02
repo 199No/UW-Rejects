@@ -9,22 +9,60 @@ public class Map {
     ArrayList<Chunk> loadedChunks = new ArrayList<Chunk>();
     String tilePath;
     String envPath;
-    public static final Rectangle CHUNK_UNLOAD_BOUNDARY = new Rectangle(-100, -100, Gui.WIDTH + 100, Gui.HEIGHT + 100);
+    public static final Rectangle CHUNK_UNLOAD_BOUNDARY = new Rectangle(-100, -100, Gui.WIDTH + 200, Gui.HEIGHT + 200);
     public Map(String tilePath, String envPath){
         for(int y = 0; y < 6; y++){
             for(int x = 0; x < 6; x++){
                 loadedChunks.add(new Chunk(loadChunk(x, y, tilePath), loadChunk(x, y, envPath), x, y));
             }
         }
+        this.tilePath = tilePath;
+        this.envPath = envPath;
     }
     // Goes through the list of chunks and unloads any that are outside the chunk loading boundary
-    public void unloadChunks(double cameraX, double cameraY){
+    public void doChunkLoadUnload(double cameraX, double cameraY){
+        int offsetX = 0;
+        int offsetY = 0;
+        Chunk chunk;
+        boolean flag = false;
         for(int i = 0; i < loadedChunks.size(); i++){
-            if(!loadedChunks.get(i).isVisible(cameraX, cameraY)){
-                 //chunk.doUnload(); // For later when enemy positions have to be saved
+            chunk = loadedChunks.get(i);
+            // If this chunk needs to be unloaded
+            if(!chunk.isVisible()){
+                // Offscreen to the left (load new chunk to the right)
+                if(chunk.getAbsX() < cameraX){
+                    offsetX = 3;
+                } 
+                // Offscreen to the right (load new chunk to the left)
+                else if(chunk.getAbsX() > cameraX){
+                    offsetX = -3;
+                }
+                // Offscreen above (load new chunk below)
+                if(chunk.getAbsY() < cameraY){
+                    offsetY = 3;
+                }
+                // Offscreen below (load new chunk above) 
+                else if(chunk.getAbsY() > cameraY){
+                    offsetY = -3;
+                }
+                if(chunk.x() + offsetX >= 0 && chunk.x() + offsetX <= 5 &&
+                   chunk.y() + offsetY >= 0 && chunk.y() + offsetY <= 5){
+                    System.out.println(System.currentTimeMillis() + ": [MAP] Loaded new chunk at " + ((int)chunk.x() + (int)offsetX) + ", " + ((int)chunk.y() + (int)offsetY));
+                    flag = true;
+                    loadedChunks.add(
+                        new Chunk(
+                            loadChunk(chunk.x() + offsetX, chunk.y() + offsetY, tilePath),
+                            loadChunk(chunk.x() + offsetX, chunk.y() + offsetY, envPath),
+                            chunk.x() + offsetX, 
+                            chunk.y() + offsetY
+                        )
+                    );
+                }
                 loadedChunks.remove(i);
             }
+            
         }
+        if(flag) System.out.println();
     }
     public int[][] loadChunk(int chunkX, int chunkY, String filePath){
         // A single line of text in the file

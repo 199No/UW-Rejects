@@ -92,7 +92,7 @@ public class Player extends Entity{
         this.yDir = 0;
         this.xVel = 0;
         this.yVel = 0;
-        this.friction = 0.75; // 0 - 1 closer to 1 is less friction
+        this.friction = 0.85; // 0 - 1 closer to 1 is less friction
 
     }
 

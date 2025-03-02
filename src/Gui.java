@@ -26,7 +26,9 @@ public class Gui extends JPanel{
     public static final double HEIGHT_SCALE = (double)2/(double)3;
     public static final int PLAYER_SIZE = 24;
     public static final int TILE_SIZE = 60;
-    public static final boolean showGridOverlay = false && Game.inDebugMode();
+    public static final int CHUNK_WIDTH = TILE_SIZE * 10;
+    public static final int CHUNK_HEIGHT = (int)(TILE_SIZE * 10 * HEIGHT_SCALE);
+    public static final boolean showGridOverlay = true && Game.inDebugMode();
     // Queues up all the draw commands in a frame so that they can all be executed at the end of the frame at the correct time.
     ArrayList<GraphicsRunnable> drawQueue;
     // You need a frame to draw things on.
@@ -37,7 +39,6 @@ public class Gui extends JPanel{
     // Images only for tiles
     Images tileImages;
 
-    Rectangle chunkUnloadBoundary = new Rectangle(-(TILE_SIZE * 10), -(TILE_SIZE * 10), Gui.WIDTH + (TILE_SIZE * 20), Gui.HEIGHT + (TILE_SIZE * 20));
 
     Animation waterAnimation;
 
@@ -47,7 +48,6 @@ public class Gui extends JPanel{
     static double sCameraX;
     static double sCameraY; // Static version of camera coords
 
-    Rectangle chunkRectangle = new Rectangle(0, 0, TILE_SIZE * 10, (int)(TILE_SIZE * HEIGHT_SCALE));
 
     int transitionFade = 0; 
 
@@ -230,7 +230,7 @@ public class Gui extends JPanel{
                 if(showGridOverlay){
                     g2d.setColor(Color.MAGENTA);
                     g2d.setStroke(new BasicStroke(3));
-                    g2d.drawRect((int)chunkCoords[0], (int)chunkCoords[1], Gui.TILE_SIZE * 10, (int)(Gui.TILE_SIZE * 10 * HEIGHT_SCALE));
+                    g2d.drawRect((int)chunkCoords[0], (int)chunkCoords[1], Gui.CHUNK_WIDTH, Gui.CHUNK_HEIGHT);
                 }
             }
         });
@@ -350,16 +350,16 @@ public class Gui extends JPanel{
         return x - sCameraX + WIDTH / 2;
     }   
     public static double absToScreenY(double y){
-        return (y - sCameraY + HEIGHT / 2) * HEIGHT_SCALE;
+        return (y * HEIGHT_SCALE - sCameraY) + HEIGHT / 2;
     }   
     public static double[] absToScreen(double x, double y){
-        return new double[] {x - sCameraX + WIDTH / 2, (y - sCameraY + HEIGHT / 2) * HEIGHT_SCALE};
+        return new double[] {x - sCameraX + WIDTH / 2, (y * HEIGHT_SCALE - sCameraY) + HEIGHT / 2   };
     }   
     public static double[] tileToScreen(double xTiles, double yTiles){
         return new double[] {(xTiles * TILE_SIZE - sCameraX) + WIDTH/2, ((yTiles * TILE_SIZE - sCameraY) + HEIGHT/2 + TILE_SIZE /2) * HEIGHT_SCALE};
     }
     public static double[] chunkToScreen(double xChunks, double yChunks){
-        return new double[] {(xChunks * TILE_SIZE * 10 - sCameraX) + WIDTH / 2, ((yChunks * TILE_SIZE * 10 - sCameraY) + HEIGHT / 2) * HEIGHT_SCALE};
+        return new double[] {(xChunks * CHUNK_WIDTH - sCameraX) + WIDTH / 2, ((yChunks * CHUNK_HEIGHT - sCameraY) + HEIGHT / 2)};
     }
 
 }

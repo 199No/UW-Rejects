@@ -29,7 +29,7 @@ public class Game implements ActionListener{
     //Properties
     ///////////////
     //very unrejar
-    public static boolean inDebugMode = false;
+    public static boolean inDebugMode = true;
     Random random;
     Timer gameTimer;
     Gui gui;
@@ -108,7 +108,6 @@ public class Game implements ActionListener{
         } else {
             framesLastSecond++;
         }
-        map.unloadChunks(gui.cameraX(), gui.cameraY());
         ////////////////
         // Update Player
         ////////////////
@@ -177,8 +176,8 @@ public class Game implements ActionListener{
     
         // Update camera position
         gui.moveCamera(
-            ((players.get(0).getX() + players.get(1).getX()) / 2 - gui.cameraX()) / 10,
-            ((players.get(0).getY() + players.get(1).getY()) / 2 - gui.cameraY()) / 10
+            ((player1.getX() + player2.getX()) / 2 - gui.cameraX()) / 10,
+            (((player1.getY() + player2.getY()) / 2) * Gui.HEIGHT_SCALE - gui.cameraY()) / 10
         );
         // Create array of indices
         entityIndices = new int[entities.size()];
@@ -410,7 +409,6 @@ public class Game implements ActionListener{
     private void handlePlayerDash(Player player, int[] playerKeys) {
         for(int i = 0; i < playerKeys.length - 2; i++){
             if(playerKeys[i] == Input.getDash()){
-                System.out.println(player.getIsDashing()); 
                 player.dash(playerKeys[i]);
             }
         }
