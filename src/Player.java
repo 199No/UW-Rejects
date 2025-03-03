@@ -47,7 +47,7 @@ public class Player extends Entity{
 
     //Dash
     private int dashCooldown = 5000; // in miliseconds
-    private int dashLength   = 1000; // 250 + 500 + 250; // in miliseconds
+    private int dashLength   = 700; // 250 + 500 + 250; // in miliseconds
     private boolean isDashing;
     private int lastDash;
     
@@ -102,7 +102,7 @@ public class Player extends Entity{
 
 
     public void move(boolean[] movement, boolean isShifting) {
-        if(!isDashing){
+        if(!isDashing && !isBlocking){
             applyDirection(); // get direction
             applyMovement(movement); // get movement
             applyFriction(); // apply the friction force
@@ -163,13 +163,15 @@ public class Player extends Entity{
     }
 
     public void attack() {
-        Sounds.playSound("SwordAttack");
-        this.isAttacking = true;
-        lastAttack = (int) System.currentTimeMillis();
-        System.out.println(lastAttack);
-    
-        // Call the method to spawn a hitbox based on the player's direction
-        spawnHitbox();
+        System.out.println("Attack!!!!");
+        if(!isAttacking){
+            System.out.println("Attack!");
+            Sounds.playSound("SwordAttack");
+            this.isAttacking = true;
+            lastAttack = (int) System.currentTimeMillis();
+            // Call the method to spawn a hitbox based on the player's direction
+            spawnHitbox();
+        }
     }
     
     public void spawnHitbox() {
@@ -199,11 +201,14 @@ public class Player extends Entity{
     }
 
     public void block(){
-        this.isBlocking = true;
-        lastBlock = (int) System.currentTimeMillis();
-        System.out.println("block!");
+        System.out.println("block!!!!");
+        if(!isBlocking){
+            System.out.println("block!");
+            this.isBlocking = true;
+            lastBlock = (int) System.currentTimeMillis();
 
-        setActive(false);
+            setActive(false);
+        }
     }
 
     public void dash(int key) {
