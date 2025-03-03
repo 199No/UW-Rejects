@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.Timer;
 //unrejar
-
+import java.util.Arrays;
 
 //-------------------------------------------------//
 //                     Game                        //
@@ -259,7 +259,6 @@ public class Game implements ActionListener{
 
         // Update player movement with input information
         updatePlayerMovement(player, Input.getPlayerKeys(player), shifts[player.playernum -1], keys);
-
         // Handle player dashing
         if(!player.getIsDashing()){
             if ((int) System.currentTimeMillis() - Input.getLastDash() < player.getDashLength()) {
@@ -278,23 +277,39 @@ public class Game implements ActionListener{
 
         // Handle player blocking
 
-        if ((int) System.currentTimeMillis() - player.getLastBlock() < player.getBlockLength()) {
-           handlePlayerBlock(player, Input.getPlayerKeys(player)[4], keys);
-        } else {
-            if(player.getIsBlocking()){
-                player.setIsBlocking(false);
-            }
+        if(!player.getIsBlocking()){
+            if ((int) System.currentTimeMillis() - player.getLastBlock() < player.getBlockLength()) {
+                handlePlayerBlock(player, Input.getPlayerKeys(player)[4], keys);
+                player.setIsBlocking(true);
+             }
+        }else{
+            if ((int) System.currentTimeMillis() - player.getLastBlock() < player.getBlockLength()) {
+                handlePlayerBlock(player, Input.getPlayerKeys(player)[4], keys);
+             }else if((int) System.currentTimeMillis() - player.getLastBlock() > player.getBlockLength()){
+                if(player.getIsBlocking()){
+                    player.setIsBlocking(false);
+                }
+             }
+
         }
 
-        // Handle player attack
+        // Handle player attacking
 
-        if ((int) System.currentTimeMillis() - player.getLastAttack() < player.getAttackLength()) {
-            handlePlayerAttack(player, Input.getPlayerKeys(player)[5], keys);
-         } else {
-             if(player.getIsBlocking()){
-                 player.setIsAttacking(false);
-             }
-         }
+        if(!player.getIsAttacking()){
+
+            if ((int) System.currentTimeMillis() - player.getLastAttack() < player.getAttackLength()) {
+                handlePlayerAttack(player, Input.getPlayerKeys(player)[5], keys);
+                player.setIsAttacking(true);
+                }
+            }else{
+                if ((int) System.currentTimeMillis() - player.getLastAttack() < player.getAttackLength()) {
+                    handlePlayerAttack(player, Input.getPlayerKeys(player)[5], keys);
+            }else if((int) System.currentTimeMillis() - player.getLastAttack() > player.getAttackLength()){
+                if(player.getIsAttacking()){
+                    player.setIsAttacking(false);
+                }
+            }     
+        }
 
         inBounds(player);
         
@@ -377,11 +392,6 @@ public class Game implements ActionListener{
     }
 
     private void handlePlayerAttack(Player player, int attackKey, boolean[] keys){
-
-        if (player.getIsAttacking() && (int) System.currentTimeMillis() - player.getLastAttack() > player.getAttackLength()) {
-            player.setIsAttacking(false);
-        }
-
         if (keys[attackKey]) {
             if (!player.getIsAttacking() &&  // Player is not already attacking
                 !player.getIsBlocking() &&  // Player is not blocking
@@ -392,10 +402,6 @@ public class Game implements ActionListener{
     }
 
     private void handlePlayerBlock(Player player, int blockKey, boolean[] keys){
-
-        if (player.getIsBlocking() && (int) System.currentTimeMillis() - player.getLastBlock() > player.getBlockLength()) {
-            player.setIsBlocking(false);
-        }
 
         if (keys[blockKey]) {
             if (!player.getIsBlocking() &&  // Player is not already blocking
