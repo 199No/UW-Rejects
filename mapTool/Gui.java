@@ -227,6 +227,9 @@ public class Gui extends JPanel{
         chunks[4] = c;
         envChunks[4] = e;
     }
+    public void setFrameVisible(boolean aFlag){
+        frame.setVisible(aFlag);
+    }
     // Return the width and height of the 
     public double width() { return width; }
     public double height() { return height; }

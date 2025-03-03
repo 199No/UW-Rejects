@@ -260,17 +260,32 @@ public class Tool implements ActionListener {
             saveChunk(outputEnvFile, envFile);
         }
         if(loadNewButtonRectangle.contains(mouseX, mouseY - 32)){
+            
+            gui.setVisible(false);
+            gui.setFrameVisible(false);   
+
             consoleInput = new Scanner(System.in);
-    
-            System.out.println("Which map do you want to load? (1 for map 1, 2, for map 2, etc)");
-            String selectedMap = consoleInput.nextLine();
-            mapFile = new File("Maps/map" + selectedMap + ".map");
-            envFile = new File("Maps/map" + selectedMap + "Env.map");
-    
+            
             selectedType = 1;
             int[] userInput = getUserInput();
-            loadChunk(userInput, mapFile, chunks[4]);
-            loadChunk(userInput, envFile, envChunks[4]);
+            for(int y = -1; y < 2; y++){
+                for(int x = -1; x < 2; x++){
+                    if(x + userInput[0] >= 0 && x + userInput[0] <= 5 && y + userInput[1] >= 0 && y + userInput[1] <= 5){
+                        loadChunk(
+                            new int[]{userInput[0] + x, userInput[1] + y},
+                            mapFile, 
+                            chunks[(y + 1) * 3 + (x + 1)]
+                        );
+                        loadChunk(
+                            new int[]{userInput[0] + x, userInput[1] + y},
+                            envFile, 
+                            envChunks[(y + 1) * 3 + (x + 1)]
+                        );
+                    }
+                }
+            }
+            gui.setVisible(true);
+            gui.setFrameVisible(true);
         }
         if(chunkRectangle.contains(mouseX, mouseY - 32)){
             int x = (int)Math.floor((mouseX - 100) / Gui.TILE_SIZE);
