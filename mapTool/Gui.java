@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
+import src.EnvObject;
 //-------------------------------------------------//
 //                      Gui                        //
 //-------------------------------------------------// 
@@ -47,8 +48,12 @@ public class Gui extends JPanel{
         {Gui.TILE_SIZE, Gui.TILE_SIZE},
         {Gui.TILE_SIZE, Gui.TILE_SIZE},
         {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
-        {Gui.TILE_SIZE * 2, Gui.TILE_SIZE * 3}
-
+        {Gui.TILE_SIZE * 2, Gui.TILE_SIZE * 3},
+        {Gui.TILE_SIZE, Gui.TILE_SIZE},
+        {Gui.TILE_SIZE, Gui.TILE_SIZE},
+        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
+        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
+        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE}
     };
     ///////////////
     //Constuctor
@@ -65,7 +70,12 @@ public class Gui extends JPanel{
             tempImages.getImage("flowers").getSubimage(24, 0, 24, 24),
             tempImages.getImage("flowers").getSubimage(0, 24, 24, 24),
             tempImages.getImage("lilypad"),
-            tempImages.getImage("cactus")
+            tempImages.getImage("cactus"),
+            tempImages.getImage("rocks").getSubimage(0, 0, 32, 32),
+            tempImages.getImage("rocks").getSubimage(0, 32, 32, 32),
+            tempImages.getImage("bonePile").getSubimage(0, 0, 32, 32),
+            tempImages.getImage("bonePile").getSubimage(32, 0, 32, 32),
+            tempImages.getImage("bonePile").getSubimage(0, 32, 32, 32)
         };
         this.chunks = chunks;
         this.envChunks = envChunks;
@@ -121,6 +131,7 @@ public class Gui extends JPanel{
     public void drawTiles(boolean inEnvMode){
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
+                EnvObject e;
                 for(int i = 0; i < 9; i++){
                     for(int y = 0; y < 10; y++){
                         for(int x = 0; x < 10; x++){
@@ -138,12 +149,13 @@ public class Gui extends JPanel{
                 for(int i = 0; i < 9; i++){
                     for(int y = 0; y < 10; y++){
                         for(int x = 0; x < 10; x++){
+                            e = new EnvObject(0, 0, envChunks[i][y][x]);
                             g2d.drawImage(
-                                envImages[envChunks[i][y][x]], 
+                                e.getImage(), 
                                 x * TILE_SIZE + ((i % 3 - 1) * CHUNK_WIDTH + 100), 
                                 (int)(y * TILE_SIZE * HEIGHT_SCALE + (i / 3 - 1) * CHUNK_HEIGHT + 100), 
-                                (int)possibleDimensions[envChunks[i][y][x]][0], 
-                                (int)possibleDimensions[envChunks[i][y][x]][1], 
+                                (int)e.getWidth(), 
+                                (int)e.getHeight(), 
                                 null
                             );
                         }

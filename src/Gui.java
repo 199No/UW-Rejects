@@ -155,6 +155,7 @@ public class Gui extends JPanel{
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 // Draw the shadow behind the player
+                if(e.getHeight() != TILE_SIZE * HEIGHT_SCALE)
                 drawShadow(e, g2d);
                 // Draw the player image in screen space
                 g2d.drawImage(
