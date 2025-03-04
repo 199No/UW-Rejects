@@ -222,10 +222,11 @@ public class Gui extends JPanel{
             }     
         });
     }
+    
 
-    public void updateChunk(int[][] c, int[][] e){
-        chunks[4] = c;
-        envChunks[4] = e;
+    public void updateChunk(int[][][] c, int[][][] e){
+        chunks = c;
+        envChunks = e;
     }
     public void setFrameVisible(boolean aFlag){
         frame.setVisible(aFlag);

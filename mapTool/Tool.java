@@ -6,8 +6,12 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.awt.AWTException;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Robot;
 public class Tool implements ActionListener {
+    Robot robot;
     Input input;
     Gui gui;
     Timer timer; // Provides a "pulse" every 1/60th of a second for frame timing
@@ -33,10 +37,10 @@ public class Tool implements ActionListener {
     File outputEnvFile = new File("Maps/toolOutputEnv.map");
     String saveButtonText = "Save";
     int lastSave = -Integer.MAX_VALUE;
-    public Tool(){
+    public Tool() throws AWTException{
         // Everything that needs to happen before loading the chunk
         consoleInput = new Scanner(System.in);
-
+        robot = new Robot();
         System.out.println("Which map do you want to load? (1 for map 1, 2, for map 2, etc)");
         String selectedMap = consoleInput.nextLine();
         mapFile = new File("Maps/map" + selectedMap + ".map");
@@ -76,7 +80,7 @@ public class Tool implements ActionListener {
             handleMouseClick(input.mouseX(), input.mouseY());
         }
         // Give Gui a copy of the chunk with whatever new edits were added to it.
-        gui.updateChunk(chunks[4], envChunks[4]);
+        gui.updateChunk(chunks, envChunks);
         // Draw a background over the last frame, otherwise you get "smearing" (Google it)
         gui.background(255, 255, 255);
         // Draw all the tiles in the chunk
@@ -89,6 +93,13 @@ public class Tool implements ActionListener {
         }
         gui.drawButton(saveButtonRectangle, saveButtonText);
         gui.drawButton(loadNewButtonRectangle, "Load");
+        gui.addToQueue(
+            new GraphicsRunnable() {
+                public void draw(Graphics2D g2d){
+                    g2d.drawString("Editing " + chunkX + ", " + chunkY, 25, 80);
+                } 
+            }
+        );
         // Draw the newly drawn bits to the screen.
         gui.repaint();
     }
@@ -261,6 +272,13 @@ public class Tool implements ActionListener {
         }
         if(loadNewButtonRectangle.contains(mouseX, mouseY - 32)){
             
+            System.out.println("Saved, loading new chunk");
+            saveChunk(outputFile, mapFile);
+            saveChunk(outputEnvFile, envFile);
+            
+            chunks = new int[9][10][10]; 
+            envChunks = new int[9][10][10]; 
+
             gui.setVisible(false);
             gui.setFrameVisible(false);   
 
@@ -284,8 +302,10 @@ public class Tool implements ActionListener {
                     }
                 }
             }
+            gui.updateChunk(chunks, envChunks);
             gui.setVisible(true);
             gui.setFrameVisible(true);
+            input.reset();
         }
         if(chunkRectangle.contains(mouseX, mouseY - 32)){
             int x = (int)Math.floor((mouseX - 100) / Gui.TILE_SIZE);

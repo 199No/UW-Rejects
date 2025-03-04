@@ -69,6 +69,14 @@ public class Input implements MouseListener, KeyListener, MouseMotionListener{
     public boolean getMousePressed(){
         return mouseIsPressed;
     }
+    public void reset(){
+        lastX = MouseInfo.getPointerInfo().getLocation().getX();
+        lastY = MouseInfo.getPointerInfo().getLocation().getY();
+        mouseX = MouseInfo.getPointerInfo().getLocation().getX();
+        mouseY = MouseInfo.getPointerInfo().getLocation().getY();
+        keys = new boolean[90];
+        mouseIsPressed = false;
+    }
     @Override
     public void mouseMoved(MouseEvent e){
 
