@@ -120,5 +120,7 @@ public class Map {
         }
         return result;
     }
-    
+    public String getTilePath(){
+        return tilePath;
+    }
 }

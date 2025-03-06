@@ -274,20 +274,22 @@ public class Gui extends JPanel{
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
                 int now = (int)System.currentTimeMillis();
-                if(transitionStart != 0){
-                    if(now - transitionStart < 1000){
-                        transitionFade ++;
+                if(transitionStart != -1){
+                    if(now - transitionStart < 1500){
+                        transitionFade += 15;
+                        System.out.println("oiiii");
                     } else {
-                        transitionFade --;
+                        transitionFade -= 15;
                     }
                     if(transitionFade > 255){
                         transitionFade = 255;
                     }
-                    else {
+                    else if (transitionFade < 0) {
                         transitionFade = 0;
                     }
                     g2d.setColor(new Color(0, 0, 0, transitionFade));
-                    g2d.drawRect(0, 0, Gui.WIDTH, Gui.HEIGHT);
+                    System.out.println(transitionFade);
+                    g2d.fillRect(0, 0, Gui.WIDTH, Gui.HEIGHT);
                 }
             }
         });

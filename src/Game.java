@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.Timer;
-//unrejar
-import java.util.Arrays;
 
 //-------------------------------------------------//
 //                     Game                        //
@@ -54,7 +52,9 @@ public class Game implements ActionListener{
     private double xMax = 4080;
     private double yMin = 0;
     private double yMax = 4080;
-
+    Rectangle levelEndRect = new Rectangle(0, 4 * Gui.CHUNK_WIDTH, Gui.TILE_SIZE,(int)( Gui.TILE_SIZE * 3 * Gui.HEIGHT_SCALE));
+    private int fadeStart = -1;
+    private int levelNum = 1;
     ///////////////
     //Constuctor
     //////////////
@@ -72,13 +72,12 @@ public class Game implements ActionListener{
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
 
         //How to say if its in desert do wind if in grass do country
-        if(!true){
+        if(levelNum == 2){
             Sounds.playSound("WindBackground");
         }
-        if(true){
+        if(levelNum == 1){
             Sounds.playSound("Countryside");
         }
-
         // Only these four lines should happen after this comment otherwise stuff will break
         gameTimer = new Timer(11, this);
         gameTimer.start();
@@ -93,6 +92,8 @@ public class Game implements ActionListener{
     @Override
 
      public void actionPerformed(ActionEvent e) {
+        
+        
         /////////////////////
         //// CALCULATE FPS
         ////////////////////
@@ -215,6 +216,11 @@ public class Game implements ActionListener{
 
         checkHitboxes(this.players, this.enemies);
         despawnSwingHitbox(this.players);
+        if(player1.getAbsHitbox().intersects(levelEndRect) && player2.getAbsHitbox().intersects(levelEndRect)){
+            goToLevel2();
+        }
+        if(fadeStart > (int)System.currentTimeMillis() - 5000)
+            gui.drawLevelTransition(fadeStart);
         gui.displayFPS((int) frameRate);
         gui.repaint();
         now = System.currentTimeMillis();
@@ -432,9 +438,15 @@ public class Game implements ActionListener{
     }
     public void goToLevel2(){
         // Change mapfile and env file to be map2.map
-        player1.setPos(750, 300);
-        player2.setPos(500, 500);
-        map = new Map("Maps/map2.map", "Maps/map2Env.map");
+        if(fadeStart == -1){
+            
+        fadeStart = (int)System.currentTimeMillis();
+        }
+        if((int)System.currentTimeMillis() - fadeStart > 1500 && !map.getTilePath().contains("2")){
+            player1.setPos(350, 200);
+            player2.setPos(150, 300);
+            map = new Map("Maps/map2.map", "Maps/map2Env.map");
+        }
     }
 
 }
