@@ -39,7 +39,8 @@ public class Gui extends JPanel{
     // Images only for tiles
     Images tileImages;
 
-
+    Animation swingAnimation;
+    Animation blockAnimation;
     Animation waterAnimation;
 
     ////////// CAMERA ///////////
@@ -56,10 +57,12 @@ public class Gui extends JPanel{
     //////////////
     public Gui(int width, int height, Input input) {
         // General images, uses bitmask transparency
-        images = new Images("Images", Transparency.BITMASK);
+        images = new Images("Images", Transparency.TRANSLUCENT);
         // Images for tiles only
         tileImages = new Images("Images/Enviroment/Tiles", Transparency.OPAQUE);
 
+        swingAnimation = new Animation(images.getImage("swordAttack"), 4, 2, 8, 50, true);
+        blockAnimation = new Animation(images.getImage("blockSheet"), 4, 4, 15, 20, true);
 
         waterAnimation = new Animation(images.getImage("waterTile"), 3, 1, 3, 250, true);
         waterAnimation.start();
@@ -186,6 +189,7 @@ public class Gui extends JPanel{
                 g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 20), (int)e.getWidth(), 5);
                 g2d.setColor(Color.GREEN);
                 g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 20), (int)(e.getWidth() * e.getHealthPercent()), 5);
+                g2d.drawImage(swingAnimation.getFrame(), (int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()), (int)e.getWidth(), (int)e.getHeight(), null);
             }
         });
     }

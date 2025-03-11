@@ -69,7 +69,7 @@ public class Game implements ActionListener{
         enemies.add(spawnSlime(100, 300));
         random = new Random();
         gui = new Gui(1280, 720, input);
-        map = new Map("Maps/map1.map", "Maps/map1Env.map");
+        map = new Map("Maps/map2.map", "Maps/map2Env.map");
 
         //How to say if its in desert do wind if in grass do country
         if(levelNum == 2){
