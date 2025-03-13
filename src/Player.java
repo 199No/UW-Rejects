@@ -15,7 +15,7 @@ public class Player extends Entity{
     private int damage;
     private double speed = 3.0;
     private double shiftSpeed = 6.0;
-    private double dashSpeed;
+    private double dashSpeed = 12.0;
     private double maxSpeed = 5.0;
     private int maxHealth = 100;
 

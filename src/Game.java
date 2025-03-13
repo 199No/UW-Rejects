@@ -69,7 +69,7 @@ public class Game implements ActionListener{
         enemies.add(spawnSlime(100, 300));
         random = new Random();
         gui = new Gui(1280, 720, input);
-        map = new Map("Maps/map2.map", "Maps/map2Env.map");
+        map = new Map("Maps/map1.map", "Maps/map1Env.map");
 
         //How to say if its in desert do wind if in grass do country
         if(levelNum == 2){
@@ -215,7 +215,7 @@ public class Game implements ActionListener{
         });
 
         checkHitboxes(this.players, this.enemies);
-        //despawnSwingHitbox(this.players);
+        despawnSwingHitbox(this.players);
         if(player1.getAbsHitbox().intersects(levelEndRect) && player2.getAbsHitbox().intersects(levelEndRect)){
             goToLevel2();
         }
@@ -256,85 +256,107 @@ public class Game implements ActionListener{
             enemy.setY(this.yMin);
         }
     }
+    
+    public void updatePlayer(Player player) {
 
-    public void updatePlayer(Player player){
-
-        //check health
-        if(player.getHealth() < 0){
-            System.out.println("player " + player.playernum + " died lol");
-        }
-        //check movement
-        int present = (int) System.currentTimeMillis();
+        // Get input information
+    
         boolean[] keys = Input.getKeys();
+    
         boolean[] shifts = Input.getShifts();
-        int pNum = player.playernum;
+    
+        int playerNum = player.playernum - 1;
+    
         int[] playerKeys = Input.getPlayerKeys(player);
-        boolean shift = shifts[pNum- 1];
-
-        if(player.getDashKey() != Input.getDashKey(pNum)){
-            player.setIsDashing(true);
-            player.dash(Input.getDashKey(pNum));
-            //animation
-            //sound
+    
+        int currentTime = (int) System.currentTimeMillis();
+    
+        // Update player movement
+    
+        updatePlayerMovement(player, playerKeys, shifts[playerNum], keys);
+    
+        // Handle player dashing
+    
+        if (!player.getIsDashing()) {
+            if (currentTime - Input.getLastDash() < player.getDashLength()) {
+                handlePlayerDash(player, playerKeys);
+                player.setIsDashing(true);
+            }
+        } else if (currentTime - Input.getLastDash() > player.getDashLength()) {
+            player.setIsDashing(false);
+        }
+    
+        // Handle player blocking
+        if (!player.getIsBlocking()) {
+            if (currentTime - player.getLastBlock() > player.getBlockLength()) {
+                handlePlayerBlock(player, playerKeys[4], keys);
+                player.setIsBlocking(true);
+            }
+        } else if (currentTime - player.getLastBlock() > player.getBlockLength()) {
+            player.setIsBlocking(false);
         }
 
-        if(!player.getIsDashing() && !player.getIsBlocking() && !player.getIsAttacking()){
-            updatePlayerMovement(player,playerKeys, shift, keys);
-        }
-
-        //////////////
-        //CHECK ATTACK
-        //////////////
-        if(!player.getIsAttacking() && keys[playerKeys[5]]){
-            //first time attacking
-            player.setIsAttacking(true);
-            player.attack();
-            //animation
-            //sound
-        }
-
-        if(player.getIsAttacking() && (present - player.getLastAttack() > player.getAttackLength())){
+        // Handle player attacking
+        if (!player.getIsAttacking()) {
+            if (currentTime - player.getLastAttack() > player.getAttackLength()) {
+                handlePlayerAttack(player, playerKeys[5], keys);
+                player.setIsAttacking(true);
+            }
+        } else if (currentTime - player.getLastAttack() > player.getAttackLength()) {
             player.setIsAttacking(false);
         }
 
-        //////////////
-        //CHECK BLOCK
-        //////////////
-        if(!player.getIsBlocking() && keys[playerKeys[4]]){
-            //first time attacking
-            player.setIsBlocking(true);
-            player.block();
-            //animation
-            //sound
-        }
-
-        if(player.getIsBlocking() && (present - player.getLastBlock() > player.getBlockLength())){
-            player.setIsBlocking(false);
-            player.setActive(true);
-        }
-
-        //check inbounds
         inBounds(player);
+    
     }
+    
+    private void handlePlayerAttack(Player player, int attackKey, boolean[] keys) {
 
+        int currentTime = (int) System.currentTimeMillis();
+    
+        if (keys[attackKey] && !player.getIsAttacking() && !player.getIsBlocking()
+                && currentTime - player.getLastAttack() > player.getAttackCooldown()) {
+            player.attack();
+        }
+    }
+    
+    private void handlePlayerBlock(Player player, int blockKey, boolean[] keys) {
+
+        long currentTime = System.currentTimeMillis();
+        if (keys[blockKey] && !player.getIsBlocking() && !player.getIsAttacking()
+                && currentTime - player.getLastBlock() > player.getBlockCooldown()) {
+            player.block();
+        }
+    }
+        
+    private void handlePlayerDash(Player player, int[] playerKeys) {
+    
+        int dashKey = Input.getDash();
+        for (int key : playerKeys) {
+            if (key == dashKey) {
+                player.dash(dashKey);
+                break;
+            }
+        }
+    }
+    
     public void checkHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies) {
+
         for(int p = 0; p < players.size(); p++){
-            for (int i = 0; i < enemies.size(); i++) {
-                Enemies enemy = enemies.get(i);
+        for (int i = 0; i < enemies.size(); i++) {
+            Enemies enemy = enemies.get(i);
 
-                if (players.get(p).getSwingHitbox().intersects(enemy.getAbsHitbox())) {
-                    enemy.takeDamage(players.get(p).getDamage());
+            if (players.get(p).getSwingHitbox().intersects(enemy.getAbsHitbox())) {
+                enemy.takeDamage(players.get(p).getDamage());
 
-                    if (!enemy.getIsAlive()) {
-                        enemies.remove(i);
-                        i--;
-                    }
+                if (!enemy.getIsAlive()) {
+                    enemies.remove(i);
+                    i--;
                 }
             }
         }
     }
-   
-
+    }
     public void despawnSwingHitbox(ArrayList<Player> players){
         for(int p = 0; p < players.size(); p++){
             if((int) System.currentTimeMillis() - players.get(p).getLastAttack() > players.get(p).getAttackLength()){
