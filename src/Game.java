@@ -272,9 +272,10 @@ public class Game implements ActionListener{
         int currentTime = (int) System.currentTimeMillis();
     
         // Update player movement
-    
+        if(player.getIsDashing()){
+            player.dash(Input.getDashKey(player));
+        }
         updatePlayerMovement(player, playerKeys, shifts[playerNum], keys);
-    
         // Handle player dashing
     
         if (!player.getIsDashing()) {

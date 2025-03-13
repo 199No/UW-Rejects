@@ -174,6 +174,17 @@ public class Input implements KeyListener{
         }
         return -1;
     }
+    
+    public static int getDashKey(Player player){
+        if(player.playernum == 1){
+            return p1dash;
+        }
+        if(player.playernum == 2){
+            return p2dash;
+        }
+        return -1;
+    }
+
     public static int getLastp1Dash(){
         return lastp1Dash;
     }

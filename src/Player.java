@@ -46,7 +46,7 @@ public class Player extends Entity{
 
     //Dash
     private int dashCooldown = 5000; // in miliseconds
-    private int dashLength   = 700; // 250 + 500 + 250; // in miliseconds
+    private int dashLength   = 350 + 250 + 350; // in miliseconds
     private boolean isDashing;
     private int lastDash;
     private int lastDashKey = -1;
@@ -115,34 +115,31 @@ public class Player extends Entity{
         y += yVel;
     }
 
-    // New method to handle dashing behavior
     public void dash(int key) {
 
         boolean[] movement = new boolean[4];
         if (key >= 0 && key < movement.length) {
             movement[key] = true;
         }
-
-        double dashFriction = 0.95;
             
         // Only allow movement in one direction
         if (movement[0]) { // Up
-            yVel = -dashSpeed;
+            yVel += -dashSpeed;
             xVel = 0;
         } else if (movement[1]) { // Left
-            xVel = -dashSpeed;
+            xVel += -dashSpeed;
             yVel = 0;
         } else if (movement[2]) { // Down
-            yVel = dashSpeed;
+            yVel += dashSpeed;
             xVel = 0;
         } else if (movement[3]) { // Right
-            xVel = dashSpeed;
+            xVel += dashSpeed;
             yVel = 0;
         }
-            
-        // Apply minimal friction
-        xVel *= dashFriction;
-        yVel *= dashFriction;
+
+        // Update position
+        x += xVel;
+        y += yVel;
     }
 
     public void attack() {
