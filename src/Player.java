@@ -13,24 +13,23 @@ public class Player extends Entity{
     //////////////
     private int health;
     private int damage;
-    private double speed;
-    private double shiftSpeed;
+    private double speed = 3.0;
+    private double shiftSpeed = 6.0;
     private double dashSpeed;
-    private double maxSpeed;
-    private int maxHealth;
-
+    private double maxSpeed = 5.0;
+    private int maxHealth = 100;
 
     //positioning
-    private double xVel;
-    private double yVel;
-    private int xDir; // -1 (left), 0 (neutral), 1 (right)
-    private int yDir; // -1 (Up),   0 (neutral), 1 (down)
+    private double xVel = 0;
+    private double yVel = 0;
+    private int xDir = 0; // -1 (left), 0 (neutral), 1 (right)
+    private int yDir = 0; // -1 (Up),   0 (neutral), 1 (down)
     private int facingDirX = 1; // 1 = right, -1 = left, 0 = no horizontal facing
     private int facingDirY = 0; // 1 = down, -1 = up, 0 = no vertical facing
 
     //misc
     private int score;
-    private double friction;
+    private double friction = 0.85;
     public int playernum;
 
     //Attack
@@ -50,6 +49,7 @@ public class Player extends Entity{
     private int dashLength   = 700; // 250 + 500 + 250; // in miliseconds
     private boolean isDashing;
     private int lastDash;
+    private int lastDashKey = -1;
     
     //Hitbox
     private boolean active; //the player is able to be hit if true
@@ -64,7 +64,7 @@ public class Player extends Entity{
     ///////////////
     //Constuctor
     //////////////
-    public Player(double x, double y, int hp, int dmg, double s, int playernum) {
+    public Player(double x, double y, int hp, int dmg, int playernum) {
         super(x, y, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(Gui.TILE_SIZE/4, Gui.TILE_SIZE/4, Gui.TILE_SIZE / 2, Gui.TILE_SIZE / 2));
         idleAnim      = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, new Images("Images", Transparency.BITMASK).getImage("player" + playernum + "Idle"), true);
         dashAnimation = new StatefulAnimation(62, 6, 2, 
@@ -80,19 +80,7 @@ public class Player extends Entity{
 
         this.playernum = playernum;
         this.health = hp;
-        this.maxHealth = 100;
         this.damage = dmg;
-        this.speed = s;
-        this.shiftSpeed = this.speed * this.speed;
-        this.dashSpeed = 4 * this.speed * this.speed;
-
-        this.maxSpeed = 2 * this.speed * this.speed;
-
-        this.xDir = 0;
-        this.yDir = 0;
-        this.xVel = 0;
-        this.yVel = 0;
-        this.friction = 0.85; // 0 - 1 closer to 1 is less friction
 
     }
 
@@ -100,124 +88,99 @@ public class Player extends Entity{
 //                    Methods                      //
 //-------------------------------------------------// 
 
-
     public void move(boolean[] movement, boolean isShifting) {
-        if(!isDashing && !isBlocking){
-            applyDirection(); // get direction
-            applyMovement(movement); // get movement
-            applyFriction(); // apply the friction force
-            capVelocity(); // if more than max speed set max speed
-            if(isShifting){
-                updatePosition(shiftSpeed);
-            }else{
-                updatePosition(this.speed);
-            }
-        }
-    }
+        
+        // Adjust velocity based on input
+        if (movement[0]) yVel -= speed; // W (Up)
+        if (movement[1]) xVel -= speed; // A (Left)
+        if (movement[2]) yVel += speed; // S (Down)
+        if (movement[3]) xVel += speed; // D (Right)
 
-    // Apply movement based on the movement array
-    private void applyMovement(boolean[] movement) {
-        if (movement[0]) this.yVel -= this.speed; // Up
-        if (movement[1]) this.xVel -= this.speed; // Left
-        if (movement[2]) this.yVel += this.speed; // Down
-        if (movement[3]) this.xVel += this.speed; // Right
-    }
-
-    private void applyDashMovement(boolean[] movement) {
-        if (movement[0]) this.yVel -= this.dashSpeed; // Up
-        if (movement[1]) this.xVel -= this.dashSpeed; // Left
-        if (movement[2]) this.yVel += this.dashSpeed; // Down
-        if (movement[3]) this.xVel += this.dashSpeed; // Right
-    }
-
-    // Apply direction based on the movement
-    private void applyDirection() {
-        xDir = getXDir();
-        yDir = getYDir();
-
-        if (xDir != 0) {
-            facingDirX = xDir;
-            facingDirY = 0; // Prioritize horizontal facing
-        } else if (yDir != 0) {
-            facingDirY = yDir;
-            facingDirX = 0; // Vertical facing
-        }
-    }
-
-    // Apply friction to the velocities
-    private void applyFriction() {
-        this.xVel *= this.friction;
-        this.yVel *= this.friction;
-    }
-
-    // Cap the velocities to the maximum speed
-    private void capVelocity() {
-        this.xVel = Math.max(-this.maxSpeed, Math.min(this.xVel, this.maxSpeed));
-        this.yVel = Math.max(-this.maxSpeed, Math.min(this.yVel, this.maxSpeed));
-    }
-
-    // Update the player's position based on velocity and a scaling factor
-    private void updatePosition(double speed) {
-        x += this.xVel * speed;
-        y += this.yVel * speed;
-    }
-
-    public void attack() {
-        System.out.println("Attack!!!!");
-        if(!isAttacking){
-            System.out.println("Attack!");
-            Sounds.playSound("SwordAttack");
-            this.isAttacking = true;
-            lastAttack = (int) System.currentTimeMillis();
-            // Call the method to spawn a hitbox based on the player's direction
-            spawnHitbox();
-        }
-    }
-    
-    public void spawnHitbox() {
-
-        int hitboxX = (int) getX();
-        int hitboxY = (int) getY();
-    
-        if(facingDirX == 1){
-            hitboxX += Gui.TILE_SIZE;
-        }
-        if(facingDirX == -1){
-            hitboxX -= Gui.TILE_SIZE;
+        // Normalize diagonal movement to prevent speed boost
+        if ((movement[0] || movement[2]) && (movement[1] || movement[3])) {
+            xVel *= 0.7071; // 1/sqrt(2)
+            yVel *= 0.7071;
         }
 
-        if(facingDirY == 1){
-            hitboxY -= Gui.TILE_SIZE;
-        }
-        if(facingDirY == -1){
-            hitboxY += Gui.TILE_SIZE;
-        }
-    
-        // Create a new hitbox
-        swingHitbox = new Rectangle(hitboxX, hitboxY, swingWidth, swingHeight);
-    
-        System.out.println("Player positon at (" + (int) getX() + ", " + (int) getY() );
-        System.out.println("Hitbox spawned at (" + hitboxX + ", " + hitboxY + ")");
+        // Apply friction
+        xVel *= friction;
+        yVel *= friction;
+
+        // Cap velocity
+        xVel = Math.max(-maxSpeed, Math.min(xVel, maxSpeed));
+        yVel = Math.max(-maxSpeed, Math.min(yVel, maxSpeed));
+
+        // Update position
+        x += xVel;
+        y += yVel;
     }
 
-    public void block(){
-        System.out.println("block!!!!");
-        if(!isBlocking){
-            System.out.println("block!");
-            this.isBlocking = true;
-            lastBlock = (int) System.currentTimeMillis();
-
-            setActive(false);
-        }
-    }
-
+    // New method to handle dashing behavior
     public void dash(int key) {
+
         boolean[] movement = new boolean[4];
         if (key >= 0 && key < movement.length) {
             movement[key] = true;
         }
-        applyDashMovement(movement);
-        updatePosition(dashSpeed);
+
+        double dashFriction = 0.95;
+            
+        // Only allow movement in one direction
+        if (movement[0]) { // Up
+            yVel = -dashSpeed;
+            xVel = 0;
+        } else if (movement[1]) { // Left
+            xVel = -dashSpeed;
+            yVel = 0;
+        } else if (movement[2]) { // Down
+            yVel = dashSpeed;
+            xVel = 0;
+        } else if (movement[3]) { // Right
+            xVel = dashSpeed;
+            yVel = 0;
+        }
+            
+        // Apply minimal friction
+        xVel *= dashFriction;
+        yVel *= dashFriction;
+    }
+
+    public void attack() {
+        System.out.println("Attack!");
+        lastAttack = (int) System.currentTimeMillis();
+        xDir = getXDir(); // -1 left 0 neutral 1 right
+        yDir = getYDir(); // -1 up 0 neutral 1 down
+
+        //toggle swing animation ?
+        // spawn swing hitbox
+        int hitboxX = (int) getX();
+        int hitboxY = (int) getY();
+        int swingWidth = Gui.TILE_SIZE;  // Set appropriate size
+        int swingHeight = Gui.TILE_SIZE; // Set appropriate size
+
+        // Adjust hitbox position based on direction
+        if (xDir == 1) { 
+            hitboxX += swingWidth; // Attack Right
+        } else if (xDir == -1) { 
+            hitboxX -= swingWidth; // Attack Left
+        } else if (yDir == -1) { 
+            hitboxY -= swingHeight; // Attack Up
+        } else if (yDir == 1) { 
+            hitboxY += swingHeight; // Attack Down
+        }
+
+        // Create a new hitbox
+        swingHitbox = new Rectangle(hitboxX, hitboxY, swingWidth, swingHeight);
+
+        System.out.println("Player position: (" + (int) getX() + ", " + (int) getY() + ")");
+        System.out.println("Hitbox spawned at: (" + hitboxX + ", " + hitboxY + ")");
+
+    }
+
+    public void block() {
+        setActive(false);
+        System.out.println("Block!");
+        lastBlock = (int) System.currentTimeMillis();
     }
 
     public int getXDir(){
@@ -295,6 +258,12 @@ public class Player extends Entity{
     }
     public int getLastDash(){
         return this.lastDash;
+    }
+    public int getDashKey(){
+        return this.lastDashKey;
+    }
+    public void setDashKey(int keyevent){
+        this.lastDashKey = keyevent;
     }
     public int getDashLength(){
         return this.dashLength;

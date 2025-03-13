@@ -27,8 +27,8 @@ public class Input implements KeyListener{
     static int[] pressed = new int[90];
     static int[] released = new int[90];
     
-    static int p1dash; // keyevent used to distinguish which key was pressed
-    static int p2dash; // keyevent used to distinguish which key was pressed
+    static int p1dash = -1; // keyevent used to distinguish which key was pressed
+    static int p2dash = -1; // keyevent used to distinguish which key was pressed
     static int dash; // keyevent of last found key
     static int lastp1Dash = (int) System.currentTimeMillis() - 50000; // in mili
     static int lastp2Dash = (int) System.currentTimeMillis() - 50000; // in mili
@@ -179,6 +179,13 @@ public class Input implements KeyListener{
     }
     public static int getLastp2Dash(){
         return lastp2Dash;
+    }
+    public static int getDashKey(int playernum){
+        if(playernum == 1){
+            return p1dash;
+        }else{ // playernum == 2
+            return p2dash;
+        }
     }
     public static int[] getPressed(){
         return pressed;
