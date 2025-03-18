@@ -22,10 +22,10 @@ public class Player extends Entity{
     //positioning
     private double xVel = 0;
     private double yVel = 0;
-    private int xDir = 0; // -1 (left), 0 (neutral), 1 (right)
+    private int xDir = 1; // -1 (left), 0 (neutral), 1 (right)
     private int yDir = 0; // -1 (Up),   0 (neutral), 1 (down)
-    private int facingDirX = 1; // 1 = right, -1 = left, 0 = no horizontal facing
-    private int facingDirY = 0; // 1 = down, -1 = up, 0 = no vertical facing
+    //private int facingDirX = 1; // 1 = right, -1 = left, 0 = no horizontal facing
+    //private int facingDirY = 0; // 1 = down, -1 = up, 0 = no vertical facing
 
     //misc
     private int score;
@@ -91,10 +91,17 @@ public class Player extends Entity{
     public void move(boolean[] movement, boolean isShifting) {
         
         // Adjust velocity based on input
-        if (movement[0]) yVel -= speed; // W (Up)
-        if (movement[1]) xVel -= speed; // A (Left)
-        if (movement[2]) yVel += speed; // S (Down)
-        if (movement[3]) xVel += speed; // D (Right)
+        if(isShifting){
+            if (movement[0]) yVel -= shiftSpeed; // W (Up)
+            if (movement[1]) xVel -= shiftSpeed; // A (Left)
+            if (movement[2]) yVel += shiftSpeed; // S (Down)
+            if (movement[3]) xVel += shiftSpeed; // D (Right)
+        }else{
+            if (movement[0]) yVel -= speed; // W (Up)
+            if (movement[1]) xVel -= speed; // A (Left)
+            if (movement[2]) yVel += speed; // S (Down)
+            if (movement[3]) xVel += speed; // D (Right)
+        }
 
         // Normalize diagonal movement to prevent speed boost
         if ((movement[0] || movement[2]) && (movement[1] || movement[3])) {

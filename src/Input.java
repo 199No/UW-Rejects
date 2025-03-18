@@ -68,13 +68,14 @@ public class Input implements KeyListener{
 
              //checks to see if this input was a new input
             if(getKey(e.getKeyCode()) == false){
-                //checkDash
 
-                //check double click
+                /////////////////
+                /// DOUBLE CLICK MOVEMENT KEYS
+                ////////////////
                 if (released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 350 && (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 350) {
                     
-                    boolean isPlayer1 = checkPlayer1Keys(e.getKeyCode());
-                    boolean isPlayer2 = checkPlayer2Keys(e.getKeyCode());
+                    boolean isPlayer1 = checkPlayer1MoveKeys(e.getKeyCode());
+                    boolean isPlayer2 = checkPlayer2MoveKeys(e.getKeyCode());
                 
                     if (isPlayer1 && (int) System.currentTimeMillis() - lastp1Dash > DASH_COOLDOWN) {
                         lastp1Dash = (int) System.currentTimeMillis();
@@ -88,7 +89,9 @@ public class Input implements KeyListener{
                         dash = e.getKeyCode();
                     }
                 }
-                
+                /////////////////
+                /// SHIFTS
+                ////////////////
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     int location = e.getKeyLocation();
                     if (location == KeyEvent.KEY_LOCATION_LEFT) {
@@ -140,7 +143,6 @@ public class Input implements KeyListener{
         }else{
             return getPlayer2Keys();
         }
-
     }
     public static int getDash(){
         return dash;
@@ -159,6 +161,22 @@ public class Input implements KeyListener{
     }
     public static boolean checkPlayer2Keys(int key){
         for(int i = 0; i < player2Keys.length; i++){
+            if(key == player2Keys[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+    public static boolean checkPlayer1MoveKeys(int key){
+        for(int i = 0; i < player1Keys.length - 2; i++){
+            if(key == player1Keys[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+    public static boolean checkPlayer2MoveKeys(int key){
+        for(int i = 0; i < player2Keys.length - 2; i++){
             if(key == player2Keys[i]){
                 return true;
             }
