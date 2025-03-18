@@ -42,7 +42,7 @@ public class Gui extends JPanel{
     Animation swingAnimation;
     Animation blockAnimation;
     Animation waterAnimation;
-
+    Animation hpBar;
     ////////// CAMERA ///////////
     double cameraX;
     double cameraY;
@@ -63,7 +63,7 @@ public class Gui extends JPanel{
 
         swingAnimation = new Animation(images.getImage("swordAttack"), 4, 2, 8, 50, true);
         blockAnimation = new Animation(images.getImage("blockSheet"), 4, 4, 15, 20, true);
-
+        hpBar = new Animation(images.getImage("healthBar"), 11, 1, 11, Integer.MAX_VALUE, false);
         waterAnimation = new Animation(images.getImage("waterTile"), 3, 1, 3, 250, true);
         waterAnimation.start();
         this.cameraX = 0;
@@ -185,11 +185,11 @@ public class Gui extends JPanel{
         drawSwingHitbox(e);
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                g2d.setColor(new Color(100, 0, 0));
-                g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 20), (int)e.getWidth(), 5);
-                g2d.setColor(Color.GREEN);
-                g2d.fillRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - 20), (int)(e.getWidth() * e.getHealthPercent()), 5);
-                g2d.drawImage(swingAnimation.getFrame(), (int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()), (int)e.getWidth(), (int)e.getHeight(), null);
+                g2d.drawImage(hpBar.getFrameNum(8 - (int)(e.getHealthPercent() * 8)), (int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - Gui.TILE_SIZE + 15), (int)e.getWidth(), (int)e.getHeight() * 3/4, null);
+                // Draw block
+                //g2d.drawImage(blockAnimation.getFrame(), (int)absToScreenX(e.getX() -5), (int)absToScreenY(e.getY()- 5), (int)e.getWidth() + 10, (int)e.getHeight() + 10, null);
+                // Draw attack
+                //g2d.drawImage(swingAnimation.getFrame(), (int)absToScreenX(e.getX() + e.getWidth() - 10), (int)absToScreenY(e.getY()- 5), (int)e.getWidth() + 10, (int)e.getHeight() + 10, null);
             }
         });
     }

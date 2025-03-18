@@ -27,6 +27,11 @@ public class Animation {
     public void start(){
         startTime = (int)System.currentTimeMillis();
     }
+    public BufferedImage getFrameNum(int num){
+        int x = (num % widthFrames) * frameWidth;
+        int y = (num / widthFrames) * frameHeight;
+        return sheet.getSubimage(x, y, frameWidth, frameHeight);
+    }
     public BufferedImage getFrame(){
         // Get current step
         step = (int)(((int)System.currentTimeMillis() - startTime) / frameTime);
