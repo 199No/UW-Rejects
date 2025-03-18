@@ -185,8 +185,11 @@ public class Gui extends JPanel{
         drawSwingHitbox(e);
         drawQueue.add(new GraphicsRunnable() {
             public void draw(Graphics2D g2d){
-                g2d.drawImage(hpBar.getFrameNum(8 - (int)(e.getHealthPercent() * 8)), (int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - Gui.TILE_SIZE), (int)e.getWidth(), (int)e.getHeight(), null);
-                g2d.drawImage(swingAnimation.getFrame(), (int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()), (int)e.getWidth(), (int)e.getHeight(), null);
+                g2d.drawImage(hpBar.getFrameNum(8 - (int)(e.getHealthPercent() * 8)), (int)absToScreenX(e.getX()), (int)absToScreenY(e.getY() - Gui.TILE_SIZE + 15), (int)e.getWidth(), (int)e.getHeight() * 3/4, null);
+                // Draw block
+                //g2d.drawImage(blockAnimation.getFrame(), (int)absToScreenX(e.getX() -5), (int)absToScreenY(e.getY()- 5), (int)e.getWidth() + 10, (int)e.getHeight() + 10, null);
+                // Draw attack
+                //g2d.drawImage(swingAnimation.getFrame(), (int)absToScreenX(e.getX() + e.getWidth() - 10), (int)absToScreenY(e.getY()- 5), (int)e.getWidth() + 10, (int)e.getHeight() + 10, null);
             }
         });
     }
