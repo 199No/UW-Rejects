@@ -47,14 +47,13 @@ public class Slime extends Enemies {
         this.eyesight = 400;
         this.alert = false;
         this.idle = true;
-
         
         // Define a constantly running Animation for the slime (soon to be better)
         slimeAnimation = new Animation(new Images("Images/Enemies", Transparency.BITMASK).getImage("slime"), 4, 2, 7, 100, true);
         slimeAnimation.start(); 
     }
 
-    public Slime(double x, double y) {
+    public Slime(double x, double y, boolean isAlive) {
         super(x, y, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle((int) x, (int) y, Gui.TILE_SIZE, Gui.TILE_SIZE) );
         this.health = 100;
         this.damage = 10;
@@ -62,6 +61,7 @@ public class Slime extends Enemies {
         this.eyesight = 400;
         this.alert = false;
         this.idle = true;
+        this.isAlive = isAlive;
 
         
         // Define a constantly running Animation for the slime (soon to be better)
@@ -194,11 +194,9 @@ public class Slime extends Enemies {
 
     public void die() {
         Sounds.playSound("SlimeDeath");
-        // Handle slime death
+        this.isAlive = false;
     }
-    public void takeDamage(){
-        
-    }
+
     public BufferedImage getImage(){
         return slimeAnimation.getFrame();
     }

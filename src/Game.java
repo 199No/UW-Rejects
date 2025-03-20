@@ -180,6 +180,24 @@ public class Game implements ActionListener{
             ((player1.getX() + player2.getX()) / 2 - gui.cameraX()) / 10,
             (((player1.getY() + player2.getY()) / 2) * Gui.HEIGHT_SCALE - gui.cameraY()) / 10
         );
+
+        ///////////
+        /// CHECK DEATH
+        ///////////
+
+        for(int i = 0; i < enemies.size(); i++){
+            if(enemies.get(i).getIsAlive()){
+                enemies.remove(i);
+            }
+        }
+
+        for(int i = 0; i < players.size(); i++){
+            if(players.get(i).getIsAlive()){
+                players.remove(i);
+            }
+        }
+
+
         // Create array of indices
         entityIndices = new int[entities.size()];
         // Populate array
@@ -419,7 +437,7 @@ public class Game implements ActionListener{
     }
 
     public Slime spawnSlime(double x, double y){
-        return new Slime(x,y); //make a slime given a x and y
+        return new Slime(x,y, true); //make a slime given a x and y
     }
     public static void setDebugMode(boolean value){
         inDebugMode = value;

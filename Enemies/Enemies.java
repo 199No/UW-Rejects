@@ -24,6 +24,7 @@ public abstract class Enemies extends Entity {
     protected double xPos;
     protected double yPos;
     protected double[] lastSeen; // the x and y pos of the last time the enemy saw the player
+    protected boolean isAlive;
 
     // States of an enemy
     protected boolean alert; // seen player, is aware
@@ -65,10 +66,7 @@ public abstract class Enemies extends Entity {
         return this.alert;
     }
     public boolean getIsAlive(){
-        if(this.health > 0){
-            return true;
-        }
-        return false;
+        return this.isAlive;
     }
 
 }

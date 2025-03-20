@@ -12,6 +12,7 @@ public class Player extends Entity{
     //Properties
     //////////////
     private int health;
+    private boolean isAlive;
     private int damage;
     private double speed = 3.0;
     private double shiftSpeed = 6.0;
@@ -80,6 +81,7 @@ public class Player extends Entity{
 
         this.playernum = playernum;
         this.health = hp;
+        this.isAlive = true;
         this.damage = dmg;
 
     }
@@ -287,11 +289,15 @@ public class Player extends Entity{
     public double getHealth(){
         return health;
     }
-
     public void setHealth(int health){
         this.health = health;
     }
-
+    public boolean getIsAlive(){
+        return isAlive;
+    }
+    public void setIsAlive(boolean bool){
+        this.isAlive = bool;
+    }
     public double getMaxHealth(){
         return maxHealth;
     }
