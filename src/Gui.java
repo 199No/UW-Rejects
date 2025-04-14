@@ -98,6 +98,8 @@ public class Gui extends JPanel{
         }
         // Prevent memory leaks (turns out adding 10-50 items to an ArrayList every frame gets slow fast)
         drawQueue.clear();
+        g.dispose();
+        g2d.dispose();
     }
     // Allows other classes to run custom draw code.
     public void addToQueue(GraphicsRunnable g){
