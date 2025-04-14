@@ -186,13 +186,13 @@ public class Game implements ActionListener{
         ///////////
 
         for(int i = 0; i < enemies.size(); i++){
-            if(enemies.get(i).getIsAlive()){
+            if(!enemies.get(i).getIsAlive()){
                 enemies.remove(i);
             }
         }
 
         for(int i = 0; i < players.size(); i++){
-            if(players.get(i).getIsAlive()){
+            if(!players.get(i).getIsAlive()){
                 players.remove(i);
             }
         }
@@ -210,6 +210,7 @@ public class Game implements ActionListener{
             if(entityIndices[i] < entities.size() - 2){
                 gui.drawEntity(entities.get(entityIndices[i])); 
             } else {
+                System.out.println(players.size());
                 gui.drawPlayer(players.get(entityIndices[i] - (entities.size() - 2)));
             }
         }
