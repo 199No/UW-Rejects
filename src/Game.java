@@ -210,7 +210,6 @@ public class Game implements ActionListener{
             if(entityIndices[i] < entities.size() - 2){
                 gui.drawEntity(entities.get(entityIndices[i])); 
             } else {
-                System.out.println(players.size());
                 gui.drawPlayer(players.get(entityIndices[i] - (entities.size() - 2)));
             }
         }

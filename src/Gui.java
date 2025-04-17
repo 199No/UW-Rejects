@@ -57,14 +57,14 @@ public class Gui extends JPanel{
     //////////////
     public Gui(int width, int height, Input input) {
         // General images, uses bitmask transparency
-        images = new Images("Images", Transparency.TRANSLUCENT);
+        images = new Images("Images", Transparency.BITMASK);
         // Images for tiles only
         tileImages = new Images("Images/Enviroment/Tiles", Transparency.OPAQUE);
 
         swingAnimation = new Animation(images.getImage("swordAttack"), 4, 2, 8, 50, true);
         blockAnimation = new Animation(images.getImage("blockSheet"), 4, 4, 15, 20, true);
         hpBar = new Animation(images.getImage("healthBar"), 11, 1, 11, Integer.MAX_VALUE, false);
-        waterAnimation = new Animation(images.getImage("waterTile"), 3, 1, 3, 250, true);
+        waterAnimation = new Animation(images.getImage("water"), 3, 1, 3, 250, true);
         waterAnimation.start();
         this.cameraX = 0;
         this.cameraY = 0;
@@ -91,6 +91,7 @@ public class Gui extends JPanel{
     // Runs every frame and draws stuff to the screen.
     // Called internally by Swing.
     public void paintComponent(Graphics g){
+        super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
         // Go through every item in the queue and draw it.
         for(int i = 0; i < drawQueue.size(); i++){
@@ -127,6 +128,7 @@ public class Gui extends JPanel{
             public void draw(Graphics2D g2d){
                 g2d.setColor(new Color(0, 175, 255));
                 g2d.drawString(String.valueOf(n), 40, 60);
+                g2d.drawImage(images.getImage("grass"), 0, 0, null);
                 
             }
         });
@@ -211,16 +213,24 @@ public class Gui extends JPanel{
                         // Special condition: water tile is animated
                         if(c.getTile(x, y) - 1 == 17){
                             tileImage = waterAnimation.getFrame();
+                            // Draw the image for this tile
+                            g2d.drawImage(
+                                (tileImage), 
+                                (int)(chunkCoords[0] + (x * TILE_SIZE)), 
+                                (int)(chunkCoords[1] + (y * (TILE_SIZE * HEIGHT_SCALE))),
+                                TILE_SIZE,
+                                (int)(TILE_SIZE * HEIGHT_SCALE),
+                                null
+                            );
+                        } else {                                
+                            // Draw the image for this tile
+                            g2d.drawImage(
+                                (tileImage), 
+                                (int)(chunkCoords[0] + (x * TILE_SIZE)), 
+                                (int)(chunkCoords[1] + (y * (TILE_SIZE * HEIGHT_SCALE))),
+                                null
+                            );
                         }
-                        // Draw the image for this tile
-                        g2d.drawImage(
-                            (tileImage), 
-                            (int)(chunkCoords[0] + (x * TILE_SIZE)), 
-                            (int)(chunkCoords[1] + (y * (TILE_SIZE * HEIGHT_SCALE))), 
-                            TILE_SIZE, 
-                            (int)(TILE_SIZE * HEIGHT_SCALE), 
-                            null
-                        );
                         // Draw a rectangle on the grid, same size as the image
                         if(showGridOverlay) {
                             g2d.setColor(Color.BLACK);
@@ -329,14 +339,14 @@ public class Gui extends JPanel{
         // Color of the final shadow (usually black)
         Color color = new Color(0, 0, 0);
         // Result image
-        BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), Transparency.TRANSLUCENT);
+        BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), Transparency.BITMASK);
 
         // Copy the alpha channel from the original image
         Graphics2D g = result.createGraphics();
         g.drawImage(image, 0, 0, null);
 
         // Set the composite rule to only affect non-transparent pixels
-        // @see https://ssp.impulsetrain.com/porterduff.html
+        /* @see https://ssp.impulsetrain.com/porterduff.html ***/
         g.setComposite(AlphaComposite.SrcIn.derive(0.3f));
 
         // Set the desired color and fill the entire image

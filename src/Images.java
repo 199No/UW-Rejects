@@ -3,12 +3,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
-
+import java.awt.Image;
 public class Images {
     BufferedImage[] imageList;
     String[] imageNames;
@@ -50,13 +49,24 @@ public class Images {
         else {
             // ImageIO error handling
             try {
+                // BufferedImage bimage = ImageIO.read(folder);
+                // // Add this image to the list
+                // tempImageList.add(toCompatibleImage(bimage));
+                // // Add its name to the list of names
+                // tempImageNames.add(folder.getName().replace(".png", ""));
+                
                 Image image = ImageIO.read(folder);
-                BufferedImage bimage = config.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
+                BufferedImage bimage;
+                if(folderPath.contains("tile")){
+                    bimage = config.createCompatibleImage((int)(Gui.TILE_SIZE), (int)(Gui.TILE_SIZE * Gui.HEIGHT_SCALE), transparency);
+                } else {
+                    bimage = config.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
+                }
                 Graphics bGraphics = bimage.getGraphics();
-                bGraphics.drawImage(image, 0, 0, null);
+                bGraphics.drawImage(image, 0, 0, bimage.getWidth(), bimage.getHeight(), null);
                 bGraphics.dispose();
                 // Add this image to the list
-                tempImageList.add(toCompatibleImage(bimage));
+                tempImageList.add(bimage);
                 // Add its name to the list of names
                 tempImageNames.add(folder.getName().replace(".png", ""));
             } catch(Exception e){
