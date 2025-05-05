@@ -122,6 +122,16 @@ public class Player extends Entity{
         // Update position
         x += xVel;
         y += yVel;
+        if(xVel >= 0){
+            xDir = 1;
+        } else {
+            xDir = -1;
+        }
+        if(yVel >= 0){
+            yDir = 1;
+        } else {
+            yDir = -1;
+        }
     }
 
     public void dash(int key) {
@@ -149,6 +159,16 @@ public class Player extends Entity{
         // Update position
         x += xVel;
         y += yVel;
+        if(xVel >= 0){
+            xDir = 1;
+        } else {
+            xDir = -1;
+        }
+        if(yVel >= 0){
+            yDir = 1;
+        } else {
+            yDir = -1;
+        }
     }
 
     public void attack() {
