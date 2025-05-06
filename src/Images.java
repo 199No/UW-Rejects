@@ -57,10 +57,19 @@ public class Images {
                 
                 Image image = ImageIO.read(folder);
                 BufferedImage bimage;
-                if(folderPath.contains("tile")){
-                    bimage = config.createCompatibleImage((int)(Gui.TILE_SIZE), (int)(Gui.TILE_SIZE * Gui.HEIGHT_SCALE), transparency);
+                if(folderPath.contains("Flats") || folderPath.contains("Tiles")){
+                    bimage = new BufferedImage(
+                                (int)(((double)image.getWidth(null) / 24.0) * Gui.TILE_SIZE),
+                                (int)(((double)image.getHeight(null) / 24.0) * Gui.TILE_SIZE * Gui.HEIGHT_SCALE),
+                                transparency
+                             );       
                 } else {
-                    bimage = config.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
+                    bimage = new BufferedImage(
+                                (int)(((double)image.getWidth(null) / 24.0) * Gui.TILE_SIZE),
+                                (int)(((double)image.getHeight(null) / 24.0) * Gui.TILE_SIZE),
+                                transparency
+                             );       
+
                 }
                 Graphics bGraphics = bimage.getGraphics();
                 bGraphics.drawImage(image, 0, 0, bimage.getWidth(), bimage.getHeight(), null);

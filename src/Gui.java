@@ -169,8 +169,6 @@ public class Gui extends JPanel{
                     e.getImage(), 
                     (int)absToScreenX(e.getX()), 
                     (int)absToScreenY(e.getY()),
-                    (int)e.getWidth(), 
-                    (int)e.getHeight(),
                     null
                 );
                 if(Game.inDebugMode()){
