@@ -50,7 +50,7 @@ public class EnvObject extends Entity{
             case 2:
                 // Small airwall
                 if(Game.inDebugMode()){
-                    image = images.getImage("X").getSubimage(1, 1, 22, 22);
+                    image = images.getImage("X").getSubimage(5, 5, Gui.TILE_SIZE - 5, Gui.TILE_SIZE - 5);
                 } else {
                     image = new BufferedImage(5, 5, Transparency.BITMASK);
                 }
@@ -69,19 +69,19 @@ public class EnvObject extends Entity{
                 break;
             case 5:
                 // Pink flower
-                image = images.getImage("flowers").getSubimage(0, 0, 24, 24);
+                image = images.getImage("flowers").getSubimage(0, 0, Gui.TILE_SIZE, Gui.TILE_SIZE);
                 this.collidable = false;
                 isFlat = false;
                 break;
             case 6:
                 // Purple flower
-                image = images.getImage("flowers").getSubimage(24, 0, 24, 24);
+                image = images.getImage("flowers").getSubimage(Gui.TILE_SIZE, 0, Gui.TILE_SIZE, Gui.TILE_SIZE);
                 this.collidable = false;
                 isFlat = false;
                 break;
             case 7:
                 // Blue flower
-                image = images.getImage("flowers").getSubimage(0, 24, 24, 24);
+                image = images.getImage("flowers").getSubimage(0, Gui.TILE_SIZE, Gui.TILE_SIZE, Gui.TILE_SIZE);
                 this.collidable = false;  
                 isFlat = false;
                 break;
