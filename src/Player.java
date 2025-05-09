@@ -48,8 +48,8 @@ public class Player extends Entity{
     //Dash
     private int dashCooldown = 5000; // in miliseconds
     private int dashLength   = 350 + 250 + 350; // in miliseconds
-    private boolean isDashing;
-    private int lastDash;
+    private boolean isDashing = false;
+    private int lastDash = (int) System.currentTimeMillis() - 10;
     private int lastDashKey = -1;
     
     //Hitbox
@@ -83,7 +83,6 @@ public class Player extends Entity{
         this.health = hp;
         this.isAlive = true;
         this.damage = dmg;
-
     }
 
 //-------------------------------------------------//

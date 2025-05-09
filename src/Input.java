@@ -30,8 +30,8 @@ public class Input implements KeyListener{
     static int p1dash; // keyevent used to distinguish which key was pressed
     static int p2dash; // keyevent used to distinguish which key was pressed
     static int dash; // keyevent of last found key
-    static int lastp1Dash = (int) System.currentTimeMillis() - 50000; // in mili
-    static int lastp2Dash = (int) System.currentTimeMillis() - 50000; // in mili
+    static int lastp1Dash = (int) System.currentTimeMillis(); // in mili
+    static int lastp2Dash = (int) System.currentTimeMillis(); // in mili
     static int lastdash; // time of last dash
 
     // all keys used, besides shift for player 1

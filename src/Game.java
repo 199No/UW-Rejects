@@ -297,11 +297,11 @@ public class Game implements ActionListener{
         // Handle player dashing
     
         if (!player.getIsDashing()) {
-            if (currentTime - Input.getLastDash() < player.getDashLength()) {
+            if (currentTime - Input.getLastDash(player) < player.getDashLength()) {
                 handlePlayerDash(player, playerKeys);
                 player.setIsDashing(true);
             }
-        } else if (currentTime - Input.getLastDash() > player.getDashLength()) {
+        } else if (currentTime - Input.getLastDash(player) > player.getDashLength()) {
             player.setIsDashing(false);
         }
     
