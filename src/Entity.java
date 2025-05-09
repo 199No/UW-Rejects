@@ -59,4 +59,6 @@ public abstract class Entity{
         );
     }
     public abstract BufferedImage getImage();
+
+    public abstract BufferedImage getShadowImage();
 }

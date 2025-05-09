@@ -135,22 +135,11 @@ public class Gui extends JPanel{
     }
     // Draws a shadow for the given Entity.
     public void drawShadow(Entity e, Graphics2D g2d){
-                // @see javadoc for AffineTranform
-                double shearFactor = 0.5; // Determines the "angle" at which the shadow projects.
-
-                BufferedImage eImage = e.getImage();
-
-                BufferedImage result = new BufferedImage( // Elongated image to account for shear
-                    eImage.getWidth() + (int)(eImage.getWidth() * shearFactor),
-                    eImage.getHeight(), Transparency.BITMASK);
-                // Used to apply the shear onto the image
-                AffineTransformOp op = new AffineTransformOp(AffineTransform.getShearInstance(shearFactor, 0), null);
-                // Apply shear
-                result = op.filter(toShadow(eImage), result);
+        double shearFactor = 0.5;
                 // Draw the final result at the correct position
                 g2d.drawImage(
-                    result,                        // Correction because of shear
-                    (int)(absToScreenX(e.getX()) - (e.getWidth() * shearFactor) ), 
+                    e.getShadowImage(),                        // Correction because of shear
+                    (int)(absToScreenX(e.getX()) - e.getWidth() * shearFactor), 
                     (int)absToScreenY(e.getY()) + (int)(2 * e.getHeight()), 
                     (int)(e.getWidth() * 1.5), 
                     -(int)e.getHeight(), 
@@ -333,7 +322,7 @@ public class Gui extends JPanel{
         sCameraY = cameraY;
     }
     // Recolors a BufferedImage so that it is gray and translucent
-    public BufferedImage toShadow(BufferedImage image){
+    public static BufferedImage toShadow(BufferedImage image){
         // Color of the final shadow (usually black)
         Color color = new Color(0, 0, 0);
         // Result image
@@ -351,8 +340,22 @@ public class Gui extends JPanel{
         g.setColor(color);
         g.fillRect(0, 0, image.getWidth(), image.getHeight());
         
+        
+        // @see javadoc for AffineTranform
+        double shearFactor = 0.5; // Determines the "angle" at which the shadow projects.
+
+        BufferedImage eImage = result;
+
+        BufferedImage result2 = new BufferedImage( // Elongated image to account for shear
+            eImage.getWidth() + (int)(eImage.getWidth() * shearFactor),
+            eImage.getHeight(), Transparency.BITMASK);
+        // Used to apply the shear onto the image
+        AffineTransformOp op = new AffineTransformOp(AffineTransform.getShearInstance(shearFactor, 0), null);
+        // Apply shear
+        result2 = op.filter(eImage, result2);
+
         // Return the final result
-        return result;
+        return result2;
         
     }
     

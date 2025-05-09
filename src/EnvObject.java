@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 public class EnvObject extends Entity{
     private static Images images = new Images("Images/Enviroment", Transparency.BITMASK);
+    
     private static double[][] possibleDimensions = new double[][] {
         {0, 0},
         {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
@@ -25,6 +26,7 @@ public class EnvObject extends Entity{
     };
     Rectangle hitbox;
     BufferedImage image;
+    BufferedImage shadowImage;
     double xPos, yPos;
     int type;
     boolean collidable;
@@ -121,10 +123,14 @@ public class EnvObject extends Entity{
                 isFlat = true;
                 break;
         }
+        shadowImage = Gui.toShadow(image);
         hitbox.translate((int)this.xPos, (int)this.yPos);
     }
     public BufferedImage getImage(){
         return image;
+    }
+    public BufferedImage getShadowImage(){
+        return shadowImage;
     }
     public boolean isFlat(){
         return isFlat;

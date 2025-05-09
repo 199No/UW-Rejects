@@ -200,4 +200,7 @@ public class Slime extends Enemies {
     public BufferedImage getImage(){
         return slimeAnimation.getFrame();
     }
+    public BufferedImage getShadowImage(){
+        return Gui.toShadow(getImage());
+    }
 }

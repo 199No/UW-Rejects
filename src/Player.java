@@ -415,6 +415,50 @@ public class Player extends Entity{
         }
         return playerImage;
     }
+    public BufferedImage getShadowImage(){BufferedImage playerImage = idleAnim.getCurFrame(); // Default idle animation frame
 
+        // Handle dash animation
+        if(isDashing){
+            // time since last dash 
+            int currentState = (int)(((int)System.currentTimeMillis() - Input.getLastDash(this)) / 250);
+            
+            if(xDir == -1){
+                currentState += 4;
+            }
+
+            if(dashAnimation.getCurState() != currentState) dashAnimation.setState(currentState);
+
+            playerImage = dashAnimation.getCurFrame();
+        }
+        else /* if player is not dashing */{
+            if (yDir == -1) {
+                // Player is facing up
+                if (xDir == -1) {
+                    // Moving left while facing up
+                    idleAnim.setState(3);
+                } else if (xDir == 1) {
+                    // Moving right while facing up
+                    idleAnim.setState(2);
+                } else {
+                    // Default to right-facing up when no horizontal movement
+                    idleAnim.setState(3);
+                }
+            } else {
+                // Player is not facing up
+                if (xDir == -1) {
+                    // Moving left
+                    idleAnim.setState(1);
+                } else if (xDir == 1) {
+                    // Moving right
+                    idleAnim.setState(0);
+                } else {
+                    // Default to idle right-facing when no movement
+                    idleAnim.setState(0);
+                }
+            }
+            playerImage = idleAnim.getCurFrame();
+        }
+        return Gui.toShadow(playerImage);
+    }
 
 }
