@@ -1,8 +1,8 @@
 package Enemies;
 import src.Entity;
+
 import java.util.ArrayList;
 import src.Player;
-import java.util.Vector;
 import java.awt.Rectangle;
 
 public abstract class Monster extends Entity {
@@ -19,15 +19,18 @@ public abstract class Monster extends Entity {
         dead
     }
 
-    private Vector<Double> velocity;
+    Player target = null;
+    int now;
+    int lastNewDirection;
+
 
     public Monster(double x, double y, double width, double height, Rectangle hitbox){
         super(x,y,width,height,hitbox);
         state = State.idle;
-        this.velocity = new Vector<>(2);
     }
 
     public void update(ArrayList<Player> players){
+        this.now = (int) System.currentTimeMillis();
         int eyesight = 200;
         switch(state){
             case idle:
@@ -43,6 +46,9 @@ public abstract class Monster extends Entity {
                 break;
         }
         if(inRange(players, eyesight) && this.state != State.dead){
+            if(target == null || now - lastNewDirection > 5000){
+                findTarget(players);
+            }
             this.state = State.chasing;
         }
         else if(!inRange(players, eyesight) && this.state != State.dead){
@@ -57,9 +63,7 @@ public abstract class Monster extends Entity {
     public boolean inRange(ArrayList<Player> players, int eyesight){
         for(int i = 0; i < players.size(); i++){
             // Calculate the distance to the player's location
-            double dx = players.get(i).getX() - this.getX();
-            double dy = players.get(i).getY() - getY();
-            double distance = Math.sqrt(dx * dx + dy * dy);
+            double distance = calcDistance(players.get(i));
             
             if(distance <= eyesight){
                 return true;
@@ -69,12 +73,35 @@ public abstract class Monster extends Entity {
     }
 
     public void idle(){
-
+        int interval = now - lastNewDirection;
+        if(interval > 5000){
+            //TODO: find a random direction / point to move to
+            lastNewDirection = now;
+        }
     }
+
+    public void findTarget(ArrayList<Player> Players){
+        Player firstplayer = Players.get(0);
+        Player secondplayer = Players.get(1);
+        double distance1 = calcDistance(firstplayer);
+        double distance2 = calcDistance(secondplayer);
+        if(distance1 >= distance2){
+            target = firstplayer;
+        }else{
+            target = secondplayer;
+        }
+    }
+
+    public double calcDistance(Player player){
+        double dx = player.getX() - this.getX();
+        double dy = player.getY() - this.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
 
     //TODO: Figure out how to use vectors to advantage
     public void chase(ArrayList<Player> Players){
-        
+
     }
 
     public void die(){
