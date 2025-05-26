@@ -38,23 +38,7 @@ public class Gui extends JPanel{
     int[][][] envChunks = new int[10][10][9];
     int selectedType = 1;
     
-    private static double[][] possibleDimensions = new double[][] {
-        {0, 0},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
-        {Gui.TILE_SIZE * 3, Gui.TILE_SIZE * 3},
-        {Gui.TILE_SIZE * 3, Gui.TILE_SIZE * 3},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
-        {Gui.TILE_SIZE * 2, Gui.TILE_SIZE * 3},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE},
-        {Gui.TILE_SIZE, Gui.TILE_SIZE * Gui.HEIGHT_SCALE}
-    };
+    
     ///////////////
     //Constuctor
     //////////////

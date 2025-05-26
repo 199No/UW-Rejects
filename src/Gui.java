@@ -48,8 +48,9 @@ public class Gui extends JPanel{
     double cameraY;
     static double sCameraX;
     static double sCameraY; // Static version of camera coords
-
-
+    BufferedImage blankLayer = new BufferedImage(Gui.WIDTH, Gui.HEIGHT, Transparency.BITMASK);
+    BufferedImage shadowLayer = new BufferedImage(Gui.WIDTH, Gui.HEIGHT, Transparency.BITMASK);
+    BufferedImage entityLayer = new BufferedImage(Gui.WIDTH, Gui.HEIGHT, Transparency.BITMASK);
     int transitionFade = 0; 
 
     ///////////////
@@ -133,9 +134,28 @@ public class Gui extends JPanel{
             }
         });
     }
+    // Draws background, trees, environment, etc for now.
+    public void drawShadowLayer(){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                g2d.drawImage(toGlass(shadowLayer), 0, 0, null);
+                shadowLayer = new BufferedImage(Gui.WIDTH, Gui.HEIGHT, Transparency.BITMASK);
+            }
+        });
+    }
+    // Draws background, trees, environment, etc for now.
+    public void drawEntityLayer(){
+        drawQueue.add(new GraphicsRunnable() {
+            public void draw(Graphics2D g2d){
+                g2d.drawImage(entityLayer, 0, 0, null);
+                entityLayer = new BufferedImage(Gui.WIDTH, Gui.HEIGHT, Transparency.BITMASK);
+            }
+        });
+    }
     // Draws a shadow for the given Entity.
-    public void drawShadow(Entity e, Graphics2D g2d){
+    public void drawShadow(Entity e){
         double shearFactor = 0.5;
+        Graphics2D g2d = (Graphics2D)shadowLayer.getGraphics();
                 // Draw the final result at the correct position
                 g2d.drawImage(
                     e.getShadowImage(),                        // Correction because of shear
@@ -145,32 +165,32 @@ public class Gui extends JPanel{
                     -(int)e.getHeight(), 
                     null
                 );
+        g2d.dispose();
+
     }
     // Draws an Entity and its shadow.
     public void drawEntity(Entity e){
-        drawQueue.add(new GraphicsRunnable() {
-            public void draw(Graphics2D g2d){
-                // Draw the shadow behind the player
-                if(e.getHeight() != TILE_SIZE * HEIGHT_SCALE)
-                drawShadow(e, g2d);
-                // Draw the player image in screen space
-                g2d.drawImage(
-                    e.getImage(), 
-                    (int)absToScreenX(e.getX()), 
-                    (int)absToScreenY(e.getY()),
-                    null
-                );
-                if(Game.inDebugMode()){
-                    // Draw hitbox
-                    drawHitbox(e);
-                    // Draw outline rectangle
-                    g2d.setColor(Color.CYAN);
-                    g2d.setStroke(new BasicStroke(2));
-                    g2d.drawRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()), (int)e.getWidth(), (int)e.getHeight());
-                }
-            }
-        });
+        Graphics2D g2d = (Graphics2D)entityLayer.getGraphics();
+        // Draw the shadow behind the player
+        if(e.getHeight() != TILE_SIZE * HEIGHT_SCALE)
+        drawShadow(e);
+        // Draw the player image in screen space
+        g2d.drawImage(
+            e.getImage(), 
+            (int)absToScreenX(e.getX()), 
+            (int)absToScreenY(e.getY()),
+            null
+        );
+        if(Game.inDebugMode()){
+            // Draw hitbox
+            drawHitbox(e);
+            // Draw outline rectangle
+            g2d.setColor(Color.CYAN);
+            g2d.setStroke(new BasicStroke(2));
+            g2d.drawRect((int)absToScreenX(e.getX()), (int)absToScreenY(e.getY()), (int)e.getWidth(), (int)e.getHeight());
+        }
     }
+    
     public void drawPlayer(Player e){
         drawEntity(e);
         drawSwingHitbox(e);
@@ -323,6 +343,27 @@ public class Gui extends JPanel{
     }
     // Recolors a BufferedImage so that it is gray and translucent
     public static BufferedImage toShadow(BufferedImage image){
+        
+        
+        // @see javadoc for AffineTranform
+        double shearFactor = 0.5; // Determines the "angle" at which the shadow projects.
+
+        BufferedImage eImage = image;
+
+        BufferedImage result2 = new BufferedImage( // Elongated image to account for shear
+            eImage.getWidth() + (int)(eImage.getWidth() * shearFactor),
+            eImage.getHeight(), Transparency.BITMASK);
+        // Used to apply the shear onto the image
+        AffineTransformOp op = new AffineTransformOp(AffineTransform.getShearInstance(shearFactor, 0), null);
+        // Apply shear
+        result2 = op.filter(eImage, result2);
+
+        // Return the final result
+        return result2;
+        
+    }
+    public static BufferedImage toGlass(BufferedImage image){
+        
         // Color of the final shadow (usually black)
         Color color = new Color(0, 0, 0);
         // Result image
@@ -339,24 +380,7 @@ public class Gui extends JPanel{
         // Set the desired color and fill the entire image
         g.setColor(color);
         g.fillRect(0, 0, image.getWidth(), image.getHeight());
-        
-        
-        // @see javadoc for AffineTranform
-        double shearFactor = 0.5; // Determines the "angle" at which the shadow projects.
-
-        BufferedImage eImage = result;
-
-        BufferedImage result2 = new BufferedImage( // Elongated image to account for shear
-            eImage.getWidth() + (int)(eImage.getWidth() * shearFactor),
-            eImage.getHeight(), Transparency.BITMASK);
-        // Used to apply the shear onto the image
-        AffineTransformOp op = new AffineTransformOp(AffineTransform.getShearInstance(shearFactor, 0), null);
-        // Apply shear
-        result2 = op.filter(eImage, result2);
-
-        // Return the final result
-        return result2;
-        
+        return result;
     }
     
     /////////////////////////////////////////////////////

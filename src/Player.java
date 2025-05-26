@@ -216,6 +216,9 @@ public class Player extends Entity{
     public void block() {
         setActive(false);
         System.out.println("Block!");
+        if(isBlocking){
+            Sounds.playSound("Blocking");
+        }
         lastBlock = (int) System.currentTimeMillis();
     }
 
@@ -269,9 +272,6 @@ public class Player extends Entity{
     //BLOCK
 
     public boolean getIsBlocking(){
-        if(isBlocking){
-            Sounds.playSound("Blocking");
-        }
         return this.isBlocking;
     }
     public int getLastBlock(){

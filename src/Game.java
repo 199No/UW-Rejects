@@ -222,7 +222,8 @@ public class Game implements ActionListener{
                 gui.drawPlayer(players.get(entityIndices[i] - (entities.size() - 2)));
             }
         }
-        
+        gui.drawShadowLayer();
+        gui.drawEntityLayer();
     
         // Draw dash bars
         // TODO: Make a GUI method for this~!
