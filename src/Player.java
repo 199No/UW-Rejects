@@ -3,6 +3,7 @@ package src;
 import java.awt.Rectangle;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 //-------------------------------------------------//
 //                    Player                       //
@@ -88,6 +89,16 @@ public class Player extends Entity{
 //-------------------------------------------------//
 //                    Methods                      //
 //-------------------------------------------------// 
+    public void updateMovement(boolean[] keys){
+        
+    }
+    public void updateCollision(ArrayList<Entity> entities){
+        // Make sure to not collide with self
+    }
+    
+
+
+
 
     public void move(boolean[] movement, boolean isShifting) {
         

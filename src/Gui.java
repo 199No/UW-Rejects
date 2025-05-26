@@ -280,7 +280,6 @@ public class Gui extends JPanel{
                 if(transitionStart != -1){
                     if(now - transitionStart < 1500){
                         transitionFade += 15;
-                        System.out.println("oiiii");
                     } else {
                         transitionFade -= 15;
                     }
@@ -309,13 +308,14 @@ public class Gui extends JPanel{
         return cameraY;
     }
     // Move camera BY an amount.
-    public void moveCamera(double x, double y){
+    public void shiftCamera(double x, double y){
         cameraX += x;
         cameraY += y;
         sCameraX = cameraX;
         sCameraY = cameraY;
     }
-    public void moveCameraTo(double x, double y){
+    // Move camera TO a location.
+    public void moveCamera(double x, double y){
         cameraX = x;
         cameraY = y;
         sCameraX = cameraX;
@@ -333,7 +333,7 @@ public class Gui extends JPanel{
         g.drawImage(image, 0, 0, null);
 
         // Set the composite rule to only affect non-transparent pixels
-        /* @see https://ssp.impulsetrain.com/porterduff.html ***/
+        /* @see https://ssp.impulsetrain.com/porterduff.html */
         g.setComposite(AlphaComposite.SrcIn.derive(0.3f));
 
         // Set the desired color and fill the entire image

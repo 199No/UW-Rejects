@@ -27,6 +27,8 @@ public class Input implements KeyListener{
     static int[] pressed = new int[90];
     static int[] released = new int[90];
     
+
+    //TODO: Make player handle this (Input should only handle input)
     static int p1dash; // keyevent used to distinguish which key was pressed
     static int p2dash; // keyevent used to distinguish which key was pressed
     static int dash; // keyevent of last found key

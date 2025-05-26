@@ -91,21 +91,27 @@ public class Game implements ActionListener{
 
     @Override
 
+
+    /////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+    /// TODO: Simplify/despaghettify this!!!!!
+    /////////////////////////////////////////
+
+
+
      public void actionPerformed(ActionEvent e) {
         
         
         /////////////////////
         //// CALCULATE FPS
         ////////////////////
+        
+        // TODO: Make this a seperate method (readability)
         now = System.currentTimeMillis();
         if (now - lastSecond > 1000) {
             lastSecond = now;
             frameRate = framesLastSecond;
             framesLastSecond = 0;
-            
-            // enemies.add(
-            //     new Slime(random.nextInt(0, Gui.WIDTH), random.nextInt(0, Gui.HEIGHT), Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(0, 0, Gui.TILE_SIZE, Gui.TILE_SIZE))
-            // );
         } else {
             framesLastSecond++;
         }
@@ -115,6 +121,7 @@ public class Game implements ActionListener{
         updatePlayer(player1);
         updatePlayer(player2);
         // Update enemies
+        // TODO: Have enemies handle this
         for (int i = 0; i < this.enemies.size(); i++) {
             Enemies enemy = enemies.get(i);
             for (int p = 0; p < this.players.size(); p++) {
@@ -176,7 +183,7 @@ public class Game implements ActionListener{
         }
     
         // Update camera position
-        gui.moveCamera(
+        gui.shiftCamera(
             ((player1.getX() + player2.getX()) / 2 - gui.cameraX()) / 10,
             (((player1.getY() + player2.getY()) / 2) * Gui.HEIGHT_SCALE - gui.cameraY()) / 10
         );
@@ -206,6 +213,8 @@ public class Game implements ActionListener{
         esort.sort(entityIndices, entities, 0, entities.size() - 1);
         // Draw all Entities (players, enemies, envObjects, etc.)
         
+        // TODO: Maybe have a draw() method in each entity
+
         for(int i = 0; i < entities.size(); i++){
             if(entityIndices[i] < entities.size() - 2){
                 gui.drawEntity(entities.get(entityIndices[i])); 
@@ -216,6 +225,7 @@ public class Game implements ActionListener{
         
     
         // Draw dash bars
+        // TODO: Make a GUI method for this~!
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g) {
                 double height1 = (((double)(int) System.currentTimeMillis() - (double) Input.getLastp1Dash()) / (double)Input.DASH_COOLDOWN) * Gui.HEIGHT;
@@ -231,9 +241,10 @@ public class Game implements ActionListener{
                 g.fillRect(Gui.WIDTH - 30, Gui.HEIGHT - (int) height2, 30, (int) height2);
             }
         });
-
+        // TODO: Move to Player collision
         checkHitboxes(this.players, this.enemies);
         despawnSwingHitbox(this.players);
+
         if(player1.getAbsHitbox().intersects(levelEndRect) && player2.getAbsHitbox().intersects(levelEndRect)){
             goToLevel2();
         }
@@ -245,7 +256,7 @@ public class Game implements ActionListener{
         
         entities.clear();
     }
-
+    // TODO: Move this to player collide method
     public void inBounds(Player player){
         if(player.getX() > this.xMax){
             player.setX(this.xMax);
@@ -260,6 +271,7 @@ public class Game implements ActionListener{
             player.setY(this.yMin);
         }
     }
+    // TODO: move this to enemy collide method
     public void inBounds(Enemies enemy){
         if(enemy.getX() > this.xMax){
             enemy.setX(this.xMax);
@@ -274,7 +286,7 @@ public class Game implements ActionListener{
             enemy.setY(this.yMin);
         }
     }
-    
+    // TODO: Make this a player method
     public void updatePlayer(Player player) {
 
         // Get input information
@@ -282,8 +294,8 @@ public class Game implements ActionListener{
         boolean[] keys = Input.getKeys();
     
         boolean[] shifts = Input.getShifts();
-    
-        int playerNum = player.playernum - 1;
+        // TODO: Getter for player num
+        int playerIndex = player.playernum - 1;
     
         int[] playerKeys = Input.getPlayerKeys(player);
     
@@ -293,10 +305,12 @@ public class Game implements ActionListener{
         if(player.getIsDashing()){
             player.dash(Input.getDashKey(player));
         }
-        updatePlayerMovement(player, playerKeys, shifts[playerNum], keys);
+        updatePlayerMovement(player, playerKeys, shifts[playerIndex], keys);
         // Handle player dashing
     
         if (!player.getIsDashing()) {
+                              // | TODO: Make this a player method 
+                              // V
             if (currentTime - Input.getLastDash(player) < player.getDashLength()) {
                 handlePlayerDash(player, playerKeys);
                 player.setIsDashing(true);
@@ -328,7 +342,7 @@ public class Game implements ActionListener{
         inBounds(player);
     
     }
-    
+    // TODO: Handle this in player
     private void handlePlayerAttack(Player player, int attackKey, boolean[] keys) {
 
         int currentTime = (int) System.currentTimeMillis();
@@ -358,7 +372,7 @@ public class Game implements ActionListener{
             }
         }
     }
-    
+    // TODO: Move to player "collide" method
     public void checkHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies) {
 
         for(int p = 0; p < players.size(); p++){
@@ -376,6 +390,7 @@ public class Game implements ActionListener{
         }
     }
     }
+    // TODO: Have player handle this
     public void despawnSwingHitbox(ArrayList<Player> players){
         for(int p = 0; p < players.size(); p++){
             if((int) System.currentTimeMillis() - players.get(p).getLastAttack() > players.get(p).getAttackLength()){
@@ -383,7 +398,7 @@ public class Game implements ActionListener{
             }
         }
     }
-
+    // TODO: Make this part of player "update movement method"
     private void updatePlayerMovement(Player player, int[] playerKeys, boolean shift, boolean[] keys) {
         // w a s d OR i j k l
         boolean[] movement = new boolean[] {
@@ -435,16 +450,14 @@ public class Game implements ActionListener{
         }
 
     }
-
+    // TODO: Use the slime constructor instead
     public Slime spawnSlime(double x, double y){
         return new Slime(x,y, true); //make a slime given a x and y
-    }
-    public static void setDebugMode(boolean value){
-        inDebugMode = value;
     }
     public static boolean inDebugMode(){
         return inDebugMode;
     }
+    // TODO: Gui should handle this
     public void goToLevel2(){
         // Change mapfile and env file to be map2.map
         if(fadeStart == -1){
