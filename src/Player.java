@@ -17,8 +17,7 @@ public class Player extends Entity{
     private boolean isAlive;
     private int damage;
     private double speed = 3.0;
-    private double shiftSpeed = 6.0;
-    private double dashSpeed = 12.0;
+    private double dashSpeed = 6.0;
     private double maxSpeed = 5.0;
     private int maxHealth = 100;
 
@@ -32,7 +31,7 @@ public class Player extends Entity{
 
     //misc
     private int score;
-    private double friction = 0.85;
+    private double friction = 0.65;
     public int playernum;
 
     //Attack
@@ -92,36 +91,46 @@ public class Player extends Entity{
 //-------------------------------------------------// 
     public void updateMovement(boolean[] keys){
         int[] playerKeys;
-        if(playernum == 1) 
+        if(this.playernum == 1) // Use WASD
             playerKeys = new int[]{
                 KeyEvent.VK_W,
                 KeyEvent.VK_A,
                 KeyEvent.VK_S,
                 KeyEvent.VK_D,
             };
-        if(playernum == 2) 
+        else if(this.playernum == 2) // Use IJKL
             playerKeys = new int[]{
                 KeyEvent.VK_I,
                 KeyEvent.VK_J,
                 KeyEvent.VK_K,
                 KeyEvent.VK_L,
             };
-        // Adjust velocity based on input
-        if(isDashing){
-            if (keys[KeyEvent.VK_W]) yVel -= dashSpeed; // W (Up)
-            if (keys[KeyEvent.VK_A]) xVel -= dashSpeed; // A (Left)
-            if (keys[KeyEvent.VK_S]) yVel += dashSpeed; // S (Down)
-            if (keys[KeyEvent.VK_D]) xVel += dashSpeed; // D (Right)
-        }else{
-            if (keys[KeyEvent.VK_W]) yVel -= speed; // W (Up)
-            if (keys[KeyEvent.VK_A]) xVel -= speed; // A (Left)
-            if (keys[KeyEvent.VK_S]) yVel += speed; // S (Down)
-            if (keys[KeyEvent.VK_D]) xVel += speed; // D (Right)
+        else { // Default to no keys
+            playerKeys = new int[4];
         }
+
+        // Adjust velocity based on input
+        if (keys[playerKeys[0]]) yVel -= (isDashing)? dashSpeed : speed; // W (Up)
+        if (keys[playerKeys[1]]) xVel -= (isDashing)? dashSpeed : speed; // A (Left)
+        if (keys[playerKeys[2]]) yVel += (isDashing)? dashSpeed : speed; // S (Down)
+        if (keys[playerKeys[3]]) xVel += (isDashing)? dashSpeed : speed; // D (Right)
+
+
+        // Update position and velocity
         x += xVel;
         y += yVel;
+
         xVel *= friction;
         yVel *= friction;
+        
+        // Cap speed
+        xVel = Math.max(-maxSpeed, Math.min(xVel, maxSpeed));
+        yVel = Math.max(-maxSpeed, Math.min(yVel, maxSpeed));
+        
+        xDir = (int)Math.signum(xVel);
+        yDir = (int)Math.signum(yVel);
+
+        // TODO: Make dashing only happen in one direction                  
     }
     public void updateCollision(ArrayList<Entity> entities){
         // Make sure to not collide with self
@@ -140,10 +149,10 @@ public class Player extends Entity{
         
         // Adjust velocity based on input
         if(isShifting){
-            if (movement[0]) yVel -= shiftSpeed; // W (Up)
-            if (movement[1]) xVel -= shiftSpeed; // A (Left)
-            if (movement[2]) yVel += shiftSpeed; // S (Down)
-            if (movement[3]) xVel += shiftSpeed; // D (Right)
+            //if (movement[0]) yVel -= shiftSpeed; // W (Up)
+            //if (movement[1]) xVel -= shiftSpeed; // A (Left)
+            //if (movement[2]) yVel += shiftSpeed; // S (Down)
+            //if (movement[3]) xVel += shiftSpeed; // D (Right)
         }else{
             if (movement[0]) yVel -= speed; // W (Up)
             if (movement[1]) xVel -= speed; // A (Left)
