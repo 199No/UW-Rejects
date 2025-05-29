@@ -12,8 +12,8 @@ public class Map {
     String envPath;
     public static final Rectangle CHUNK_UNLOAD_BOUNDARY = new Rectangle(-100, -100, Gui.WIDTH + 200, Gui.HEIGHT + 200);
     public Map(String tilePath, String envPath){
-        for(int y = 0; y < 3; y++){
-            for(int x = 0; x < 3; x++){
+        for(int y = 0; y < 6; y++){
+            for(int x = 0; x < 6; x++){
                 loadedChunks.add(new Chunk(loadChunk(x, y, tilePath), loadChunk(x, y, envPath), x, y));
             }
         }
