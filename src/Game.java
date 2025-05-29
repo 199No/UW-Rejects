@@ -66,7 +66,7 @@ public class Game implements ActionListener{
         players.add(player2);
         this.input = new Input();
         // Use the slime constructorsdds
-        enemies.add(spawnSlime(100, 300));
+        enemies.add(new Slime(400,400));
         random = new Random();
         gui = new Gui(1280, 720, input);
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
@@ -123,18 +123,9 @@ public class Game implements ActionListener{
         player1.updateMovement(Input.getKeys());
         player2.updateMovement(Input.getKeys());
         // Update enemies
-        // TODO: Have enemies handle this
         for (int i = 0; i < this.enemies.size(); i++) {
             Enemies enemy = enemies.get(i);
-            for (int p = 0; p < this.players.size(); p++) {
-                enemy.scanArea(new int[]{(int) players.get(p).getLocation()[0],  (int) players.get(p).getLocation()[1]});
-            }
-    
-            if (enemy.getAlert()) {
-                enemy.moveToward(enemy.getLastSeen());
-            } else {
-                enemy.idleMove();
-            }
+            enemy.update(players);
     
             ////////////////
             /// COLLISION
@@ -455,10 +446,7 @@ public class Game implements ActionListener{
         }
 
     }
-    // TODO: Use the slime constructor instead
-    public Slime spawnSlime(double x, double y){
-        return new Slime(x,y, true); //make a slime given a x and y
-    }
+
     public static boolean inDebugMode(){
         return inDebugMode;
     }
