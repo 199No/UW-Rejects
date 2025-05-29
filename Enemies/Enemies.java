@@ -98,6 +98,10 @@ public abstract class Enemies extends Entity {
         return this.alive;
     }
 
+    public double getDamage(){
+        return this.damage;
+    }
+
     // Abstract methods to be implemented by subclasses
     public abstract void idle();
     public abstract void findTarget(ArrayList<Player> players);

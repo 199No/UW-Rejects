@@ -122,6 +122,8 @@ public class Game implements ActionListener{
         // updatePlayer(player2);
         player1.updateMovement(Input.getKeys());
         player2.updateMovement(Input.getKeys());
+        player1.updateCollision(enemies,map.getAllEnvObjects());
+        player2.updateCollision(enemies,map.getAllEnvObjects());
         // Update enemies
         for (int i = 0; i < this.enemies.size(); i++) {
             Enemies enemy = enemies.get(i);
@@ -131,8 +133,6 @@ public class Game implements ActionListener{
             /// COLLISION
             ///////////////
             
-            // TODO: Put this in an Enemies method
-
             for (int c = 0; c < map.numLoadedChunks(); c++) {
                 EnvObject[] envObjects = map.getChunk(c).getEnvObjects();
                 for (int j = 0; j < envObjects.length; j++) {
@@ -284,14 +284,13 @@ public class Game implements ActionListener{
     }
     // TODO: Make this a player method
     public void updatePlayer(Player player) {
-
         // Get input information
     
         boolean[] keys = Input.getKeys();
     
         boolean[] shifts = Input.getShifts();
-        // TODO: Getter for player num
-        int playerIndex = player.playernum - 1;
+
+        int playerIndex = player.getPlayerNum() - 1;
     
         int[] playerKeys = Input.getPlayerKeys(player);
     
@@ -334,7 +333,6 @@ public class Game implements ActionListener{
         } else if (currentTime - player.getLastAttack() > player.getAttackLength()) {
             player.setIsAttacking(false);
         }
-
         inBounds(player);
     
     }
@@ -348,7 +346,7 @@ public class Game implements ActionListener{
             player.attack();
         }
     }
-    
+     
     private void handlePlayerBlock(Player player, int blockKey, boolean[] keys) {
 
         long currentTime = System.currentTimeMillis();
@@ -404,7 +402,7 @@ public class Game implements ActionListener{
             keys[playerKeys[3]]  // Right
         };
         player.move(movement, shift);
-
+/* 
         ////////////////
         /// COLLISION
         ///////////////
@@ -444,7 +442,7 @@ public class Game implements ActionListener{
                 }
             }
         }
-
+*/
     }
 
     public static boolean inDebugMode(){

@@ -1,10 +1,12 @@
 package src;
 
 import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.Transparency;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+
+import Enemies.Enemies;
 
 //-------------------------------------------------//
 //                    Player                       //
@@ -13,14 +15,14 @@ public class Player extends Entity{
     ///////////////
     //Properties
     //////////////
-    private int health;
+    private double health;
     private boolean isAlive;
-    private int damage;
+    private double damage;
     private double speed = 3.0;
     private double shiftSpeed = 6.0;
     private double dashSpeed = 12.0;
     private double maxSpeed = 5.0;
-    private int maxHealth = 100;
+    private double maxHealth = 100.0;
 
     //positioning
     private double xVel = 0;
@@ -91,47 +93,67 @@ public class Player extends Entity{
 //                    Methods                      //
 //-------------------------------------------------// 
     public void updateMovement(boolean[] keys){
-        int[] playerKeys;
-        if(playernum == 1) 
-            playerKeys = new int[]{
-                KeyEvent.VK_W,
-                KeyEvent.VK_A,
-                KeyEvent.VK_S,
-                KeyEvent.VK_D,
-            };
-        if(playernum == 2) 
-            playerKeys = new int[]{
-                KeyEvent.VK_I,
-                KeyEvent.VK_J,
-                KeyEvent.VK_K,
-                KeyEvent.VK_L,
-            };
-        // Adjust velocity based on input
-        if(isDashing){
-            if (keys[KeyEvent.VK_W]) yVel -= dashSpeed; // W (Up)
-            if (keys[KeyEvent.VK_A]) xVel -= dashSpeed; // A (Left)
-            if (keys[KeyEvent.VK_S]) yVel += dashSpeed; // S (Down)
-            if (keys[KeyEvent.VK_D]) xVel += dashSpeed; // D (Right)
-        }else{
-            if (keys[KeyEvent.VK_W]) yVel -= speed; // W (Up)
-            if (keys[KeyEvent.VK_A]) xVel -= speed; // A (Left)
-            if (keys[KeyEvent.VK_S]) yVel += speed; // S (Down)
-            if (keys[KeyEvent.VK_D]) xVel += speed; // D (Right)
+        
+    }
+    public void updateCollision(ArrayList<Enemies> enemies, ArrayList<EnvObject> EnvObjects){
+
+        //////////////////
+        /// INTERSECTS
+        /////////////////
+
+        //TODO: Make sure that it doesnt instantly kill player, have i-frames
+        for (int i = 0; i < enemies.size(); i++) {
+            Enemies enemy = enemies.get(i);
+            if (getAbsHitbox().intersects(enemy.getAbsHitbox())) {
+                this.health -= enemy.getDamage();
+            }
         }
-        x += xVel;
-        y += yVel;
-        xVel *= friction;
-        yVel *= friction;
-    }
-    public void updateCollision(ArrayList<Entity> entities){
-        // Make sure to not collide with self
-    }
-    public void updateAttack(){
+
+        for (int i = 0; i < EnvObjects.size(); i++) {
+            EnvObject obj = EnvObjects.get(i);
+            Rectangle pHitbox, objHitbox;
+            pHitbox = getAbsHitbox();
+            objHitbox = obj.getAbsHitbox();
+            Rectangle2D clip;
+            if (pHitbox.intersects(objHitbox)) {
+            
+                clip = objHitbox.createIntersection(pHitbox);
+                // Horizontal collide
+                if(clip.getHeight() > clip.getWidth()){
+                    // Right collide
+                    if(pHitbox.getX() > objHitbox.getX()){
+                        setX(getX() + clip.getWidth());
+                    }   
+                    // Left collide
+                    if(pHitbox.getX() < objHitbox.getX()){
+                        setX(getX() - clip.getWidth());
+                    }
+                    
+                } else if (clip.getWidth() > clip.getHeight()){
+                            
+                    // Bottom collide
+                    if(pHitbox.getY() > objHitbox.getY()){
+                        setY(objHitbox.getY() + objHitbox.getHeight());
+                    }   
+                    // Top collide
+                    if(pHitbox.getY() < objHitbox.getY()){
+                        setY(objHitbox.getY() - pHitbox.getHeight());
+                    }
+                }
+            }
+
+            
+        }
+        }
+
+        ///////////////////////
+        /// SWING HITBOX
+        //////////////////////
+     
+        //Check if player swing hitbox is hitting anything
 
     }
-    public void updateBlock(){
-
-    }
+    
 
 
 
@@ -205,14 +227,23 @@ public class Player extends Entity{
         // Update position
         x += xVel;
         y += yVel;
-        
-        xDir = (int)Math.signum(xVel);
-        yDir = (int)Math.signum(yVel);
+        if(xVel >= 0){
+            xDir = 1;
+        } else {
+            xDir = -1;
+        }
+        if(yVel >= 0){
+            yDir = 1;
+        } else {
+            yDir = -1;
+        }
     }
 
     public void attack() {
         System.out.println("Attack!");
         lastAttack = (int) System.currentTimeMillis();
+        xDir = getXDir(); // -1 left 0 neutral 1 right
+        yDir = getYDir(); // -1 up 0 neutral 1 down
 
         //toggle swing animation ?
         // spawn swing hitbox
@@ -235,8 +266,6 @@ public class Player extends Entity{
         // Create a new hitbox
         swingHitbox = new Rectangle(hitboxX, hitboxY, swingWidth, swingHeight);
 
-        // Go through each enemy position and check if the swing hitbox intersects() the enemy hitbox
-
         System.out.println("Player position: (" + (int) getX() + ", " + (int) getY() + ")");
         System.out.println("Hitbox spawned at: (" + hitboxX + ", " + hitboxY + ")");
 
@@ -250,6 +279,7 @@ public class Player extends Entity{
         }
         lastBlock = (int) System.currentTimeMillis();
     }
+
 
     public int getXDir(){
         if(xVel > 0){
@@ -382,7 +412,7 @@ public class Player extends Entity{
 
     //DAMAGE
 
-    public int getDamage(){
+    public double getDamage(){
         return damage;
     }
 
@@ -408,6 +438,10 @@ public class Player extends Entity{
         return this.swingHitbox;
     }
 
+    public int getPlayerNum(){
+        return this.playernum;
+    }
+
     public BufferedImage getImage(){
         BufferedImage playerImage = idleAnim.getCurFrame(); // Default idle animation frame
 
@@ -424,7 +458,8 @@ public class Player extends Entity{
 
             playerImage = dashAnimation.getCurFrame();
         }
-        else /* if player is not dashing */{
+        else{
+            //if player is not dashing
             if (yDir == -1) {
                 // Player is facing up
                 if (xDir == -1) {
@@ -454,7 +489,10 @@ public class Player extends Entity{
         }
         return playerImage;
     }
-    public BufferedImage getShadowImage(){BufferedImage playerImage = idleAnim.getCurFrame(); // Default idle animation frame
+
+    public BufferedImage getShadowImage(){
+        
+        BufferedImage playerImage = idleAnim.getCurFrame(); // Default idle animation frame
 
         // Handle dash animation
         if(isDashing){
