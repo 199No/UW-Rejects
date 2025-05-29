@@ -117,9 +117,11 @@ public class Game implements ActionListener{
         }
         ////////////////
         // Update Player
-        ////////////////
-        updatePlayer(player1);
-        updatePlayer(player2);
+        // ////////////////
+        // updatePlayer(player1);
+        // updatePlayer(player2);
+        player1.updateMovement(Input.getKeys());
+        player2.updateMovement(Input.getKeys());
         // Update enemies
         for (int i = 0; i < this.enemies.size(); i++) {
             Enemies enemy = enemies.get(i);
@@ -129,6 +131,8 @@ public class Game implements ActionListener{
             /// COLLISION
             ///////////////
             
+            // TODO: Put this in an Enemies method
+
             for (int c = 0; c < map.numLoadedChunks(); c++) {
                 EnvObject[] envObjects = map.getChunk(c).getEnvObjects();
                 for (int j = 0; j < envObjects.length; j++) {
@@ -182,7 +186,7 @@ public class Game implements ActionListener{
         ///////////
         /// CHECK DEATH
         ///////////
-
+        // TODO: Make a Game method for this
         for(int i = 0; i < enemies.size(); i++){
             if(!enemies.get(i).getIsAlive()){
                 enemies.remove(i);
