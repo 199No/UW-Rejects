@@ -46,8 +46,8 @@ public class Gui extends JPanel{
         images = new Images("Images/Enviroment/Tiles");
         envImages = new BufferedImage[] {
             new BufferedImage(1, 1, Transparency.BITMASK),
-            tempImages.getImage("X"),
-            tempImages.getImage("X").getSubimage(1, 1, 22, 22),
+            tempImages.getImage("X_tile"),
+            tempImages.getImage("X_tile").getSubimage(1, 1, 22, 22),
             tempImages.getImage("tree1"),
             tempImages.getImage("tree2"),
             tempImages.getImage("flowers").getSubimage(0, 0, 24, 24),
@@ -57,9 +57,9 @@ public class Gui extends JPanel{
             tempImages.getImage("cactus"),
             tempImages.getImage("rocks").getSubimage(0, 0, 32, 32),
             tempImages.getImage("rocks").getSubimage(0, 32, 32, 32),
-            tempImages.getImage("bonePile").getSubimage(0, 0, 32, 32),
-            tempImages.getImage("bonePile").getSubimage(32, 0, 32, 32),
-            tempImages.getImage("bonePile").getSubimage(0, 32, 32, 32)
+            tempImages.getImage("bonePile").getSubimage(0, 0, 24, 24),
+            tempImages.getImage("bonePile").getSubimage(24, 0, 24, 24),
+            tempImages.getImage("bonePile").getSubimage(0, 24, 24, 24)
         };
         this.chunks = chunks;
         this.envChunks = envChunks;
