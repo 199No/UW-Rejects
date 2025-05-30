@@ -30,7 +30,7 @@ public class Player extends Entity{
     //private int facingDirY = 0; // 1 = down, -1 = up, 0 = no vertical facing
 
     //misc
-    private int score;
+    //private int score;
     private double friction = 0.65;
     public int playernum;
 
@@ -204,6 +204,21 @@ public class Player extends Entity{
         }
     }
 
+    public void inBounds(){
+        if(getX() > Game.xMax){
+            setX(Game.xMax);
+        }
+        if(getX() < Game.xMin){
+            setX(Game.xMin);
+        }
+        if(getY() > Game.yMax){
+            setY(Game.yMax);
+        }
+        if(getY() < Game.yMin){
+            setY(Game.yMin);
+        }
+    }
+
     public void dash(int key) {
 
         boolean[] movement = new boolean[4];
@@ -370,6 +385,9 @@ public class Player extends Entity{
         this.health = health;
     }
     public boolean getIsAlive(){
+        if(this.health <= 0){
+            this.isAlive = false;
+        }
         return isAlive;
     }
     public void setIsAlive(boolean bool){

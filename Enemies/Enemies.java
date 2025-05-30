@@ -1,4 +1,5 @@
 package Enemies;
+import src.Game;
 
 import src.Entity;
 import src.Player;
@@ -40,6 +41,8 @@ public abstract class Enemies extends Entity {
     public void update(ArrayList<Player> players) {
         this.now = (int) System.currentTimeMillis();
 
+        inBounds();
+
         switch(state){
             case idle:
                 //System.out.println("Idle!");
@@ -52,6 +55,7 @@ public abstract class Enemies extends Entity {
             case dead:
                 //System.out.println("dead!");
                 break;
+                
         }
 
         if (inRange(players, this.range) && state != State.dead) {
@@ -61,6 +65,21 @@ public abstract class Enemies extends Entity {
             this.state = State.chasing;
         } else if (!inRange(players, this.range) && state != State.dead) {
             this.state = State.idle;
+        }
+    }
+
+    public void inBounds(){
+        if(getX() > Game.xMax){
+            setX(Game.xMax);
+        }
+        if(getX() < Game.xMin){
+            setX(Game.xMin);
+        }
+        if(getY() > Game.yMax){
+            setY(Game.yMax);
+        }
+        if(getY() < Game.yMin){
+            setY(Game.yMin);
         }
     }
 
@@ -95,6 +114,9 @@ public abstract class Enemies extends Entity {
     }
 
     public boolean getIsAlive() {
+        if(this.health <= 0){
+            this.alive = false;
+        }
         return this.alive;
     }
 
