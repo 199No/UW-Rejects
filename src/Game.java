@@ -47,10 +47,10 @@ public class Game implements ActionListener{
     int[] entityIndices;
     EntitySort esort = new EntitySort();
     // Bounds
-    private double xMin = 0;
-    private double xMax = 4080;
-    private double yMin = 0;
-    private double yMax = 4080;
+    public static final int xMin = 0;
+    public static final int xMax = 4080;
+    public static final int yMin = 0;
+    public static final int yMax = 4080;
     Rectangle levelEndRect = new Rectangle(0, 4 * Gui.CHUNK_WIDTH, Gui.TILE_SIZE,(int)( Gui.TILE_SIZE * 3 * Gui.HEIGHT_SCALE));
     private int fadeStart = -1;
     private int levelNum = 1;
@@ -123,6 +123,10 @@ public class Game implements ActionListener{
         player2.updateMovement(Input.getKeys());
         player1.updateCollision(enemies,map.getAllEnvObjects());
         player2.updateCollision(enemies,map.getAllEnvObjects());
+        player1.updateAttack();
+        player2.updateAttack();
+        player1.updateBlock();
+        player2.updateBlock();
         // Update enemies
         for (int i = 0; i < this.enemies.size(); i++) {
             Enemies enemy = enemies.get(i);
@@ -185,19 +189,7 @@ public class Game implements ActionListener{
         ///////////
         /// CHECK DEATH
         ///////////
-        // TODO: Make a Game method for this
-        for(int i = 0; i < enemies.size(); i++){
-            if(!enemies.get(i).getIsAlive()){
-                enemies.remove(i);
-            }
-        }
-
-        for(int i = 0; i < players.size(); i++){
-            if(!players.get(i).getIsAlive()){
-                players.remove(i);
-            }
-        }
-
+        checkDeath(this.enemies,this.players);
 
         // Create array of indices
         entityIndices = new int[entities.size()];
@@ -236,9 +228,6 @@ public class Game implements ActionListener{
                 g.fillRect(Gui.WIDTH - 30, Gui.HEIGHT - (int) height2, 30, (int) height2);
             }
         });
-        // TODO: Move to Player collision
-        checkHitboxes(this.players, this.enemies);
-        despawnSwingHitbox(this.players);
 
         if(player1.getAbsHitbox().intersects(levelEndRect) && player2.getAbsHitbox().intersects(levelEndRect)){
             goToLevel2();
@@ -251,36 +240,8 @@ public class Game implements ActionListener{
         
         entities.clear();
     }
-    // TODO: Move this to player collide method
-    public void inBounds(Player player){
-        if(player.getX() > this.xMax){
-            player.setX(this.xMax);
-        }
-        if(player.getX() < this.xMin){
-            player.setX(this.xMin);
-        }
-        if(player.getY() > this.yMax){
-            player.setY(this.yMax);
-        }
-        if(player.getY() < this.yMin){
-            player.setY(this.yMin);
-        }
-    }
-    // TODO: move this to enemy collide method
-    public void inBounds(Enemies enemy){
-        if(enemy.getX() > this.xMax){
-            enemy.setX(this.xMax);
-        }
-        if(enemy.getX() < this.xMin){
-            enemy.setX(this.xMin);
-        }
-        if(enemy.getY() > this.yMax){
-            enemy.setY(this.yMax);
-        }
-        if(enemy.getY() < this.yMin){
-            enemy.setY(this.yMin);
-        }
-    }
+
+    /* 
     // TODO: Make this a player method
     public void updatePlayer(Player player) {
         // Get input information
@@ -312,48 +273,24 @@ public class Game implements ActionListener{
         } else if (currentTime - Input.getLastDash(player) > player.getDashLength()) {
             player.setIsDashing(false);
         }
-    
-        // Handle player blocking
-        if (!player.getIsBlocking()) {
-            if (currentTime - player.getLastBlock() > player.getBlockLength()) {
-                handlePlayerBlock(player, playerKeys[4], keys);
-                player.setIsBlocking(true);
+
+    }
+    */
+
+    private void checkDeath(ArrayList<Enemies> enemies, ArrayList<Player> player){
+        for(int i = 0; i < enemies.size(); i++){
+            if(!enemies.get(i).getIsAlive()){
+                enemies.remove(i);
             }
-        } else if (currentTime - player.getLastBlock() > player.getBlockLength()) {
-            player.setIsBlocking(false);
         }
 
-        // Handle player attacking
-        if (!player.getIsAttacking()) {
-            if (currentTime - player.getLastAttack() > player.getAttackLength()) {
-                handlePlayerAttack(player, playerKeys[5], keys);
-                player.setIsAttacking(true);
+        for(int i = 0; i < players.size(); i++){
+            if(!players.get(i).getIsAlive()){
+                players.remove(i);
             }
-        } else if (currentTime - player.getLastAttack() > player.getAttackLength()) {
-            player.setIsAttacking(false);
         }
-        inBounds(player);
+    }
     
-    }
-    // TODO: Handle this in player
-    private void handlePlayerAttack(Player player, int attackKey, boolean[] keys) {
-
-        int currentTime = (int) System.currentTimeMillis();
-    
-        if (keys[attackKey] && !player.getIsAttacking() && !player.getIsBlocking()
-                && currentTime - player.getLastAttack() > player.getAttackCooldown()) {
-            player.attack();
-        }
-    }
-     
-    private void handlePlayerBlock(Player player, int blockKey, boolean[] keys) {
-
-        long currentTime = System.currentTimeMillis();
-        if (keys[blockKey] && !player.getIsBlocking() && !player.getIsAttacking()
-                && currentTime - player.getLastBlock() > player.getBlockCooldown()) {
-            player.block();
-        }
-    }
         
     private void handlePlayerDash(Player player, int[] playerKeys) {
     
@@ -365,32 +302,9 @@ public class Game implements ActionListener{
             }
         }
     }
-    // TODO: Move to player "collide" method
-    public void checkHitboxes(ArrayList<Player> players, ArrayList<Enemies> enemies) {
 
-        for(int p = 0; p < players.size(); p++){
-        for (int i = 0; i < enemies.size(); i++) {
-            Enemies enemy = enemies.get(i);
 
-            if (players.get(p).getSwingHitbox().intersects(enemy.getAbsHitbox())) {
-                enemy.takeDamage(players.get(p).getDamage());
 
-                if (!enemy.getIsAlive()) {
-                    enemies.remove(i);
-                    i--;
-                }
-            }
-        }
-    }
-    }
-    // TODO: Have player handle this
-    public void despawnSwingHitbox(ArrayList<Player> players){
-        for(int p = 0; p < players.size(); p++){
-            if((int) System.currentTimeMillis() - players.get(p).getLastAttack() > players.get(p).getAttackLength()){
-                players.get(p).getSwingHitbox().setBounds(-1000, 1000, 1, 1);
-            }
-        }
-    }
     // TODO: Make this part of player "update movement method"
     private void updatePlayerMovement(Player player, int[] playerKeys, boolean shift, boolean[] keys) {
         // w a s d OR i j k l
@@ -401,47 +315,6 @@ public class Game implements ActionListener{
             keys[playerKeys[3]]  // Right
         };
         player.move(movement, shift);
-/* 
-        ////////////////
-        /// COLLISION
-        ///////////////
-        for(int i = 0; i < map.numLoadedChunks(); i++){
-            EnvObject[] envObjects = map.getChunk(i).getEnvObjects();
-            EnvObject obj;
-            Rectangle pHitbox, objHitbox;
-            Rectangle2D clip;
-            for(int k = 0; k < envObjects.length; k++){
-                obj = envObjects[k];
-                pHitbox = player.getAbsHitbox();
-                objHitbox = obj.getAbsHitbox();
-                if(pHitbox.intersects(objHitbox)){
-                    clip = objHitbox.createIntersection(pHitbox);
-                    // Horizontal collide
-                    if(clip.getHeight() > clip.getWidth()){
-                        // Right collide
-                        if(pHitbox.getX() > objHitbox.getX()){
-                            player.setX(player.getX() + clip.getWidth());
-                        }   
-                        // Left collide
-                        if(pHitbox.getX() < objHitbox.getX()){
-                            player.setX(player.getX() - clip.getWidth());
-                        }
-                    }
-                    else if (clip.getWidth() > clip.getHeight()){
-                            
-                        // Bottom collide
-                        if(pHitbox.getY() > objHitbox.getY()){
-                            player.setY(objHitbox.getY() + objHitbox.getHeight());
-                        }   
-                        // Top collide
-                        if(pHitbox.getY() < objHitbox.getY()){
-                            player.setY(objHitbox.getY() - pHitbox.getHeight());
-                        }
-                    }
-                }
-            }
-        }
-*/
     }
 
     public static boolean inDebugMode(){

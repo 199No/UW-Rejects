@@ -33,7 +33,7 @@ public class Player extends Entity{
     //private int facingDirY = 0; // 1 = down, -1 = up, 0 = no vertical facing
 
     //misc
-    private int score;
+    //private int score;
     private double friction = 0.85;
     public int playernum;
 
@@ -109,12 +109,17 @@ public class Player extends Entity{
             }
         }
 
+        ///////////////////////
+        /// Swing Hitbox
+        ///////////////////////
+
         for (int i = 0; i < EnvObjects.size(); i++) {
             EnvObject obj = EnvObjects.get(i);
             Rectangle pHitbox, objHitbox;
             pHitbox = getAbsHitbox();
             objHitbox = obj.getAbsHitbox();
             Rectangle2D clip;
+     
             if (pHitbox.intersects(objHitbox)) {
             
                 clip = objHitbox.createIntersection(pHitbox);
@@ -141,16 +146,101 @@ public class Player extends Entity{
                     }
                 }
             }
-
-            
-        }
         }
 
-        ///////////////////////
-        /// SWING HITBOX
-        //////////////////////
+        for (int i = 0; i < enemies.size(); i++) {
+            Enemies enemy = enemies.get(i);
+            Rectangle swingHitbox, eHitbox;
+            swingHitbox = getSwingHitbox();
+            eHitbox = enemy.getAbsHitbox();
+            Rectangle2D clip;
      
-        //Check if player swing hitbox is hitting anything
+            if (swingHitbox.intersects(eHitbox)) {
+            
+                clip = eHitbox.createIntersection(swingHitbox);
+                // Horizontal collide
+                if(clip.getHeight() > clip.getWidth()){
+                    // Right collide
+                    if(swingHitbox.getX() > eHitbox.getX()){
+                        setX(getX() + clip.getWidth());
+                    }   
+                    // Left collide
+                    if(swingHitbox.getX() < eHitbox.getX()){
+                        setX(getX() - clip.getWidth());
+                    }
+                    
+                } else if (clip.getWidth() > clip.getHeight()){
+                            
+                    // Bottom collide
+                    if(swingHitbox.getY() > eHitbox.getY()){
+                        setY(eHitbox.getY() + eHitbox.getHeight());
+                    }   
+                    // Top collide
+                    if(swingHitbox.getY() < eHitbox.getY()){
+                        setY(eHitbox.getY() - swingHitbox.getHeight());
+                    }
+                }
+            }
+        }
+
+        //Despawn swing hitbox
+
+        if((int) System.currentTimeMillis() - getLastAttack() > getAttackLength()){
+            getSwingHitbox().setBounds(-1000, 1000, 1, 1);
+        }
+    
+        //in bounds
+        inBounds();
+    }
+
+    public void updateAttack(){
+
+        boolean[] keys = Input.getKeys();
+    
+        boolean[] shifts = Input.getShifts();
+    
+        int[] playerKeys = Input.getPlayerKeys(this);
+    
+        int currentTime = (int) System.currentTimeMillis();
+
+         // Handle player attacking
+         if (!getIsAttacking()) {
+            if (currentTime - getLastAttack() > getAttackLength()) {
+    
+                if (keys[playerKeys[5]] && !getIsAttacking() && !getIsBlocking() && currentTime - getLastAttack() > getAttackCooldown()) {
+                    attack();
+                }
+                setIsAttacking(true);
+            }
+        } else if (currentTime - getLastAttack() > getAttackLength()) {
+            setIsAttacking(false);
+        }
+    
+    }
+
+    public void updateBlock(){
+        boolean[] keys = Input.getKeys();
+    
+        boolean[] shifts = Input.getShifts();
+    
+        int[] playerKeys = Input.getPlayerKeys(this);
+    
+        int currentTime = (int) System.currentTimeMillis();
+
+        // Handle player blocking
+        if (!getIsBlocking()) {
+            if (currentTime - getLastBlock() > getBlockLength()) {
+                if (keys[playerKeys[4]] && !getIsBlocking() && !getIsAttacking() && currentTime - getLastBlock() > getBlockCooldown()) {
+                    block();
+                }
+                setIsBlocking(true);
+            }
+        } else if (currentTime - getLastBlock() > getBlockLength()) {
+            setIsBlocking(false);
+        }
+
+    }
+
 
     public void move(boolean[] movement, boolean isShifting) {
         
@@ -193,6 +283,21 @@ public class Player extends Entity{
             yDir = 1;
         } else {
             yDir = -1;
+        }
+    }
+
+    public void inBounds(){
+        if(getX() > Game.xMax){
+            setX(Game.xMax);
+        }
+        if(getX() < Game.xMin){
+            setX(Game.xMin);
+        }
+        if(getY() > Game.yMax){
+            setY(Game.yMax);
+        }
+        if(getY() < Game.yMin){
+            setY(Game.yMin);
         }
     }
 
@@ -376,6 +481,9 @@ public class Player extends Entity{
         this.health = health;
     }
     public boolean getIsAlive(){
+        if(this.health <= 0){
+            this.isAlive = false;
+        }
         return isAlive;
     }
     public void setIsAlive(boolean bool){
