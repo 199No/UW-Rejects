@@ -119,8 +119,8 @@ public class Game implements ActionListener{
         // ////////////////
         // updatePlayer(player1);
         // updatePlayer(player2);
-        player1.updateMovement(Input.getKeys());
-        player2.updateMovement(Input.getKeys());
+        player1.updateMovement(Input.getKeys(), Input.getShifts());
+        player2.updateMovement(Input.getKeys(), Input.getShifts());
         // Update enemies
         for (int i = 0; i < this.enemies.size(); i++) {
             Enemies enemy = enemies.get(i);

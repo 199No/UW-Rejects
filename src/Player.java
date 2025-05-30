@@ -17,7 +17,7 @@ public class Player extends Entity{
     private boolean isAlive;
     private int damage;
     private double speed = 3.0;
-    private double dashSpeed = 6.0;
+    private double dashSpeed = 9.0;
     private double maxSpeed = 5.0;
     private int maxHealth = 100;
 
@@ -51,7 +51,7 @@ public class Player extends Entity{
     private int dashLength   = 350 + 250 + 350; // in miliseconds
     private boolean isDashing = false;
     private int lastDash = (int) System.currentTimeMillis() - 10;
-    private int lastDashKey = -1;
+
     
     //Hitbox
     private boolean active; //the player is able to be hit if true
@@ -63,6 +63,10 @@ public class Player extends Entity{
     StatefulAnimation idleAnim;
     StatefulAnimation dashAnimation;
     StatefulAnimation swingAnimation;
+
+    // Input
+    int[] playerKeys;
+    int[] lastKeyPressTimes;
     ///////////////
     //Constuctor
     //////////////
@@ -78,27 +82,15 @@ public class Player extends Entity{
         /*swingAnimation = new StatefulAnimation(62, , , 
                             new int[][] {}, 
                             new Images("Images", Transparency.BITMASK).getImage(), true);*/
-        System.out.println("Player!");
-
-        this.playernum = playernum;
-        this.health = hp;
-        this.isAlive = true;
-        this.damage = dmg;
-    }
-
-//-------------------------------------------------//
-//                    Methods                      //
-//-------------------------------------------------// 
-    public void updateMovement(boolean[] keys){
-        int[] playerKeys;
-        if(this.playernum == 1) // Use WASD
+                
+        if(playernum == 1) // Use WASD
             playerKeys = new int[]{
                 KeyEvent.VK_W,
                 KeyEvent.VK_A,
                 KeyEvent.VK_S,
                 KeyEvent.VK_D,
             };
-        else if(this.playernum == 2) // Use IJKL
+        else if(playernum == 2) // Use IJKL
             playerKeys = new int[]{
                 KeyEvent.VK_I,
                 KeyEvent.VK_J,
@@ -108,12 +100,35 @@ public class Player extends Entity{
         else { // Default to no keys
             playerKeys = new int[4];
         }
+        lastKeyPressTimes = new int[4];
+        this.playernum = playernum;
+        this.health = hp;
+        this.isAlive = true;
+        this.damage = dmg;
+    }
 
+//-------------------------------------------------//
+//                    Methods                      //
+//-------------------------------------------------// 
+    public void updateMovement(boolean[] keys, boolean[] shifts){
+        if(shifts[playernum - 1]){
+            isDashing = true;
+        } else {
+            isDashing = false;
+        }
         // Adjust velocity based on input
-        if (keys[playerKeys[0]]) yVel -= (isDashing)? dashSpeed : speed; // W (Up)
-        if (keys[playerKeys[1]]) xVel -= (isDashing)? dashSpeed : speed; // A (Left)
-        if (keys[playerKeys[2]]) yVel += (isDashing)? dashSpeed : speed; // S (Down)
-        if (keys[playerKeys[3]]) xVel += (isDashing)? dashSpeed : speed; // D (Right)
+        if (keys[playerKeys[0]]){
+            yVel -= (isDashing)? dashSpeed : speed;
+        } // W (Up)
+        if (keys[playerKeys[1]]){
+            xVel -= (isDashing)? dashSpeed : speed;
+        } // A (Left)
+        if (keys[playerKeys[2]]){ 
+            yVel += (isDashing)? dashSpeed : speed;
+        } // S (Down)
+        if (keys[playerKeys[3]]){
+            xVel += (isDashing)? dashSpeed : speed;
+        } // D (Right)
 
 
         // Update position and velocity
@@ -332,12 +347,6 @@ public class Player extends Entity{
     }
     public int getLastDash(){
         return this.lastDash;
-    }
-    public int getDashKey(){
-        return this.lastDashKey;
-    }
-    public void setDashKey(int keyevent){
-        this.lastDashKey = keyevent;
     }
     public int getDashLength(){
         return this.dashLength;

@@ -20,7 +20,7 @@ public class Slime extends Enemies {
         
         this.health = 100.0;
         this.damage = 10.0;
-        this.speed = 1.5;
+        this.speed = 5.5;
         this.range = 250.0;
 
         this.slimeAnimation = new Animation(
