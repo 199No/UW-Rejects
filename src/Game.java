@@ -1,4 +1,5 @@
 package src;
+
 //-------------------------------------------------//
 //                    Imports                      //
 //-------------------------------------------------// 
@@ -21,10 +22,10 @@ import javax.swing.Timer;
 //                     Game                        //
 //-------------------------------------------------// 
 
-public class Game implements ActionListener{
+public class Game implements ActionListener {
 
     ///////////////
-    //Properties
+    // Properties
     ///////////////
     public static boolean inDebugMode = false;
     Random random;
@@ -41,71 +42,76 @@ public class Game implements ActionListener{
     boolean[] movement = new boolean[4];
     Chunk chunk1;
     Chunk chunk2;
-    private ArrayList<Enemies> enemies  = new ArrayList<Enemies>();
-    private ArrayList<Player>  players  = new ArrayList<Player>();
-    private ArrayList<Entity>  entities = new ArrayList<Entity>();
+    private ArrayList<Enemies> enemies  = new ArrayList<>();
+    private ArrayList<Player>  players  = new ArrayList<>();
+    private ArrayList<Entity>  entities = new ArrayList<>();
     int[] entityIndices;
     EntitySort esort = new EntitySort();
+
     // Bounds
     public static final int xMin = 0;
     public static final int xMax = 4080;
     public static final int yMin = 0;
     public static final int yMax = 4080;
-    Rectangle levelEndRect = new Rectangle(0, 4 * Gui.CHUNK_WIDTH, Gui.TILE_SIZE,(int)( Gui.TILE_SIZE * 3 * Gui.HEIGHT_SCALE));
+
+    // Rectangle to trigger transition to level 2
+    Rectangle levelEndRect = new Rectangle(0, 4 * Gui.CHUNK_WIDTH, Gui.TILE_SIZE, (int)(Gui.TILE_SIZE * 3 * Gui.HEIGHT_SCALE));
     private int fadeStart = -1;
     private int levelNum = 1;
-    ///////////////
-    //Constuctor
-    //////////////
-    public Game() throws AWTException, IOException{
 
+    ///////////////
+    // Constructor
+    ///////////////
+    public Game() throws AWTException, IOException {
+        // Initialize players
         this.player1 = new Player(750.0, 300.0, 100, 10, 1);
         this.player2 = new Player(500.0, 500.0, 100, 10, 2);
         players.add(player1);
         players.add(player2);
+
+        // Input and GUI setup
         this.input = new Input();
-        // Use the slime constructorsdds
-        enemies.add(new Slime(400,400));
-        random = new Random();
         gui = new Gui(1280, 720, input);
+
+        // Initialize enemies
+        enemies.add(new Slime(400, 400));
+
+        // Load map
         map = new Map("Maps/map1.map", "Maps/map1Env.map");
 
-        //How to say if its in desert do wind if in grass do country
-        if(levelNum == 2){
+        // Background music
+        if (levelNum == 2) {
             Sounds.playSound("WindBackground");
-        }
-        if(levelNum == 1){
+        } else if (levelNum == 1) {
             Sounds.playSound("Countryside");
         }
-        // Only these four lines should happen after this comment otherwise stuff will break
+
+        // Start game loop
         gameTimer = new Timer(11, this);
         gameTimer.start();
         now = System.currentTimeMillis();
         lastSecond = System.currentTimeMillis();
     }
 
-//-------------------------------------------------//
-//                    Methods                      //
-//-------------------------------------------------// 
+    //-------------------------------------------------//
+    //                   Game Loop                     //
+    //-------------------------------------------------//
 
     @Override
+    public void actionPerformed(ActionEvent e) {
+        updateTime();
+        updatePlayers();
+        updateEnemies();
+        updateEntities();
+        renderScene();
+        checkLevelTransition();
+        gui.repaint();
+        now = System.currentTimeMillis();
+        entities.clear();  // Clear entity list for the next frame
+    }
 
-
-    /////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////
-    /// TODO: Simplify/despaghettify this!!!!!
-    /////////////////////////////////////////
-
-
-
-     public void actionPerformed(ActionEvent e) {
-        
-        
-        /////////////////////
-        //// CALCULATE FPS
-        ////////////////////
-        
-        // TODO: Make this a seperate method (readability)
+    /** Handles updating timing values and FPS tracking */
+    private void updateTime() {
         now = System.currentTimeMillis();
         if (now - lastSecond > 1000) {
             lastSecond = now;
@@ -114,55 +120,50 @@ public class Game implements ActionListener{
         } else {
             framesLastSecond++;
         }
-        ////////////////
-        // Update Player
-        // ////////////////
-        // updatePlayer(player1);
-        // updatePlayer(player2);
+    }
+
+    /** Updates both player objects */
+    private void updatePlayers() {
         player1.updateMovement(Input.getKeys(), Input.getShifts());
         player2.updateMovement(Input.getKeys(), Input.getShifts());
-        player1.updateCollision(enemies,map.getAllEnvObjects());
-        player2.updateCollision(enemies,map.getAllEnvObjects());
+
+        player1.updateCollision(enemies, map.getAllEnvObjects());
+        player2.updateCollision(enemies, map.getAllEnvObjects());
+
         player1.updateAttack();
         player2.updateAttack();
+
         player1.updateBlock();
         player2.updateBlock();
-        // Update enemies
-        for (int i = 0; i < this.enemies.size(); i++) {
+    }
+
+    /** Updates enemies including AI and collision */
+    private void updateEnemies() {
+        for (int i = 0; i < enemies.size(); i++) {
             Enemies enemy = enemies.get(i);
             enemy.update(players);
-    
-            ////////////////
-            /// COLLISION
-            ///////////////
-            
+
+            // Collision detection between enemy and environment
             for (int c = 0; c < map.numLoadedChunks(); c++) {
                 EnvObject[] envObjects = map.getChunk(c).getEnvObjects();
-                for (int j = 0; j < envObjects.length; j++) {
-                    EnvObject obj = envObjects[j];
+                for (EnvObject obj : envObjects) {
                     Rectangle eHitbox = enemy.getRelHitbox();
                     Rectangle objHitbox = obj.getAbsHitbox();
-    
+
                     if (eHitbox.intersects(objHitbox)) {
                         Rectangle2D clip = objHitbox.createIntersection(eHitbox);
-    
-                        // Horizontal collision
                         if (clip.getHeight() > clip.getWidth()) {
-                            // Right collision
+                            // Horizontal
                             if (eHitbox.getX() > objHitbox.getX()) {
                                 enemy.setX(objHitbox.getMaxX());
-                            }
-                            // Left collision
-                            if (eHitbox.getX() < objHitbox.getX()) {
+                            } else {
                                 enemy.setX(objHitbox.getX() - enemy.getWidth());
                             }
-                        } else if (clip.getWidth() > clip.getHeight()) {
-                            // Top collision
+                        } else {
+                            // Vertical
                             if (eHitbox.getY() > objHitbox.getY()) {
                                 enemy.setY(objHitbox.getMaxY());
-                            }
-                            // Bottom collision
-                            if (eHitbox.getY() < objHitbox.getY()) {
+                            } else {
                                 enemy.setY(objHitbox.getY() - enemy.getHeight());
                             }
                         }
@@ -170,132 +171,100 @@ public class Game implements ActionListener{
                 }
             }
         }
-        // Update entity list
+    }
+
+    /** Combines and sorts all entities (players, enemies, environment) for rendering */
+    private void updateEntities() {
         entities.addAll(enemies);
         entities.addAll(map.getAllEnvObjects());
         entities.addAll(players);
-        // Draw the background (happens before all other draw commands)
-        gui.background(0, 0, 0);
+
+        entityIndices = new int[entities.size()];
+        for (int i = 0; i < entities.size(); i++) entityIndices[i] = i;
+        esort.sort(entityIndices, entities, 0, entities.size() - 1);
+    }
+
+    /** Renders all visual elements to the GUI */
+    private void renderScene() {
+        gui.background(0, 0, 0);  // Clear screen
+
         for (int c = 0; c < map.numLoadedChunks(); c++) {
             gui.drawChunk(map.getChunk(c));
         }
-    
-        // Update camera position
+
+        // Smooth camera movement based on player positions
         gui.shiftCamera(
             ((player1.getX() + player2.getX()) / 2 - gui.cameraX()) / 10,
             (((player1.getY() + player2.getY()) / 2) * Gui.HEIGHT_SCALE - gui.cameraY()) / 10
         );
 
-        ///////////
-        /// CHECK DEATH
-        ///////////
-        checkDeath(this.enemies,this.players);
+        checkDeath(enemies, players);
 
-        // Create array of indices
-        entityIndices = new int[entities.size()];
-        // Populate array
-        for(int i = 0; i < entities.size(); i++) entityIndices[i] = i;
-        // Sort entities
-        esort.sort(entityIndices, entities, 0, entities.size() - 1);
-        // Draw all Entities (players, enemies, envObjects, etc.)
-        
-        // TODO: Maybe have a draw() method in each entity
-
-        for(int i = 0; i < entities.size(); i++){
-            if(entityIndices[i] < entities.size() - 2){
-                gui.drawEntity(entities.get(entityIndices[i])); 
+        for (int i = 0; i < entities.size(); i++) {
+            if (entityIndices[i] < entities.size() - 2) {
+                gui.drawEntity(entities.get(entityIndices[i]));
             } else {
                 gui.drawPlayer(players.get(entityIndices[i] - (entities.size() - 2)));
             }
         }
+
         gui.drawShadowLayer();
         gui.drawEntityLayer();
-    
-        // Draw dash bars
-        // TODO: Make a GUI method for this~!
+
+        drawDashBars();
+        gui.displayFPS((int) frameRate);
+    }
+
+    /** Draws the dash cooldown bars for each player */
+    private void drawDashBars() {
         gui.addToQueue(new GraphicsRunnable() {
             public void draw(Graphics2D g) {
-                double height1 = (((double)(int) System.currentTimeMillis() - (double) Input.getLastp1Dash()) / (double)Input.DASH_COOLDOWN) * Gui.HEIGHT;
+                double height1 = ((System.currentTimeMillis() - Input.getLastp1Dash()) / (double) Input.DASH_COOLDOWN) * Gui.HEIGHT;
                 g.setColor(Color.BLACK);
                 g.fillRect(0, 0, 30, Gui.HEIGHT);
                 g.setColor(new Color(3, 148, 252));
                 g.fillRect(0, Gui.HEIGHT - (int) height1, 30, (int) height1);
-    
-                double height2 = (((double)(int) System.currentTimeMillis() - (double) Input.getLastp2Dash()) / (double)Input.DASH_COOLDOWN) * Gui.HEIGHT;
+
+                double height2 = ((System.currentTimeMillis() - Input.getLastp2Dash()) / (double) Input.DASH_COOLDOWN) * Gui.HEIGHT;
                 g.setColor(Color.BLACK);
                 g.fillRect(Gui.WIDTH - 30, 0, 30, Gui.HEIGHT);
                 g.setColor(new Color(3, 148, 252));
                 g.fillRect(Gui.WIDTH - 30, Gui.HEIGHT - (int) height2, 30, (int) height2);
             }
         });
+    }
 
-        if(player1.getAbsHitbox().intersects(levelEndRect) && player2.getAbsHitbox().intersects(levelEndRect)){
+    /** Checks level transition conditions */
+    private void checkLevelTransition() {
+        if (player1.getAbsHitbox().intersects(levelEndRect) && player2.getAbsHitbox().intersects(levelEndRect)) {
             goToLevel2();
         }
-        if(fadeStart > (int)System.currentTimeMillis() - 5000)
+
+        if (fadeStart > (int) System.currentTimeMillis() - 5000) {
             gui.drawLevelTransition(fadeStart);
-        gui.displayFPS((int) frameRate);
-        gui.repaint();
-        now = System.currentTimeMillis();
-        
-        entities.clear();
-    }
-
-    private void checkDeath(ArrayList<Enemies> enemies, ArrayList<Player> player){
-        for(int i = 0; i < enemies.size(); i++){
-            if(!enemies.get(i).getIsAlive()){
-                enemies.remove(i);
-            }
-        }
-
-        for(int i = 0; i < players.size(); i++){
-            if(!players.get(i).getIsAlive()){
-                players.remove(i);
-            }
-        }
-    }
-    
-        
-    private void handlePlayerDash(Player player, int[] playerKeys) {
-    
-        int dashKey = Input.getDash();
-        for (int key : playerKeys) {
-            if (key == dashKey) {
-                player.dash(dashKey);
-                break;
-            }
         }
     }
 
-
-
-    // TODO: Make this part of player "update movement method"
-    private void updatePlayerMovement(Player player, int[] playerKeys, boolean shift, boolean[] keys) {
-        // w a s d OR i j k l
-        boolean[] movement = new boolean[] {
-            keys[playerKeys[0]], // Up
-            keys[playerKeys[1]], // Left
-            keys[playerKeys[2]], // Down
-            keys[playerKeys[3]]  // Right
-        };
-        player.move(movement, shift);
+    /** Checks if any enemies or players have died and removes them */
+    private void checkDeath(ArrayList<Enemies> enemies, ArrayList<Player> players) {
+        enemies.removeIf(enemy -> !enemy.getIsAlive());
+        players.removeIf(player -> !player.getIsAlive());
     }
 
-    public static boolean inDebugMode(){
-        return inDebugMode;
-    }
-    // TODO: Gui should handle this
-    public void goToLevel2(){
-        // Change mapfile and env file to be map2.map
-        if(fadeStart == -1){
-            
-        fadeStart = (int)System.currentTimeMillis();
+    /** Triggers the transition to level 2 */
+    public void goToLevel2() {
+        if (fadeStart == -1) {
+            fadeStart = (int) System.currentTimeMillis();
         }
-        if((int)System.currentTimeMillis() - fadeStart > 1500 && !map.getTilePath().contains("2")){
+
+        if ((int) System.currentTimeMillis() - fadeStart > 1500 && !map.getTilePath().contains("2")) {
             player1.setPos(350, 200);
             player2.setPos(150, 300);
             map = new Map("Maps/map2.map", "Maps/map2Env.map");
         }
     }
 
+    public static boolean inDebugMode() {
+        return inDebugMode;
+    }
 }

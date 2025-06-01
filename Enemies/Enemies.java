@@ -16,7 +16,6 @@ public abstract class Enemies extends Entity {
     }
 
     protected State state = State.idle;
-    protected boolean alive = true;
 
     protected double dx = 0;
     protected double dy = 0;
@@ -28,21 +27,25 @@ public abstract class Enemies extends Entity {
 
     protected Rectangle hitbox;
 
-    // stats
+    // Stats for all enemies
     protected double health;
     protected double damage;
     protected double speed;
     protected double range;
+    protected boolean alive = true;
 
     public Enemies(double x, double y, double width, double height, Rectangle hitbox) {
         super(x, y, width, height, hitbox);
         this.hitbox = hitbox;
     }
 
-    public void update(ArrayList<Player> players) {
-        this.now = (int) System.currentTimeMillis();
+    //////////////////////
+    /// UPDATE
+    ///////////////////////
 
-        inBounds();
+    public void update(ArrayList<Player> players) {
+
+        this.now = (int) System.currentTimeMillis();
 
         switch(state){
             case idle:
@@ -59,16 +62,22 @@ public abstract class Enemies extends Entity {
                 
         }
 
+        // If the enemy is not dead, check if it is in range
+        // then find either a new target or go idle
         if (inRange(players, this.range) && state != State.dead) {
             if (target == null || now - lastNewDirection > 5000) {
                 findTarget(players);
             }
             this.state = State.chasing;
         } else if (!inRange(players, this.range) && state != State.dead) {
-            this.state = State.idle;
+            updateState(State.idle);
         }
+
+        // Check if enemy is inbounds of the current level
+        inBounds();
     }
 
+    //take boundaries of game in order to keep enemies in bounds
     public void inBounds(){
         if(getX() > Game.xMax){
             setX(Game.xMax);
@@ -88,6 +97,7 @@ public abstract class Enemies extends Entity {
         this.state = state;
     }
 
+    //uses eyesight range in order to determine if any players are in range of the enemy's eyesight
     public boolean inRange(ArrayList<Player> players, double eyesight){
         for(int i = 0; i < players.size(); i++){
             // Calculate the distance to the player's location
@@ -137,7 +147,7 @@ public abstract class Enemies extends Entity {
     public abstract void idle();
     public abstract void findTarget(ArrayList<Player> players);
     public abstract void chase(ArrayList<Player> players);
-    public abstract void move();
-    public abstract void die();
+    public abstract void move(); 
+    public abstract void die(); // death animation and possible death perks
     public abstract java.awt.image.BufferedImage getImage();
 }
