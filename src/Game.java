@@ -241,42 +241,6 @@ public class Game implements ActionListener{
         entities.clear();
     }
 
-    /* 
-    // TODO: Make this a player method
-    public void updatePlayer(Player player) {
-        // Get input information
-    
-        boolean[] keys = Input.getKeys();
-    
-        boolean[] shifts = Input.getShifts();
-
-        int playerIndex = player.getPlayerNum() - 1;
-    
-        int[] playerKeys = Input.getPlayerKeys(player);
-    
-        int currentTime = (int) System.currentTimeMillis();
-    
-        // Update player movement
-        if(player.getIsDashing()){
-            player.dash(Input.getDashKey(player));
-        }
-        updatePlayerMovement(player, playerKeys, shifts[playerIndex], keys);
-        // Handle player dashing
-    
-        if (!player.getIsDashing()) {
-                              // | TODO: Make this a player method 
-                              // V
-            if (currentTime - Input.getLastDash(player) < player.getDashLength()) {
-                handlePlayerDash(player, playerKeys);
-                player.setIsDashing(true);
-            }
-        } else if (currentTime - Input.getLastDash(player) > player.getDashLength()) {
-            player.setIsDashing(false);
-        }
-
-    }
-    */
-
     private void checkDeath(ArrayList<Enemies> enemies, ArrayList<Player> player){
         for(int i = 0; i < enemies.size(); i++){
             if(!enemies.get(i).getIsAlive()){

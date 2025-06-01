@@ -5,6 +5,9 @@ import java.awt.Transparency;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.awt.geom.Rectangle2D;
+
+import Enemies.Enemies;
 
 //-------------------------------------------------//
 //                    Player                       //
@@ -33,6 +36,7 @@ public class Player extends Entity{
     //private int score;
     private double friction = 0.65;
     public int playernum;
+    public static final int invincibilityDuration = 2000; //in milliseconds
 
     //Attack
     private int attackCooldown = 500; // in miliseconds
@@ -147,18 +151,130 @@ public class Player extends Entity{
 
         // TODO: Make dashing only happen in one direction                  
     }
-    public void updateCollision(ArrayList<Entity> entities){
-        // Make sure to not collide with self
+    
+    public void updateCollision(ArrayList<Enemies> enemies, ArrayList<EnvObject> EnvObjects) {
+        Rectangle playerHitbox = getAbsHitbox();
+
+        ////////////////////////////////
+        // ENEMY COLLISION (damage + i-frames)
+        ////////////////////////////////
+
+        for (Enemies enemy : enemies) {
+
+            if (playerHitbox.intersects(enemy.getAbsHitbox())) {
+                // Apply damage only if invincibility period passed
+                long now = System.currentTimeMillis();
+                if (now - enemy.getLastHit() > Player.invincibilityDuration) {
+                    this.health -= enemy.getDamage();
+                    enemy.setLastHit(now); // you'll need this method or variable
+                }
+            }
+        }
+
+        ////////////////////////////////
+        // ENVIRONMENT COLLISION (placeholder)
+        ////////////////////////////////
+
+        for (EnvObject obj : EnvObjects) {
+            Rectangle objHitbox = obj.getAbsHitbox();
+            if (playerHitbox.intersects(objHitbox)) {
+                Rectangle2D clip = objHitbox.createIntersection(playerHitbox);
+                // You can add resolution logic here if needed
+            }
+        }
+
+        ////////////////////////////////
+        // SWING HITBOX COLLISION WITH ENEMIES
+        ////////////////////////////////
+
+        Rectangle swingHitbox = getSwingHitbox();
+
+        for (Enemies enemy : enemies) {
+
+            Rectangle enemyHitbox = enemy.getAbsHitbox();
+
+            if (swingHitbox.intersects(enemyHitbox)) {
+                Rectangle2D clip = swingHitbox.createIntersection(enemyHitbox);
+
+                // Horizontal collision
+                if (clip.getHeight() > clip.getWidth()) {
+                    if (swingHitbox.getX() > enemyHitbox.getX()) {
+                        setX(getX() + clip.getWidth());
+                    } else {
+                        setX(getX() - clip.getWidth());
+                    }
+                } else {
+                    // Vertical collision
+                    if (swingHitbox.getY() > enemyHitbox.getY()) {
+                        setY(enemyHitbox.getY() + enemyHitbox.getHeight());
+                    } else {
+                        setY(enemyHitbox.getY() - swingHitbox.getHeight());
+                    }
+                }
+            }
+        }
+
+        ////////////////////////////////
+        // DESPAWN SWING HITBOX
+        ////////////////////////////////
+
+        if ((int) System.currentTimeMillis() - getLastAttack() > getAttackLength()) {
+            getSwingHitbox().setBounds(-1000, -1000, 1, 1); // moved to correct off-screen position
+        }
+
+        ////////////////////////////////
+        // BOUNDARY CHECK
+        ////////////////////////////////
+
+        inBounds();
     }
+
     public void updateAttack(){
 
+        boolean[] keys = Input.getKeys();
+    
+        boolean[] shifts = Input.getShifts();
+    
+        int[] playerKeys = Input.getPlayerKeys(this);
+    
+        int currentTime = (int) System.currentTimeMillis();
+
+         // Handle player attacking
+         if (!getIsAttacking()) {
+            if (currentTime - getLastAttack() > getAttackLength()) {
+    
+                if (keys[playerKeys[5]] && !getIsAttacking() && !getIsBlocking() && currentTime - getLastAttack() > getAttackCooldown()) {
+                    attack();
+                }
+                setIsAttacking(true);
+            }
+        } else if (currentTime - getLastAttack() > getAttackLength()) {
+            setIsAttacking(false);
+        }
     }
+
     public void updateBlock(){
 
+        boolean[] keys = Input.getKeys();
+    
+        boolean[] shifts = Input.getShifts();
+    
+        int[] playerKeys = Input.getPlayerKeys(this);
+    
+        int currentTime = (int) System.currentTimeMillis();
+
+        // Handle player blocking
+        if (!getIsBlocking()) {
+            if (currentTime - getLastBlock() > getBlockLength()) {
+                if (keys[playerKeys[4]] && !getIsBlocking() && !getIsAttacking() && currentTime - getLastBlock() > getBlockCooldown()) {
+                    block();
+                }
+                setIsBlocking(true);
+            }
+        } else if (currentTime - getLastBlock() > getBlockLength()) {
+            setIsBlocking(false);
+        }
     }
-
-
-
 
     public void move(boolean[] movement, boolean isShifting) {
         

@@ -20,7 +20,7 @@ public class Slime extends Enemies {
         
         this.health = 100.0;
         this.damage = 10.0;
-        this.speed = 5.5;
+        this.speed = 3.0;
         this.range = 250.0;
 
         this.slimeAnimation = new Animation(
@@ -39,7 +39,7 @@ public class Slime extends Enemies {
     @Override
     public void idle() {
         int interval = now - lastNewDirection;
-        double newspeed = speed * 0.5;
+        double idleSpeed = speed * 0.5;
 
         if (interval > 2000 + Math.random() * 3000) {
             double chance = Math.random();
@@ -48,8 +48,15 @@ public class Slime extends Enemies {
                 dy = 0;
             } else {
                 double angle = Math.random() * 2 * Math.PI;
-                dx = Math.cos(angle) * newspeed * 1.5;
-                dy = Math.sin(angle) * newspeed * 1.5;
+                dx = Math.cos(angle);
+                dy = Math.sin(angle);
+
+
+                double length = Math.sqrt(dx * dx + dy * dy);
+                if (length != 0) {
+                    dx = (dx / length) * idleSpeed;
+                    dy = (dy / length) * idleSpeed;
+                }
             }
             lastNewDirection = now;
         }
@@ -69,6 +76,8 @@ public class Slime extends Enemies {
             if (distance < closestDistance) {
                 closest = players.get(i);
                 closestDistance = distance;
+            }else{
+                target = null;
             }
         }
 
@@ -81,17 +90,17 @@ public class Slime extends Enemies {
 
         double tx = target.getX();
         double ty = target.getY();
-        double dx = tx - this.getX();
-        double dy = ty - this.getY();
+        double dirX = tx - this.getX();
+        double dirY = ty - this.getY();
 
-        double distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance != 0) {
-            dx /= distance;
-            dy /= distance;
+        double length = Math.sqrt(dirX * dirX + dirY * dirY);
+        if (length != 0) {
+            dx = (dirX / length) * speed;
+            dy = (dirY / length) * speed;
+        } else {
+            dx = 0;
+            dy = 0;
         }
-
-        this.dx = dx * speed;
-        this.dy = dy * speed;
 
         move();
     }

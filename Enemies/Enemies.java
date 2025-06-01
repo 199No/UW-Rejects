@@ -24,6 +24,7 @@ public abstract class Enemies extends Entity {
     protected Player target = null;
     protected int now;
     protected int lastNewDirection;
+    protected double lastHit = 0;
 
     protected Rectangle hitbox;
 
@@ -122,6 +123,14 @@ public abstract class Enemies extends Entity {
 
     public double getDamage(){
         return this.damage;
+    }
+
+    public void setLastHit(double lastHit){
+        this.lastHit = lastHit;
+    }
+
+    public double getLastHit() {
+        return this.lastHit;
     }
 
     // Abstract methods to be implemented by subclasses
