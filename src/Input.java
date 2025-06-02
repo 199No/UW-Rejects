@@ -73,7 +73,7 @@ public class Input implements KeyListener {
     }
 
     public static int[] getPlayerKeys(Player player) {
-        return player.playernum == 1 ? getPlayer1Keys() : getPlayer2Keys();
+        return player.playerNum == 1 ? getPlayer1Keys() : getPlayer2Keys();
     }
 
     public static int getDash() {
@@ -85,11 +85,11 @@ public class Input implements KeyListener {
     }
 
     public static int getLastDash(Player player) {
-        return (player.playernum == 1) ? lastp1Dash : (player.playernum == 2 ? lastp2Dash : -1);
+        return (player.playerNum == 1) ? lastp1Dash : (player.playerNum == 2 ? lastp2Dash : -1);
     }
 
     public static int getDashKey(Player player) {
-        return (player.playernum == 1) ? p1dash : (player.playernum == 2 ? p2dash : -1);
+        return (player.playerNum == 1) ? p1dash : (player.playerNum == 2 ? p2dash : -1);
     }
 
     public static int getLastp1Dash() {
@@ -108,34 +108,8 @@ public class Input implements KeyListener {
     // Player Key Verifications
     //////////////////////////////
     
-    public static boolean checkPlayer1Keys(int key) {
-        for (int k : player1Keys) {
-            if (key == k) return true;
-        }
-        return false;
-    }
 
-    public static boolean checkPlayer2Keys(int key) {
-        for (int k : player2Keys) {
-            if (key == k) return true;
-        }
-        return false;
-    }
 
-    // Movement keys are the first 4 keys in the key arrays
-    public static boolean checkPlayer1MoveKeys(int key) {
-        for (int i = 0; i < player1Keys.length - 2; i++) {
-            if (key == player1Keys[i]) return true;
-        }
-        return false;
-    }
-
-    public static boolean checkPlayer2MoveKeys(int key) {
-        for (int i = 0; i < player2Keys.length - 2; i++) {
-            if (key == player2Keys[i]) return true;
-        }
-        return false;
-    }
 
     //////////////////////////
     // KeyListener Overrides
@@ -151,29 +125,6 @@ public class Input implements KeyListener {
         if (e.getKeyCode() < keys.length) {
             // Check if this is a new press (not holding)
             if (!getKey(e.getKeyCode())) {
-
-                // DOUBLE-TAP DASH LOGIC:
-                // If key was just released recently, and pressed again quickly
-                if (
-                    released[e.getKeyCode()] - pressed[e.getKeyCode()] <= 350 &&
-                    (int) System.currentTimeMillis() - released[e.getKeyCode()] <= 350
-                ) {
-                    boolean isPlayer1 = checkPlayer1MoveKeys(e.getKeyCode());
-                    boolean isPlayer2 = checkPlayer2MoveKeys(e.getKeyCode());
-
-                    // If valid double-tap and cooldown expired, trigger dash
-                    if (isPlayer1 && System.currentTimeMillis() - lastp1Dash > DASH_COOLDOWN) {
-                        lastp1Dash = (int) System.currentTimeMillis();
-                        lastdash = lastp1Dash;
-                        p1dash = e.getKeyCode();
-                        dash = e.getKeyCode();
-                    } else if (isPlayer2 && System.currentTimeMillis() - lastp2Dash > DASH_COOLDOWN) {
-                        lastp2Dash = (int) System.currentTimeMillis();
-                        lastdash = lastp2Dash;
-                        p2dash = e.getKeyCode();
-                        dash = e.getKeyCode();
-                    }
-                }
 
                 // SHIFT KEY LOGIC (block input)
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT) {

@@ -2,6 +2,7 @@ package src;
 
 import java.awt.Rectangle;
 import java.awt.Transparency;
+import java.awt.RenderingHints.Key;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ public class Player extends Entity {
 
     // Core stats
     private int health;
-    private boolean isAlive;
     private int damage;
     private double speed = 3.0;
     private double dashSpeed = 9.0;
@@ -35,7 +35,7 @@ public class Player extends Entity {
 
     // Misc
     private double friction = 0.65;
-    public int playernum;
+    public int playerNum;
     public static final int invincibilityDuration = 2000; // in milliseconds
 
     // Attack
@@ -74,28 +74,27 @@ public class Player extends Entity {
     ///////////////
     // Constructor
     ///////////////
-    public Player(double x, double y, int hp, int dmg, int playernum) {
+    public Player(double x, double y, int hp, int dmg, int playerNum) {
         super(x, y, Gui.TILE_SIZE, Gui.TILE_SIZE, new Rectangle(Gui.TILE_SIZE/4, Gui.TILE_SIZE/4, Gui.TILE_SIZE / 2, Gui.TILE_SIZE / 2));
         
         // Load animations
-        idleAnim = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, new Images("Images", Transparency.BITMASK).getImage("player" + playernum + "Idle"), true);
+        idleAnim = new StatefulAnimation(Integer.MAX_VALUE, 2, 2, new int[][]{{0}, {1}, {2}, {3}}, new Images("Images", Transparency.BITMASK).getImage("player" + playerNum + "Idle"), true);
         dashAnimation = new StatefulAnimation(62, 6, 2, new int[][]{
             {0,1,2,3}, {4,5}, {4,5}, {4,3,2,1},
             {6,7,8,9}, {10,11}, {10,11}, {9,8,7,6}
-        }, new Images("Images", Transparency.BITMASK).getImage("player" + playernum + "Dash"), true);
+        }, new Images("Images", Transparency.BITMASK).getImage("player" + playerNum + "Dash"), true);
 
         // Assign keys based on player number
-        if(playernum == 1)
+        if(playerNum == 1)
             playerKeys = new int[]{ KeyEvent.VK_W, KeyEvent.VK_A, KeyEvent.VK_S, KeyEvent.VK_D };
-        else if(playernum == 2)
+        else if(playerNum == 2)
             playerKeys = new int[]{ KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_K, KeyEvent.VK_L };
         else
             playerKeys = new int[4];
 
         lastKeyPressTimes = new int[4];
-        this.playernum = playernum;
+        this.playerNum = playerNum;
         this.health = hp;
-        this.isAlive = true;
         this.damage = dmg;
     }
 
@@ -104,14 +103,14 @@ public class Player extends Entity {
     //-------------------------------------------------//
 
     // Handle player movement
-    public void updateMovement(boolean[] keys, boolean[] shifts){
-        isDashing = shifts[playernum - 1];
+    public void updateMovement(boolean[] pressedKeys, boolean[] shifts){
+        //if(shifts[playerNum - 1]
 
         // Modify velocity based on input and dash
-        if (keys[playerKeys[0]]) yVel -= (isDashing ? dashSpeed : speed); // Up
-        if (keys[playerKeys[1]]) xVel -= (isDashing ? dashSpeed : speed); // Left
-        if (keys[playerKeys[2]]) yVel += (isDashing ? dashSpeed : speed); // Down
-        if (keys[playerKeys[3]]) xVel += (isDashing ? dashSpeed : speed); // Right
+        if (pressedKeys[playerKeys[0]]) yVel -= (isDashing ? dashSpeed : speed); // Up
+        if (pressedKeys[playerKeys[1]]) xVel -= (isDashing ? dashSpeed : speed); // Left
+        if (pressedKeys[playerKeys[2]]) yVel += (isDashing ? dashSpeed : speed); // Down
+        if (pressedKeys[playerKeys[3]]) xVel += (isDashing ? dashSpeed : speed); // Right
 
         // Update position
         x += xVel;
@@ -176,13 +175,13 @@ public class Player extends Entity {
 
     // Update attack state
     public void updateAttack() {
-        boolean[] keys = Input.getKeys();
+        boolean[] pressedKeys = Input.getKeys();
         int[] playerKeys = Input.getPlayerKeys(this);
         int currentTime = (int) System.currentTimeMillis();
 
         if (!getIsAttacking()) {
             if (currentTime - getLastAttack() > getAttackLength()) {
-                if (keys[playerKeys[5]] && !getIsAttacking() && !getIsBlocking() && currentTime - getLastAttack() > getAttackCooldown()) {
+                if (pressedKeys[playerKeys[5]] && !getIsAttacking() && !getIsBlocking() && currentTime - getLastAttack() > getAttackCooldown()) {
                     attack();
                 }
                 setIsAttacking(true);
@@ -194,13 +193,13 @@ public class Player extends Entity {
 
     // Update block state
     public void updateBlock() {
-        boolean[] keys = Input.getKeys();
+        boolean[] pressedKeys = Input.getKeys();
         int[] playerKeys = Input.getPlayerKeys(this);
         int currentTime = (int) System.currentTimeMillis();
 
         if (!getIsBlocking()) {
             if (currentTime - getLastBlock() > getBlockLength()) {
-                if (keys[playerKeys[4]] && !getIsBlocking() && !getIsAttacking() && currentTime - getLastBlock() > getBlockCooldown()) {
+                if (pressedKeys[playerKeys[4]] && !getIsBlocking() && !getIsAttacking() && currentTime - getLastBlock() > getBlockCooldown()) {
                     block();
                 }
                 setIsBlocking(true);
@@ -281,11 +280,6 @@ public class Player extends Entity {
     // Health
     public double getHealth() { return health; }
     public void setHealth(int health) { this.health = health; }
-    public boolean getIsAlive() {
-        if (health <= 0) isAlive = false;
-        return isAlive;
-    }
-    public void setIsAlive(boolean bool) { this.isAlive = bool; }
     public double getMaxHealth() { return maxHealth; }
     public double getHealthPercent() { return (double)health / maxHealth; }
 

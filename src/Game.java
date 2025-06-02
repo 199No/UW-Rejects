@@ -248,7 +248,7 @@ public class Game implements ActionListener {
     /** Checks if any enemies or players have died and removes them */
     private void checkDeath(ArrayList<Enemies> enemies, ArrayList<Player> players) {
         enemies.removeIf(enemy -> !enemy.getIsAlive());
-        players.removeIf(player -> !player.getIsAlive());
+        players.removeIf(player -> (player.getHealth() <= 0));
     }
 
     /** Triggers the transition to level 2 */
