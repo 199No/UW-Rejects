@@ -2,7 +2,6 @@ package src;
 
 import java.awt.Rectangle;
 import java.awt.Transparency;
-import java.awt.RenderingHints.Key;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -104,7 +103,17 @@ public class Player extends Entity {
 
     // Handle player movement
     public void updateMovement(boolean[] pressedKeys, boolean[] shifts){
-        //if(shifts[playerNum - 1]
+        int now = (int)System.currentTimeMillis();
+        if(shifts[playerNum - 1] && 
+           !isDashing && 
+           now - (lastDash + dashLength) > dashCooldown){
+            isDashing = true;
+            lastDash = now;
+        }
+        if(now - lastDash > dashLength){
+            isDashing = false;
+        }
+        
 
         // Modify velocity based on input and dash
         if (pressedKeys[playerKeys[0]]) yVel -= (isDashing ? dashSpeed : speed); // Up
@@ -130,6 +139,10 @@ public class Player extends Entity {
     }
 
     // Handle collision with enemies and environment
+    /**
+     * @param enemies
+     * @param EnvObjects
+     */
     public void updateCollision(ArrayList<Enemies> enemies, ArrayList<EnvObject> EnvObjects) {
         Rectangle playerHitbox = getAbsHitbox();
 
@@ -148,7 +161,7 @@ public class Player extends Entity {
         for (EnvObject obj : EnvObjects) {
             if (playerHitbox.intersects(obj.getAbsHitbox())) {
                 Rectangle2D clip = obj.getAbsHitbox().createIntersection(playerHitbox);
-                // Add more advanced resolution logic if needed
+                
             }
         }
 
@@ -324,19 +337,30 @@ public class Player extends Entity {
 
     // Get current player image for rendering
     public BufferedImage getImage() {
-        BufferedImage playerImage = idleAnim.getCurFrame();
-        if (isDashing) {
-            // Optional: use dashAnimation.getCurFrame()
+        BufferedImage playerImage = idleAnim.getCurFrame();        
+        // Handle dash animation
+        if(isDashing){
+            // time since last dash                                                           // 250 ms per frame
+            int currentState = (int)(((int)System.currentTimeMillis() - lastDash) / 250);
+            
+            if(xDir == -1){
+                currentState += 4;
+            }
+
+            if(dashAnimation.getCurState() != currentState) dashAnimation.setState(currentState);
+
+            playerImage = dashAnimation.getCurFrame();
         }
         return playerImage;
     }
 
-      public BufferedImage getShadowImage(){BufferedImage playerImage = idleAnim.getCurFrame(); // Default idle animation frame
+      public BufferedImage getShadowImage(){
+        BufferedImage playerImage = idleAnim.getCurFrame(); // Default idle animation frame
 
-        // Handle dash animation
+        // Handle dash animation        // Handle dash animation
         if(isDashing){
             // time since last dash 
-            int currentState = (int)(((int)System.currentTimeMillis() - Input.getLastDash(this)) / 250);
+            int currentState = (int)(((int)System.currentTimeMillis() - lastDash) / 250);
             
             if(xDir == -1){
                 currentState += 4;

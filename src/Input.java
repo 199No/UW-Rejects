@@ -16,6 +16,7 @@ public class Input implements KeyListener {
     
     public static final int DASH_COOLDOWN = 3000;  // Minimum milliseconds between dashes
     static boolean[] keys = new boolean[90];       // Tracks current key state (pressed/released)
+    static boolean[] typedKeys = new boolean[90];
     static boolean[] shifts = new boolean[2];      // Tracks left/right Shift keys
 
     static int[] pressed = new int[90];            // Time when key was pressed
@@ -117,7 +118,7 @@ public class Input implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // Not used
+        //
     }
 
     @Override

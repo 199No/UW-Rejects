@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.io.IOException;
 import javax.sound.sampled.*;
-
+import java.util.Random;
 
 //-------------------------------------------------//
 //    b               Sounds                       //
@@ -21,6 +21,7 @@ public class Sounds {
     private static ArrayList<File> tempsoundFiles = new ArrayList<File>();
     private static ArrayList<String> tempSoundNames = new ArrayList<String>();
 
+    static Random random = new Random();
 
     public Sounds(){
 
@@ -46,6 +47,9 @@ public class Sounds {
             for(int i = 0; i < soundNames.length; i++){
                 soundNames[i] = tempSoundNames.get(i);
                 soundClip[i] = AudioSystem.getClip();
+                if(soundNames[i].equals("Countryside")){
+                    
+                }
             }
 
         }
@@ -135,6 +139,11 @@ public static void playSound(String name) {
                         soundClip[i].setFramePosition(0);
                     } else {
                         soundClip[i].open(soundAudio[i]);  // Open only if not already opened
+                        if(soundNames[i].equals("Countryside")){
+                            soundClip[i].setFramePosition(
+                                random.nextInt(0, soundClip[i].getFrameLength())
+                            );
+                        }
                     }
 
                     soundClip[i].start();
