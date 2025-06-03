@@ -23,7 +23,7 @@ public class Player extends Entity {
     private int damage;
     private double speed = 3.0;
     private double dashSpeed = 9.0;
-    private double maxSpeed = 5.0;
+    private double maxSpeed = 100.0;
     private int maxHealth = 100;
 
     // Movement variables
@@ -283,8 +283,6 @@ public class Player extends Entity {
     ///////////////
 
     // Movement direction
-    public int getXDir() { return (xVel > 0) ? 1 : (xVel < 0) ? -1 : 0; }
-    public int getYDir() { return (yVel > 0) ? 1 : (yVel < 0) ? -1 : 0; }
     public int[] getDirection() { return new int[]{xDir + 1, yDir + 1}; }
 
     // Location
@@ -333,7 +331,6 @@ public class Player extends Entity {
     public boolean getActive() { return active; }
     public void setActive(boolean bool) { active = bool; }
     public Rectangle getSwingHitbox() { return swingHitbox; }
-    public double[] getSwingHitboxTopLeft() { return new double[]{swingHitbox.getX(), swingHitbox.getY()}; }
 
     // Get current player image for rendering
     public BufferedImage getImage() {
